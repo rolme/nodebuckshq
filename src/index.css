@@ -1,5 +1,17 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+  margin-top: 70px;
+}
+
+.spinnerContainer {
+  width: calc(100% - 100px);
+  height: calc(100% - 100px);
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+}
+
+.ql-editor{
+  height: 80px;
+  overflow-y: auto;
 }

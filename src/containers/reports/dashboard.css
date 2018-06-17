@@ -1,0 +1,28 @@
+@media only screen and (max-width: 576px) {
+  .fixed-column-table thead th {
+    white-space: nowrap;
+  }
+
+  .fixed-column-table tbody td {
+    white-space: nowrap;
+  }
+
+  .fixed-column-wrapper {
+    position: relative;
+  }
+
+  .fixed-column-scroller {
+    margin-left: 141px;
+    overflow-x: scroll;
+    overflow-y: visible;
+    width: 229px;
+  }
+
+  .fixed-column-table .sticky-col {
+      left: 0px;
+      position: absolute;
+      top: auto;
+      width: 141px;
+      background-color: inherit;
+  }
+}
