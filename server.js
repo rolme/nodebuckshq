@@ -20,7 +20,12 @@ if (!dev) {
   app.use(nocache())
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+    // NOTE: force SSL
+    if (req.headers['x-forwarded-proto']!='https') {
+      res.redirect('https://'+req.hostname+req.url)
+    } else {
+      res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+    }
   })
 }
 
