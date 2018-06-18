@@ -19,7 +19,7 @@ class Users extends Component {
     let { list, user } = this.props
 
     if (user === null || list === null) {
-      return <div>Loading Subscribers</div>
+      return <div>Loading Users</div>
     }
 
     return(
@@ -51,7 +51,7 @@ class Users extends Component {
         <tr key={item.id}>
           <td style={{verticalAlign: 'middle'}}>{item.id}</td>
           <td>
-            {this.displayAvatar(item.avatar)} {item.fullName} {(item.admin) ? '(Admin)' : ''}
+            {item.fullName} {(item.admin) ? '(Admin)' : ''}
           </td>
           <td>{item.createdAt}</td>
           <td>{(item.confirmedAt) ? item.confirmedAt : 'Unconfirmed'}</td>

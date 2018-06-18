@@ -160,7 +160,7 @@ export function login(email, password) {
       if (response.data !== 'error') {
         localStorage.setItem('jwt-rencyhq', response.data.token)
         dispatch({ type: LOGIN_USER_SUCCESS, payload: response.data })
-        dispatch(push('/reports'))
+        dispatch(push('/'))
       } else {
         dispatch({ type: LOGIN_USER_FAILURE, payload: response.message })
       }
