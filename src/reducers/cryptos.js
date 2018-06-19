@@ -79,7 +79,7 @@ export default (state = initialState, action) => {
 export function fetchCrypto(slug) {
   return dispatch => {
     dispatch({ type: FETCH })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-rencyhq')
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get(`/api/cryptos/${slug}`)
       .then((response) => {
         dispatch({ type: FETCH_SUCCESS, payload: response.data })
@@ -108,7 +108,7 @@ export function fetchCryptos() {
 export function updateCrypto(slug, data) {
   return dispatch => {
     dispatch({ type: UPDATE })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-rencyhq')
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/cryptos/${slug}`, { crypto: data })
       .then((response) => {
       dispatch({ type: UPDATE_SUCCESS, payload: response.data })

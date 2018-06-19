@@ -7,6 +7,7 @@ import Header from './header'
 import Login from '../authenticate/login'
 import Logout from '../authenticate/logout'
 import Users from '../users'
+import Crypto from '../cryptos/crypto'
 
 import { Container } from 'reactstrap'
 
@@ -23,6 +24,7 @@ export default class App extends Component {
             <Route exact path="/" component={Users}/>
             <Route exact path="/cryptos" component={Cryptos}/>
             <Route exact path="/users" component={Users}/>
+            <Route exact path="/cryptos/:slug" component={Crypto}/>
           </Switch>
         </main>
       </Container>

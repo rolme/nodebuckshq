@@ -27,19 +27,19 @@ export const UPDATE_USER_FAILURE = 'user/UPDATE_USER_FAILURE'
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 
 // TODO: This smells, should probably be moved or figure out another way.
-let TOKEN      = localStorage.getItem('jwt-rencyhq')
+let TOKEN      = localStorage.getItem('jwt-nodebuckshq')
 let TOKEN_USER = null
 
 try {
   if (TOKEN !== '' && TOKEN !== null) {
     TOKEN_USER = jwt_decode(TOKEN)
     if (+TOKEN_USER.exp < +moment("","x")) {
-      localStorage.setItem('jwt-rencyhq', '')
+      localStorage.setItem('jwt-nodebuckshq', '')
       TOKEN_USER = null
     }
   }
 } catch(err) {
-  localStorage.setItem('jwt-rencyhq', '')
+  localStorage.setItem('jwt-nodebuckshq', '')
   TOKEN_USER = null
 }
 
@@ -128,19 +128,19 @@ export default (state = initialState, action) => {
 // ACTIONS /////////////////////////////////////////////////////////////////////
 export function isAuthenticated() {
   return dispatch => {
-    let token = localStorage.getItem('jwt-rencyhq')
+    let token = localStorage.getItem('jwt-nodebuckshq')
     let tokenUser = null
     if (token !== '' && token !== null) {
       try {
         tokenUser = jwt_decode(token)
         if (+tokenUser.exp < +moment("","x")) {
-          localStorage.setItem('jwt-rencyhq', '')
+          localStorage.setItem('jwt-nodebuckshq', '')
           dispatch({ type: 'LOGOUT_USER_SUCCESS' })
           return false
         }
         return true
       } catch(err) {
-        localStorage.setItem('jwt-rencyhq', '')
+        localStorage.setItem('jwt-nodebuckshq', '')
         dispatch({ type: 'LOGOUT_USER_SUCCESS' })
         return false
       }
@@ -158,7 +158,7 @@ export function login(email, password) {
       password: password
     }).then((response) => {
       if (response.data !== 'error') {
-        localStorage.setItem('jwt-rencyhq', response.data.token)
+        localStorage.setItem('jwt-nodebuckshq', response.data.token)
         dispatch({ type: LOGIN_USER_SUCCESS, payload: response.data })
         dispatch(push('/'))
       } else {
@@ -173,7 +173,7 @@ export function login(email, password) {
 
 export function logout() {
   return dispatch => {
-    localStorage.setItem('jwt-rencyhq', '')
+    localStorage.setItem('jwt-nodebuckshq', '')
     dispatch({ type: LOGOUT_USER_SUCCESS })
     dispatch(push('/login'))
   }
@@ -208,7 +208,7 @@ export function register(params) {
 export function updateUser(slug, currentPassword, params) {
   return dispatch => {
     dispatch({ type: UPDATE_USER })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-rencyhq')
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/users/${slug}`, {
       current_password: currentPassword,
       user: params

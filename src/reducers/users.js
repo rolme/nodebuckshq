@@ -16,7 +16,7 @@ const initialState = {
 export const fetchUsers = () => {
   return dispatch => {
     dispatch({ type: FETCH })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-rencyhq')
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get('/api/users').then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: FETCH_FAILURE, payload: response.data })

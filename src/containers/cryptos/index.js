@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { withRouter, NavLink } from 'react-router-dom'
 
 import {
   fetchCryptos
@@ -48,7 +49,7 @@ class Cryptos extends Component {
       return(
         <tr key={item.slug}>
           <td style={{verticalAlign: 'middle'}}>{item.slug}</td>
-          <td>{item.name}</td>
+          <td><NavLink to={`/cryptos/${item.slug}`}>{item.name}</NavLink></td>
           <td>{item.symbol}</td>
         </tr>
       )
@@ -65,7 +66,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCryptos
 }, dispatch)
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Cryptos)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Cryptos))
