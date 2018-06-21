@@ -9,7 +9,7 @@ import {
 class Crypto extends Component {
   componentWillMount() {
     let { match: { params }, crypto, pending } = this.props
-    if ( !!params && !!params.slug && !pending && params.slug !== crypto.slug ) {
+    if ( (params.slug !== crypto.slug && crypto.slug === undefined) || (!!params && !!params.slug && !pending && params.slug !== crypto.slug) ) {
       this.props.fetchCrypto(params.slug)
     }
   }
@@ -38,7 +38,7 @@ class Crypto extends Component {
   }
 
   renderScrapedTable(crypto) {
-    let nodes = (+crypto.nodes).toFixed(0).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let masternodes = (+crypto.masternodes).toFixed(0).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let estimatedNodePrice = (+crypto.estimatedNodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let price = (+crypto.price).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 
@@ -52,7 +52,7 @@ class Crypto extends Component {
         <tbody>
           <tr>
             <th>Nodes</th>
-            <td style={{textAlign: 'right'}}>{nodes}</td>
+            <td style={{textAlign: 'right'}}>{masternodes}</td>
           </tr>
           <tr>
             <th>Stake</th>
