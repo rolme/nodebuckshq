@@ -17,7 +17,7 @@ class Crypto extends Component {
   render() {
     const { match: { params }, crypto, pending } = this.props
 
-    if (!!pending) {
+    if (pending) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
 
