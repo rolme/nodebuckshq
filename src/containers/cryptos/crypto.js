@@ -26,7 +26,7 @@ class Crypto extends Component {
         <div className="col-md-6">
           { this.renderFees(crypto) }
           <br/>
-          { this.renderScrapedTable(crypto) }
+          { this.renderScrapedTable( crypto) }
           <br/>
           { this.renderRoi(crypto) }
         </div>
