@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { Collapse, NavbarToggler } from 'reactstrap'
 
 import { fetchCryptos } from '../../reducers/cryptos'
+import { fetchNodes } from '../../reducers/nodes'
 import { fetchUsers } from '../../reducers/users'
 
 class Header extends Component {
@@ -20,10 +21,14 @@ class Header extends Component {
   }
 
   componentWillMount(nextProps) {
-    let { cryptos, user, users } = this.props
+    let { cryptos, nodes, user, users } = this.props
 
     if (cryptos.length === 0 && user !== null) {
       this.props.fetchCryptos()
+    }
+
+    if (nodes.length === 0 && user !== null) {
+      this.props.fetchNodes()
     }
 
     if (users.length === 0 && user !== null) {
@@ -59,11 +64,12 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, user, users } = this.props
+    const { cryptos, nodes, user, users } = this.props
 
     let navigation = []
     if ( !!user ) {
       navigation.push(<NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink>)
+      navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
       navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
       return (navigation)
@@ -74,12 +80,14 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
   cryptos: state.cryptos.list,
+  nodes: state.nodes.list,
   user: state.user.data,
   users: state.users.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCryptos,
+  fetchNodes,
   fetchUsers
 }, dispatch)
 
