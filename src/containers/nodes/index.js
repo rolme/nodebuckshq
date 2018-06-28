@@ -52,10 +52,19 @@ class Nodes extends Component {
           <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
           <td style={{verticalAlign: 'middle'}}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>
-          <td>{item.status}</td>
+          <td>{this.displayBadge(item)}</td>
         </tr>
       )
     })
+  }
+
+  displayBadge(node) {
+    if (node.status === 'online') {
+      return <span className="badge badge-success">{node.status}</span>
+    } else if (node.status === 'offline') {
+      return <span className="badge badge-danger">{node.status}</span>
+    }
+    return <span className="badge badge-secondary">{node.status}</span>
   }
 }
 

@@ -3,9 +3,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import moment from 'moment'
+import Editable from 'react-x-editable'
+import { Button } from 'reactstrap'
 
 import {
   fetchNode,
+  offlineNode,
+  onlineNode,
   updateNode
 } from '../../reducers/nodes'
 
@@ -13,6 +17,14 @@ class Node extends Component {
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchNode(params.slug)
+  }
+
+  handleSubmit(name, el) {
+    const { node } = this.props
+    let data   = {}
+    data[name] = el.value
+
+    this.props.updateNode(node.slug, data)
   }
 
   render() {
@@ -26,34 +38,11 @@ class Node extends Component {
       <div>
         {this.displayHeader(node)}
         <div className="row pt-3">
-          {this.displayHistory(node)}
           <div className="col-md-4">
-            <div className="row">
-              <div className="col-md-12">
-                <h5>Summary</h5>
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>Value</th>
-                      <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
-                    </tr>
-                    <tr>
-                      <th>Cost</th>
-                      <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-                    </tr>
-                    <tr>
-                      <th>Total Rewards</th>
-                      <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-                    </tr>
-                    <tr>
-                      <th>Reward %</th>
-                      <td>{(node.rewardTotal/node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            {this.displaySummary(node)}
+            {this.displayConfiguration(node)}
           </div>
+          {this.displayHistory(node)}
         </div>
       </div>
     )
@@ -75,6 +64,102 @@ class Node extends Component {
         </h5>
       </div>
     )
+  }
+
+  displaySummary(node) {
+    return(
+      <div className="row">
+        <div className="col-md-12">
+          <h5>Summary</h5>
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>Value</th>
+                <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
+              </tr>
+              <tr>
+                <th>Cost</th>
+                <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+              </tr>
+              <tr>
+                <th>Total Rewards</th>
+                <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+              </tr>
+              <tr>
+                <th>Reward %</th>
+                <td>{(node.rewardTotal/node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+
+  displayConfiguration(node) {
+    return(
+      <div className="row">
+        <div className="col-md-12">
+          <h5>Configuration</h5>
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>IP</th>
+                <td>
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="ip"
+                    showButtons={false}
+                    value={node.ip}
+                    display={value => {
+                      return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
+                    }}
+                    handleSubmit={this.handleSubmit.bind(this, 'ip')}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Wallet</th>
+                  <td>
+                    <Editable
+                      dataType="text"
+                      mode="inline"
+                      name="wallet"
+                      showButtons={false}
+                      value={node.wallet}
+                      display={value => {
+                        return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
+                      }}
+                      handleSubmit={this.handleSubmit.bind(this, 'wallet')}
+                    />
+                  </td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td><span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span></td>
+              </tr>
+              <tr>
+                <th></th>
+                <td>{this.displayActionButton(node)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+
+  displayActionButton(node) {
+    if (node.isReady) {
+      if (node.status === 'online') {
+        return <Button onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>
+      } else {
+        return <Button onClick={this.props.onlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-primary">Enable</Button>
+      }
+    } else {
+      return <Button disabled={true}>Enable (missing data)</Button>
+    }
   }
 
   displayHistory(node) {
@@ -119,6 +204,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchNode,
+  offlineNode,
+  onlineNode,
   updateNode
 }, dispatch)
 
