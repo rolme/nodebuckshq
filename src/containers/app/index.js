@@ -4,6 +4,7 @@ import Route from '../authenticate/route'
 
 import Crypto from '../cryptos/crypto'
 import Cryptos from '../cryptos'
+import Node from '../nodes/node'
 import Nodes from '../nodes'
 import Header from './header'
 import Login from '../authenticate/login'
@@ -23,10 +24,11 @@ export default class App extends Component {
 
           <Switch>
             <Route exact path="/" component={Users}/>
+            <Route exact path="/cryptos/:slug" component={Crypto}/>
             <Route exact path="/cryptos" component={Cryptos}/>
+            <Route exact path="/nodes/:slug" component={Node}/>
             <Route exact path="/nodes" component={Nodes}/>
             <Route exact path="/users" component={Users}/>
-            <Route exact path="/cryptos/:slug" component={Crypto}/>
           </Switch>
         </main>
       </Container>

@@ -8,10 +8,8 @@ import {
 
 class Crypto extends Component {
   componentWillMount() {
-    let { match: { params }, crypto, pending } = this.props
-    if (!pending && (params.slug !== undefined) && (crypto.slug === undefined || params.slug !== crypto.slug)) {
-      this.props.fetchCrypto(params.slug)
-    }
+    let { match: { params } } = this.props
+    this.props.fetchCrypto(params.slug)
   }
 
   render() {
