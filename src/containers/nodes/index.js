@@ -30,9 +30,9 @@ class Nodes extends Component {
           <table className="table table-striped">
             <thead>
               <tr>
+                <th>id</th>
                 <th>owner</th>
                 <th>type</th>
-                <th>id</th>
                 <th>status</th>
               </tr>
             </thead>
@@ -49,9 +49,9 @@ class Nodes extends Component {
     return list.map(item => {
       return(
         <tr key={item.slug}>
+          <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
           <td style={{verticalAlign: 'middle'}}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>
-          <td><NavLink to={`/nodes/${item.slug}`}>{item.slug}</NavLink></td>
           <td>{item.status}</td>
         </tr>
       )
