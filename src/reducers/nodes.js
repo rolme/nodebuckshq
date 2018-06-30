@@ -107,7 +107,7 @@ export function fetchNodes() {
   return dispatch => {
     dispatch({ type: FETCH_LIST })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get('/api/nodes')
+    axios.get('/api/nodes?all')
       .then((response) => {
         dispatch({ type: FETCH_LIST_SUCCESS, payload: response.data })
       })
