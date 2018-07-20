@@ -62,17 +62,16 @@ export default (state = initialState, action) => {
       }
 
     case UPDATE_SUCCESS:
-      console.log('list', state.list)
       return {
         ...state,
         data: action.payload,
-        list: state.list.map(item => {
+        list: (state.list.length > 0) ? state.list.map(item => {
           if (item.slug === action.payload.slug) {
             return action.payload
           } else {
             return item
           }
-        }),
+        }) : state.list,
         pending: false,
         error: false,
         message: 'Update node successful.'
