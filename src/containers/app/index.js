@@ -4,12 +4,13 @@ import Route from '../authenticate/route'
 
 import Crypto from '../cryptos/crypto'
 import Cryptos from '../cryptos'
-import Node from '../nodes/node'
-import Nodes from '../nodes'
 import Header from './header'
 import Login from '../authenticate/login'
 import Logout from '../authenticate/logout'
+import Node from '../nodes/node'
+import Nodes from '../nodes'
 import Users from '../users'
+import Withdrawals from '../withdrawals'
 
 import { Container } from 'reactstrap'
 
@@ -29,7 +30,8 @@ export default class App extends Component {
             <Route exact path="/nodes/:slug" component={Node}/>
             <Route exact path="/nodes" component={Nodes}/>
             <Route exact path="/users" component={Users}/>
-          </Switch>
+            <Route exact path="/withdrawals" component={Withdrawals}/>
+        </Switch>
         </main>
       </Container>
     )

@@ -9,6 +9,7 @@ import { Collapse, NavbarToggler } from 'reactstrap'
 import { fetchCryptos } from '../../reducers/cryptos'
 import { fetchNodes } from '../../reducers/nodes'
 import { fetchUsers } from '../../reducers/users'
+import { fetchWithdrawals } from '../../reducers/withdrawals'
 
 class Header extends Component {
   constructor(props) {
@@ -64,12 +65,13 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users } = this.props
+    const { cryptos, nodes, user, users, withdrawals } = this.props
 
     let navigation = []
     if ( !!user ) {
       navigation.push(<NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink>)
       navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
+      navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
       navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
       return (navigation)
@@ -82,13 +84,15 @@ const mapStateToProps = state => ({
   cryptos: state.cryptos.list,
   nodes: state.nodes.list,
   user: state.user.data,
-  users: state.users.list
+  users: state.users.list,
+  withdrawals: state.withdrawals.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCryptos,
   fetchNodes,
-  fetchUsers
+  fetchUsers,
+  fetchWithdrawals
 }, dispatch)
 
 export default withRouter(connect(
