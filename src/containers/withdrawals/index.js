@@ -5,6 +5,8 @@ import { withRouter, NavLink } from 'react-router-dom'
 
 import { Tabs, Tab } from 'react-bootstrap-tabs'
 
+import { fetchUsers } from '../../reducers/users'
+
 import {
   fetchWithdrawals,
   updateWithdrawal
@@ -19,10 +21,14 @@ class Withdrawals extends Component {
   }
 
   componentWillMount() {
-    const { list, user } = this.props
+    const { list, user, users } = this.props
 
     if (list.length <= 1 && user !== '') {
       this.props.fetchWithdrawals()
+    }
+
+    if (users.length <= 0) {
+      this.props.fetchUsers()
     }
   }
 
@@ -123,7 +129,7 @@ class Withdrawals extends Component {
             {item.owner.fullName}<br/>
             ({item.owner.email})
           </td>
-          <td>{item.balance} {item.crypto.symbol}</td>
+          <td>{this.userBalance(item.owner.slug, item.crypto.symbol)}</td>
           <td>{item.amount} {item.crypto.symbol}</td>
           <td>{item.createdAt}</td>
           <td>{item.status}</td>
@@ -175,14 +181,20 @@ class Withdrawals extends Component {
       )
     })
   }
+
+  userBalance(slug, symbol) {
+    return `0.0 ${symbol}`
+  }
 }
 
 const mapStateToProps = state => ({
   list: state.withdrawals.list,
-  user: state.user.user
+  user: state.user.user,
+  users: state.users.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchUsers,
   fetchWithdrawals,
   updateWithdrawal
 }, dispatch)
