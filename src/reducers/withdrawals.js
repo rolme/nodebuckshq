@@ -1,5 +1,10 @@
 import axios from 'axios'
 
+
+import {
+  fetchUsers   // After updateWithdrawal, call fetchUsers
+} from './users'
+
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const FETCH = 'withdrawals/FETCH'
 export const FETCH_ERROR = 'withdrawals/FETCH_ERROR'
@@ -120,6 +125,7 @@ export function updateWithdrawal(slug, data) {
     axios.patch(`/api/withdrawals/${slug}`, { withdrawal: data })
       .then((response) => {
         dispatch({ type: UPDATE_SUCCESS, payload: response.data })
+        dispatch(fetchUsers())
       }).catch((error) => {
         dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
         console.log(error)
