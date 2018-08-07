@@ -1,0 +1,23 @@
+.transactionsTab {
+  background-color: #EDEDED;
+  color: black;
+  font-family: Raleway;
+  font-weight: bold;
+  padding: 6px 20px;
+  width: 115px;
+  margin-right: 5px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 5px;
+  border-radius: 3px;
+}
+
+.transactionsTab.active {
+  background-color: #2283C6;
+  color: white;
+}
+
+.transactionsTab:hover {
+  background-color: rgba(44, 168, 255, 0.54);
+  color: white;
+}
