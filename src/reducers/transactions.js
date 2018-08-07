@@ -10,7 +10,7 @@ export const FETCH_SUCCESS = "transactions/FETCH_SUCCESS"
 export const FETCH_FAILURE = "transactions/FETCH_FAILURE"
 
 const initialState = {
-  data: [],
+  list: [],
   error: false,
   message: '',
   pending: false
@@ -54,7 +54,7 @@ export default createReducer(initialState, ({
       ...state,
       error: false,
       pending: false,
-      data: payload
+      list: payload
     }
   },
   [FETCH_FAILURE]: (payload, state) => {

@@ -24,15 +24,15 @@ class Header extends Component {
   componentWillMount(nextProps) {
     let { cryptos, nodes, user, users } = this.props
 
-    if (cryptos.length === 0 && user !== null) {
+    if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
     }
 
-    if (nodes.length === 0 && user !== null) {
+    if ( nodes.length === 0 && user !== null ) {
       this.props.fetchNodes()
     }
 
-    if (users.length === 0 && user !== null) {
+    if ( users.length === 0 && user !== null ) {
       this.props.fetchUsers()
     }
   }
@@ -42,19 +42,21 @@ class Header extends Component {
     dropdownItems[ name ] = !dropdownItems[ name ]
     this.setState({ dropdownItems })
   }
+
   toggleNavbar(value) {
     value = (value && typeof(value) === 'boolean') || !this.state.collapsed
     this.setState({
       collapsed: value
     })
   }
+
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top pb-70">
         <NavLink to="/" className="navbar-brand">
           Nodebucks HQ
         </NavLink>
-        <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
+        <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
         <Collapse isOpen={!this.state.collapsed} navbar>
           <div className="navbar-nav mr-auto">
             {this.displayLoginLink()}
@@ -65,14 +67,15 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users, withdrawals } = this.props
-
+    const { cryptos, nodes, user, users, withdrawals, transactions } = this.props
+    const pendingTransactions = transactions.filter(transaction => transaction.status === 'pending')
     let navigation = []
     if ( !!user ) {
       navigation.push(<NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink>)
       navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
       navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
+      navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions.length})</NavLink>)
       navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
       return (navigation)
     }
@@ -84,6 +87,7 @@ const mapStateToProps = state => ({
   cryptos: state.cryptos.list,
   nodes: state.nodes.list,
   user: state.user.data,
+  transactions: state.transactions.list,
   users: state.users.list,
   withdrawals: state.withdrawals.list
 })

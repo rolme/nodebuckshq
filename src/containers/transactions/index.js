@@ -133,7 +133,7 @@ class Transactions extends Component {
 }
 
 const mapStateToProps = state => ({
-  data: state.transactions.data,
+  data: state.transactions.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
