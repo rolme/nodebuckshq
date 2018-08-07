@@ -10,6 +10,7 @@ import { fetchCryptos } from '../../reducers/cryptos'
 import { fetchNodes } from '../../reducers/nodes'
 import { fetchUsers } from '../../reducers/users'
 import { fetchWithdrawals } from '../../reducers/withdrawals'
+import { fetchTransactions } from '../../reducers/transactions'
 
 class Header extends Component {
   constructor(props) {
@@ -21,8 +22,8 @@ class Header extends Component {
     this.toggleNavbar = this.toggleNavbar.bind(this)
   }
 
-  componentWillMount(nextProps) {
-    let { cryptos, nodes, user, users } = this.props
+  componentWillMount() {
+    let { cryptos, nodes, user, users, transactions } = this.props
 
     if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
@@ -34,6 +35,10 @@ class Header extends Component {
 
     if ( users.length === 0 && user !== null ) {
       this.props.fetchUsers()
+    }
+
+    if ( transactions.length === 0 && user !== null ) {
+      this.props.fetchTransactions()
     }
   }
 
@@ -96,7 +101,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCryptos,
   fetchNodes,
   fetchUsers,
-  fetchWithdrawals
+  fetchWithdrawals,
+  fetchTransactions
 }, dispatch)
 
 export default withRouter(connect(
