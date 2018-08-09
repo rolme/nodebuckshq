@@ -17,45 +17,55 @@ class Transactions extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedTabIndex: 0,
-      filterValue: ''
+      selectedTab: 'pending',
+      filterValue: '',
+      data: []
     }
     this.handleTabClick = this.handleTabClick.bind(this)
     this.handleFilterNameChange = this.handleFilterNameChange.bind(this)
   }
 
   componentWillMount() {
+    const { data } = this.props
+    if ( !!data.length ) {
+      this.filterByStatusData()
+    }
     this.props.fetchTransactions()
   }
 
   componentWillReceiveProps(nextProps) {
-    if ( !!nextProps.data.length ) {
-      this.processUrlData(nextProps)
+    const { data } = nextProps
+    if ( !!data.length ) {
+      this.setState({ data }, () => this.filterByStatusData(nextProps))
     }
   }
 
   processUrlData(props) {
     const filterValue = qs.parse(props.location.search).filter
-    this.setState({ filterValue })
+    const lowercaseFilterValue = filterValue.toLowerCase()
+    let { data } = this.state
+    if ( !!filterValue ) {
+      data = data.filter(item => (!!item.type && (item.type).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userName && (item.userName).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userEmail && (item.userEmail).toLowerCase().includes(lowercaseFilterValue) || (!!item.notes && (item.notes).toLowerCase().includes(lowercaseFilterValue))))
+    }
+    this.setState({ filterValue, data })
   }
 
   handleFilterNameChange(e) {
     this.props.filterTransactions(e.target.value)
-    this.setState({ filterValue: e.target.value })
   }
 
   handleTabClick(index) {
-    this.setState({ selectedTabIndex: index })
+    this.setState({ selectedTab: index }, this.filterByStatusData)
   }
 
   renderHeader() {
-    const { selectedTabIndex, filterValue } = this.state
+    const { selectedTab, filterValue } = this.state
     return (
       <Row>
         <Col className="d-flex flex-wrap mb-3 mx-0">
-          <div className={selectedTabIndex === 0 ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick(0)}>Pending</div>
-          <div className={selectedTabIndex === 1 ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick(1)}>Processed</div>
-          <div className={selectedTabIndex === 2 ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick(2)}>Canceled</div>
+          <div className={selectedTab === 'pending' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('pending')}>Pending</div>
+          <div className={selectedTab === 'processed' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('processed')}>Processed</div>
+          <div className={selectedTab === 'canceled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('canceled')}>Canceled</div>
         </Col>
         <Col>
           <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterNameChange}/>
@@ -64,21 +74,20 @@ class Transactions extends Component {
     )
   }
 
-  filterData(data, filterValue) {
-    filterValue = filterValue.toLowerCase()
-    return data.filter(item => (!!item.type && (item.type).toLowerCase().includes(filterValue)) || (!!item.userName && (item.userName).toLowerCase().includes(filterValue)) || (!!item.userEmail && (item.userEmail).toLowerCase().includes(filterValue)))
+  filterByStatusData(props) {
+    props = !!props ? props : this.props
+    const { selectedTab } = this.state
+    let data = [ ...props.data ]
+    data = data.filter(item => item.status === selectedTab)
+    this.setState({ data }, () => this.processUrlData(props))
   }
 
   render() {
-    let { data } = this.props
-    const { selectedTabIndex, filterValue } = this.state
+    const { data, selectedTab } = this.state
+    const { pending } = this.props
 
-    if ( !data.length ) {
+    if ( pending ) {
       return <div>Loading Transactions</div>
-    }
-
-    if ( !!filterValue ) {
-      data = this.filterData(data, filterValue)
     }
 
     return (
@@ -93,7 +102,7 @@ class Transactions extends Component {
               <th className="text-center">Amount</th>
               <th className="text-center">User</th>
               <th className="text-center">Notes</th>
-              {selectedTabIndex !== 1 && <th className="text-center">Action</th>}
+              {selectedTab !== 'processed' && <th className="text-center">Action</th>}
             </tr>
             </thead>
             <tbody>
@@ -106,7 +115,12 @@ class Transactions extends Component {
   }
 
   displayTransactions(list) {
-    const { selectedTabIndex } = this.state
+    const { data, selectedTab } = this.state
+    if ( !data.length ) {
+      return <tr>
+        <td colSpan='5' className="text-center">There is no data to show.</td>
+      </tr>
+    }
 
     return list.map((item, index) => {
       return (
@@ -115,15 +129,15 @@ class Transactions extends Component {
           <td>{valueFormat(item.amount, 2)}</td>
           <td>{item.userName}</td>
           <td>{item.notes}</td>
-          {selectedTabIndex !== 1 && this.renderActionCell()}
+          {selectedTab !== 'processed' && this.renderActionCell()}
         </tr>
       )
     })
   }
 
   renderActionCell() {
-    const { selectedTabIndex } = this.state
-    return selectedTabIndex === 0 ? <td>
+    const { selectedTab } = this.state
+    return selectedTab === 'pending' ? <td>
       <div className="d-flex justify-content-center"><Button className="mr-2">Process</Button> <Button>Cancel</Button></div>
     </td> : <td>
       <div className="d-flex justify-content-center"><Button>Undo</Button></div>
@@ -133,7 +147,8 @@ class Transactions extends Component {
 }
 
 const mapStateToProps = state => ({
-  data: state.transactions.list
+  data: state.transactions.list,
+  pending: state.transactions.pending
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
