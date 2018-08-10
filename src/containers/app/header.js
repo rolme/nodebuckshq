@@ -11,6 +11,7 @@ import { fetchNodes } from '../../reducers/nodes'
 import { fetchUsers } from '../../reducers/users'
 import { fetchWithdrawals } from '../../reducers/withdrawals'
 import { fetchTransactions } from '../../reducers/transactions'
+import { fetchContacts } from '../../reducers/contacts'
 
 class Header extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
-    let { cryptos, nodes, user, users, transactions } = this.props
+    let { cryptos, nodes, user, users, transactions, contacts } = this.props
 
     if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
@@ -39,6 +40,10 @@ class Header extends Component {
 
     if ( transactions.length === 0 && user !== null ) {
       this.props.fetchTransactions()
+    }
+
+    if ( contacts.length === 0 && user !== null ) {
+      this.props.fetchContacts()
     }
   }
 
@@ -72,7 +77,7 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users, withdrawals, transactions } = this.props
+    const { cryptos, nodes, user, users, withdrawals, transactions, contacts } = this.props
     const pendingTransactions = transactions.filter(transaction => transaction.status === 'pending')
     let navigation = []
     if ( !!user ) {
@@ -81,6 +86,7 @@ class Header extends Component {
       navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
       navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions.length})</NavLink>)
+      navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink>)
       navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
       return (navigation)
     }
@@ -94,7 +100,8 @@ const mapStateToProps = state => ({
   user: state.user.data,
   transactions: state.transactions.list,
   users: state.users.list,
-  withdrawals: state.withdrawals.list
+  withdrawals: state.withdrawals.list,
+  contacts: state.contacts.list,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -102,7 +109,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchNodes,
   fetchUsers,
   fetchWithdrawals,
-  fetchTransactions
+  fetchTransactions,
+  fetchContacts,
 }, dispatch)
 
 export default withRouter(connect(
