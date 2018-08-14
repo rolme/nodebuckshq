@@ -24,7 +24,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
-    let { cryptos, nodes, user, users, transactions, contacts, requests } = this.props
+    let { cryptos, nodes, user, users, transactions, contacts } = this.props
 
     if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
