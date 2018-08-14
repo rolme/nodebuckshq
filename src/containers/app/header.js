@@ -24,7 +24,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
-    let { cryptos, nodes, user, users, transactions, contacts } = this.props
+    let { cryptos, nodes, user, users, transactions, contacts, requests } = this.props
 
     if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
@@ -45,6 +45,7 @@ class Header extends Component {
     if ( contacts.length === 0 && user !== null ) {
       this.props.fetchContacts()
     }
+
   }
 
   toggle(name) {
@@ -101,7 +102,7 @@ const mapStateToProps = state => ({
   transactions: state.transactions.list,
   users: state.users.list,
   withdrawals: state.withdrawals.list,
-  contacts: state.contacts.list,
+  contacts: state.contacts.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -110,7 +111,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchUsers,
   fetchWithdrawals,
   fetchTransactions,
-  fetchContacts,
+  fetchContacts
 }, dispatch)
 
 export default withRouter(connect(

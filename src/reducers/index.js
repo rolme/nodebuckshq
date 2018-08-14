@@ -17,5 +17,5 @@ export default combineReducers({
   users,
   withdrawals,
   transactions,
-  contacts,
+  contacts
 })

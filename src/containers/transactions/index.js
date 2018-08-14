@@ -42,7 +42,7 @@ class Transactions extends Component {
 
   processUrlData(props) {
     const filterValue = qs.parse(props.location.search).filter
-    const lowercaseFilterValue = filterValue.toLowerCase()
+    const lowercaseFilterValue = !!filterValue ? filterValue.toLowerCase() : ''
     let { data } = this.state
     if ( !!filterValue ) {
       data = data.filter(item => (!!item.type && (item.type).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userName && (item.userName).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userEmail && (item.userEmail).toLowerCase().includes(lowercaseFilterValue) || (!!item.notes && (item.notes).toLowerCase().includes(lowercaseFilterValue))))
