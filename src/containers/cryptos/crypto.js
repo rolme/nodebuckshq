@@ -24,21 +24,46 @@ class Crypto extends Component {
         <div className="col-md-6">
           { this.renderFees(crypto) }
           <br/>
-          { this.renderScrapedTable( crypto) }
-          <br/>
           { this.renderRoi(crypto) }
         </div>
         <div className="col-md-6">
-          { this.renderOrders(crypto.orders) }
+          { this.renderOrderBookTable( crypto) }
+          <br/>
+          { this.renderScrapedTable( crypto) }
         </div>
       </div>
+    )
+  }
+
+  renderOrderBookTable(crypto) {
+    let nodePrice = (+crypto.nodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let price = (+crypto.price).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+
+    return(
+      <table className="table">
+        <thead>
+          <tr>
+            <th colSpan={2}>From Order Books</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Coin Price</th>
+            <td style={{textAlign: 'right'}}>{price} USD</td>
+          </tr>
+          <tr>
+            <th>Node Price</th>
+            <td style={{textAlign: 'right'}}>${nodePrice} USD</td>
+          </tr>
+        </tbody>
+      </table>
     )
   }
 
   renderScrapedTable(crypto) {
     let masternodes = (+crypto.masternodes).toFixed(0).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let estimatedNodePrice = (+crypto.estimatedNodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-    let price = (+crypto.price).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let estimatedPrice = (+crypto.estimatedPrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 
     return(
       <table className="table">
@@ -58,10 +83,10 @@ class Crypto extends Component {
           </tr>
           <tr>
             <th>Coin Price</th>
-            <td style={{textAlign: 'right'}}>{price} USD</td>
+            <td style={{textAlign: 'right'}}>{estimatedPrice} USD</td>
           </tr>
           <tr>
-            <th>Estimated Price</th>
+            <th>Node Price</th>
             <td style={{textAlign: 'right'}}>${estimatedNodePrice} USD</td>
           </tr>
         </tbody>
@@ -145,30 +170,6 @@ class Crypto extends Component {
               ${yearlyRoiValue} USD ({yearlyRoiPercentage}%)
             </td>
           </tr>
-        </tbody>
-      </table>
-    )
-  }
-
-  renderOrders(orders) {
-    return(
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Price</th>
-            <th>Volume</th>
-          </tr>
-        </thead>
-        <tbody>
-          { !!orders && orders.map(order => {
-            return(
-              <tr key={`${order.exchange}-${order.id}`}>
-                <td>{order.price} BTC</td>
-                <td>{order.volume}</td>
-                <td>{order.exchange}</td>
-              </tr>
-            )
-          }) }
         </tbody>
       </table>
     )
