@@ -103,8 +103,7 @@ const mapStateToProps = state => ({
   transactions: state.transactions.list,
   users: state.users.list,
   withdrawals: state.withdrawals.list,
-  contacts: state.contacts.list,
-  announcements: []
+  contacts: state.contacts.list
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
