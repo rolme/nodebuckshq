@@ -87,8 +87,8 @@ class Header extends Component {
       navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
       navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions.length})</NavLink>)
-      navigation.push(<NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements ({announcements.length})</NavLink>)
-      navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({announcements.length})</NavLink>)
+      navigation.push(<NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements</NavLink>)
+      navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink>)
       navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
       return (navigation)
     }
