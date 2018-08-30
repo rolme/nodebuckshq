@@ -4,6 +4,7 @@ import axios from 'axios'
 export const CREATE = 'announcements/CREATE'
 export const CREATE_ERROR = 'announcements/CREATE_ERROR'
 export const CREATE_SUCCESS = 'announcements/CREATE_SUCCESS'
+export const REFRESH = 'announcements/REFRESH'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -40,6 +41,13 @@ export default (state = initialState, action) => {
         data: null,
         message: action.payload
       }
+    case REFRESH:
+      return {
+        data: null, 
+        pending: false,
+        error: false,
+        message: ''
+      }
     default:
       return state
   }
@@ -56,5 +64,11 @@ export function createAnnouncement(data) {
         dispatch({ type: CREATE_ERROR, payload: error.data })
         console.log(error)
       })
+  }
+}
+
+export function refreshState() {
+  return dispatch => {
+    dispatch({ type: REFRESH })
   }
 }

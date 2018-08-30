@@ -2,13 +2,17 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { createAnnouncement } from '../../reducers/announcements'
+import { createAnnouncement, refreshState } from '../../reducers/announcements'
 
 import { Input, Button, Alert } from 'reactstrap'
 
 class Announcements extends React.Component {
   state = {
     text: ''
+  }
+
+  componentDidMount() {
+    this.props.refreshState()
   }
 
   handleSubmit = (text) => {
@@ -57,7 +61,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createAnnouncement
+  createAnnouncement,
+  refreshState
 }, dispatch)
 
 export default connect(
