@@ -8,6 +8,7 @@ import users from './users'
 import withdrawals from './withdrawals'
 import transactions from './transactions'
 import contacts from './contacts'
+import announcements from './announcements'
 
 export default combineReducers({
   cryptos,
@@ -17,5 +18,6 @@ export default combineReducers({
   users,
   withdrawals,
   transactions,
-  contacts
+  contacts,
+  announcements
 })
