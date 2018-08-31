@@ -13,6 +13,7 @@ import Users from '../users'
 import Withdrawals from '../withdrawals'
 import Transactions from '../transactions'
 import Contacts from '../contacts'
+import Announcements from '../announcements'
 
 import { Container } from 'reactstrap'
 
@@ -35,6 +36,7 @@ export default class App extends Component {
             <Route exact path="/withdrawals" component={Withdrawals}/>
             <Route exact path="/transactions" component={Transactions}/>
             <Route exact path="/contacts" component={Contacts}/>
+            <Route exact path="/announcements" component={Announcements}/>
         </Switch>
         </main>
       </Container>
