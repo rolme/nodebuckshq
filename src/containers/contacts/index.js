@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { withRouter, NavLink } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 
 import {
@@ -17,26 +17,26 @@ class Contacts extends Component {
   render() {
     let { list, user } = this.props
 
-    if (user === null || list === null) {
+    if ( user === null || list === null ) {
       return <div>Loading Contacts</div>
     }
 
-    return(
+    return (
       <div className="row">
         <div className="offset-1 col-10">
-          <h2 className="mt-2">Cryptos ({list.length})</h2>
+          <h2 className="mt-2">Contacts ({list.length})</h2>
           <table className="table table-striped">
             <thead>
-              <tr>
-                <th style={{textAlign: 'center'}}>subject</th>
-                <th style={{textAlign: 'center'}}>email</th>
-                <th style={{textAlign: 'center'}}>message</th>
-                <th style={{textAlign: 'center'}}>createdAt</th>
-                <th style={{textAlign: 'center'}}>review</th>
-              </tr>
+            <tr>
+              <th style={{ textAlign: 'center' }}>subject</th>
+              <th style={{ textAlign: 'center' }}>email</th>
+              <th style={{ textAlign: 'center' }}>message</th>
+              <th style={{ textAlign: 'center' }}>createdAt</th>
+              <th style={{ textAlign: 'center' }}>review</th>
+            </tr>
             </thead>
             <tbody>
-              {this.displayContacts(list)}
+            {this.displayContacts(list)}
             </tbody>
           </table>
         </div>
@@ -45,16 +45,22 @@ class Contacts extends Component {
   }
 
   displayContacts(list) {
+    if ( !list.length ) {
+      return <tr>
+        <td colSpan='5' className="text-center">There is no data to show.</td>
+      </tr>
+    }
+
     return list.map(item => {
-      return(
+      return (
         <tr key={item.id}>
           <td align="center">{item.subject}</td>
           <td align="center">{item.email}</td>
           <td align="center">{item.message}</td>
           <td align="center">{moment(item.createdAt).fromNow()}</td>
           <td align="center">
-            <button 
-              className="btn btn-info" 
+            <button
+              className="btn btn-info"
               onClick={() => this.props.reviewed(item.id)}
             >
               Reviewed
