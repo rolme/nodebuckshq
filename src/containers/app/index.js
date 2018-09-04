@@ -2,25 +2,28 @@ import React, { Component } from 'react'
 import { Route as PublicRoute, Switch } from 'react-router-dom'
 import Route from '../authenticate/route'
 
-import Announcements from '../announcements'
-import Crypto from '../cryptos/crypto'
-import Cryptos from '../cryptos'
-import Header from './header'
-import Login from '../authenticate/login'
-import Logout from '../authenticate/logout'
-import Node from '../nodes/node'
-import Nodes from '../nodes'
-import Orders from '../orders'
-import Users from '../users'
-import Withdrawals from '../withdrawals'
-import Transactions from '../transactions'
-import Contacts from '../contacts'
+import Loadable from 'react-loadable'
+import Loading from "../../components/loadingComponent"
 
 import { withCookies } from 'react-cookie'
 
 import { Container } from 'reactstrap'
 
 import { setReferer } from '../../lib/helpers'
+
+const Announcements = Loadable({ loader: () => import('../announcements'), loading: Loading })
+const Crypto = Loadable({ loader: () => import('../cryptos/crypto'), loading: Loading })
+const Cryptos = Loadable({ loader: () => import('../cryptos'), loading: Loading })
+const Header = Loadable({ loader: () => import('./header'), loading: Loading })
+const Login = Loadable({ loader: () => import('../authenticate/login'), loading: Loading })
+const Logout = Loadable({ loader: () => import('../authenticate/logout'), loading: Loading })
+const Node = Loadable({ loader: () => import('../nodes/node'), loading: Loading })
+const Nodes = Loadable({ loader: () => import('../nodes'), loading: Loading })
+const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
+const Users = Loadable({ loader: () => import('../users'), loading: Loading })
+const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
+const Transactions = Loadable({ loader: () => import('../transactions'), loading: Loading })
+const Contacts = Loadable({ loader: () => import('../contacts'), loading: Loading })
 
 class App extends Component {
   componentDidMount() {

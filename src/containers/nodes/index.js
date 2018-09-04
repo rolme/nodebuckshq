@@ -17,7 +17,6 @@ class Nodes extends Component {
   }
 
   render() {
-    console.log('test')
     let { list, user } = this.props
 
     if (user === null || list === null) {
