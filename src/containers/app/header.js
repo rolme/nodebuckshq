@@ -82,7 +82,7 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders, announcements } = this.props
+    const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders } = this.props
     const pendingTransactions = transactions.filter(transaction => transaction.status === 'pending')
     let navigation = []
     if ( !!user ) {
