@@ -16,9 +16,18 @@ import Withdrawals from '../withdrawals'
 import Transactions from '../transactions'
 import Contacts from '../contacts'
 
+import { withCookies } from 'react-cookie'
+
 import { Container } from 'reactstrap'
 
-export default class App extends Component {
+import { setReferer } from '../../lib/helpers'
+
+class App extends Component {
+  componentDidMount() {
+    const { cookies } = this.props
+    setReferer(cookies)
+  }
+
   render() {
     return (
       <Container fluid={true}>
@@ -45,3 +54,5 @@ export default class App extends Component {
     )
   }
 }
+
+export default withCookies(App)
