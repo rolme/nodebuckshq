@@ -11,25 +11,24 @@ const initialState = {
   list: [],
   error: false,
   message: '',
-  pending: false
+  fetching: false,
 }
 
-export const fetchTransactions = () => {
+export const fetchTransactions = (fetchMoreType = 'none', offset = 0) => {
   return dispatch => {
     dispatch({ type: FETCH })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get('/api/transactions').then(response => {
+    axios.get(`/api/transactions?${fetchMoreType ? `${fetchMoreType}=${offset}` : ''}`).then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: FETCH_FAILURE, payload: response.data })
       } else {
-        dispatch({ type: FETCH_SUCCESS, payload: response.data })
+        dispatch({ type: FETCH_SUCCESS, payload: { data: response.data, fetchMoreType }})
       }
     }).catch(err => {
       dispatch({ type: FETCH_FAILURE, payload: err.data })
     })
   }
 }
-
 
 export function filterTransactions(value) {
   return dispatch => {
@@ -44,22 +43,33 @@ export default createReducer(initialState, ({
     return {
       ...state,
       error: false,
-      pending: true
+      fetching: true
     }
   },
   [FETCH_SUCCESS]: (payload, state) => {
+    let list = state.list
+    if(payload.fetchMoreType === 'pending_offset') {
+      list.pending = [...state.list.pending, ...payload.data.pending]
+    } else if(payload.fetchMoreType === 'processed_offset') {
+      list.processed = [...state.list.processed, ...payload.data.processed]
+    } else if(payload.fetchMoreType === 'canceled_offset') {
+      list.canceled = [...state.list.canceled, ...payload.data.canceled]
+    } else {
+      list = payload.data
+    }
+
     return {
       ...state,
       error: false,
-      pending: false,
-      list: payload
+      fetching: false,
+      list: list
     }
   },
   [FETCH_FAILURE]: (payload, state) => {
     return {
       ...state,
       error: true,
-      pending: false,
+      fetching: false,
       message: payload
     }
   }

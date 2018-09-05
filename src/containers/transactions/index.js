@@ -19,27 +19,59 @@ class Transactions extends Component {
     this.state = {
       selectedTab: 'pending',
       filterValue: '',
-      data: []
     }
     this.handleTabClick = this.handleTabClick.bind(this)
     this.handleFilterNameChange = this.handleFilterNameChange.bind(this)
   }
 
   componentWillMount() {
-    const { data } = this.props
-    if ( !!data.length ) {
-      this.filterByStatusData()
-    }
     this.props.fetchTransactions()
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { data } = nextProps
-    if ( !!data.length ) {
-      this.setState({ data }, () => this.filterByStatusData(nextProps))
-    }
+  componentDidMount() {
+    document.addEventListener('scroll', this.trackScrolling);
   }
 
+  componentDidUpdate() {
+    document.addEventListener('scroll', this.trackScrolling);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.trackScrolling);
+  }
+
+  isBottom(el) {
+    return el.getBoundingClientRect().bottom <= window.innerHeight;
+  }
+
+  trackScrolling = () => {
+  const wrappedElement = document.getElementById('txsContainer');
+    if (this.isBottom(wrappedElement)) {
+      const {
+        data,
+        pendingTotal, 
+        canceledTotal, 
+        processedTotal,
+      } = this.props
+
+      switch(this.state.selectedTab) {
+        case 'pending':
+          if(data.pending.length < pendingTotal)
+            this.props.fetchTransactions('pending_offset', data.pending.length);
+          break;
+        case 'processed':
+          if(data.processed.length < processedTotal)
+            this.props.fetchTransactions('processed_offset', data.processed.length);
+          break;
+        default:
+          if(data.canceled.length < canceledTotal)
+            this.props.fetchTransactions('canceled_offset', data.canceled.length);
+      }
+
+      document.removeEventListener('scroll', this.trackScrolling);
+    }
+  };
+  
   processUrlData(props) {
     const filterValue = qs.parse(props.location.search).filter
     const lowercaseFilterValue = !!filterValue ? filterValue.toLowerCase() : ''
@@ -55,7 +87,7 @@ class Transactions extends Component {
   }
 
   handleTabClick(index) {
-    this.setState({ selectedTab: index }, this.filterByStatusData)
+    this.setState({ selectedTab: index })
   }
 
   renderHeader() {
@@ -74,24 +106,26 @@ class Transactions extends Component {
     )
   }
 
-  filterByStatusData(props) {
-    props = !!props ? props : this.props
-    const { selectedTab } = this.state
-    let data = [ ...props.data ]
-    data = data.filter(item => item.status === selectedTab)
-    this.setState({ data }, () => this.processUrlData(props))
+  filterByStatusData() {
+    const { data } = this.props
+    switch(this.state.selectedTab) {
+      case 'pending':
+        return data.pending
+      case 'processed':
+        return data.processed
+      default:
+        return data.canceled
+    }
   }
 
   render() {
-    const { data, selectedTab } = this.state
-    const { pending } = this.props
-
-    if ( pending ) {
+    const { fetching } = this.props
+    if ( fetching ) {
       return <div>Loading Transactions</div>
     }
 
     return (
-      <div className="row">
+      <div id="txsContainer" className="row">
         <div className="offset-1 col-10">
           <h2 className="mt-2">Transactions</h2>
           {this.renderHeader()}
@@ -102,11 +136,11 @@ class Transactions extends Component {
               <th className="text-center">Amount</th>
               <th className="text-center">User</th>
               <th className="text-center">Notes</th>
-              {selectedTab !== 'processed' && <th className="text-center">Action</th>}
+              {this.state.selectedTab !== 'processed' && <th className="text-center">Action</th>}
             </tr>
             </thead>
             <tbody>
-            {this.displayTransactions(data)}
+            {this.displayTransactions()}
             </tbody>
           </table>
         </div>
@@ -114,15 +148,16 @@ class Transactions extends Component {
     )
   }
 
-  displayTransactions(list) {
-    const { data, selectedTab } = this.state
+  displayTransactions() {
+    const data = this.filterByStatusData()
+    const { selectedTab } = this.state
     if ( !data.length ) {
       return <tr>
         <td colSpan='5' className="text-center">There is no data to show.</td>
       </tr>
     }
 
-    return list.map((item, index) => {
+    return data.map((item, index) => {
       return (
         <tr key={index}>
           <td style={{ verticalAlign: 'middle' }}>{capitalize(item.type)}</td>
@@ -148,7 +183,10 @@ class Transactions extends Component {
 
 const mapStateToProps = state => ({
   data: state.transactions.list,
-  pending: state.transactions.pending
+  fetching: state.transactions.fetching,
+  pendingTotal: state.transactions.list.pendingTotal,
+  canceledTotal: state.transactions.list.canceledTotal,
+  processedTotal: state.transactions.list.processedTotal,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
