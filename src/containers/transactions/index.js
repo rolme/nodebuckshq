@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import qs from 'query-string'
 
 import { capitalize, valueFormat } from '../../lib/helpers'
 import { Row, Col, Button, Input } from 'reactstrap'
 import './index.css'
 
-import {
-  fetchTransactions,
-  filterTransactions
-} from '../../reducers/transactions'
+import { fetchTransactions } from '../../reducers/transactions'
 
 
 class Transactions extends Component {
@@ -20,8 +16,6 @@ class Transactions extends Component {
       selectedTab: 'pending',
       filterValue: '',
     }
-    this.handleTabClick = this.handleTabClick.bind(this)
-    this.handleFilterNameChange = this.handleFilterNameChange.bind(this)
   }
 
   componentWillMount() {
@@ -32,16 +26,12 @@ class Transactions extends Component {
     document.addEventListener('scroll', this.trackScrolling);
   }
 
-  componentDidUpdate() {
-    document.addEventListener('scroll', this.trackScrolling);
-  }
-
   componentWillUnmount() {
     document.removeEventListener('scroll', this.trackScrolling);
   }
 
   isBottom(el) {
-    return el.getBoundingClientRect().bottom <= window.innerHeight;
+    if(el) return el.getBoundingClientRect().bottom <= window.innerHeight;
   }
 
   trackScrolling = () => {
@@ -67,26 +57,31 @@ class Transactions extends Component {
           if(data.canceled.length < canceledTotal)
             this.props.fetchTransactions('canceled_offset', data.canceled.length);
       }
-
-      document.removeEventListener('scroll', this.trackScrolling);
     }
   };
   
-  processUrlData(props) {
-    const filterValue = qs.parse(props.location.search).filter
-    const lowercaseFilterValue = !!filterValue ? filterValue.toLowerCase() : ''
-    let { data } = this.state
-    if ( !!filterValue ) {
-      data = data.filter(item => (!!item.type && (item.type).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userName && (item.userName).toLowerCase().includes(lowercaseFilterValue)) || (!!item.userEmail && (item.userEmail).toLowerCase().includes(lowercaseFilterValue)) || (!!item.notes && (item.notes).toLowerCase().includes(lowercaseFilterValue)))
-    }
-    this.setState({ filterValue, data })
+  filter(transactions) {
+    return transactions.filter((transaction) => {
+      let values = Object.values(transaction);
+      let flag = false
+      values.forEach((val) => {
+        if(val) {
+          if(val.toString().toLowerCase().indexOf(this.state.filterValue) > -1) {
+            flag = true;
+            return;
+          }
+        }
+      })
+      if(flag) return transaction
+      else return null
+    });
   }
 
-  handleFilterNameChange(e) {
-    this.props.filterTransactions(e.target.value)
+  handleFilterChange = (e) => {
+    this.setState({ filterValue: e.target.value.toLowerCase() })
   }
 
-  handleTabClick(index) {
+  handleTabClick = (index) => {
     this.setState({ selectedTab: index })
   }
 
@@ -100,7 +95,7 @@ class Transactions extends Component {
           <div className={selectedTab === 'canceled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('canceled')}>Canceled</div>
         </Col>
         <Col>
-          <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterNameChange}/>
+          <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterChange}/>
         </Col>
       </Row>
     )
@@ -157,13 +152,13 @@ class Transactions extends Component {
       </tr>
     }
 
-    return data.map((item, index) => {
+    return this.filter(data).map((item, index) => {
       return (
         <tr key={index}>
-          <td style={{ verticalAlign: 'middle' }}>{capitalize(item.type)}</td>
-          <td>{valueFormat(item.amount, 2)}</td>
-          <td>{item.userName}</td>
-          <td>{item.notes}</td>
+          <td className="text-center">{capitalize(item.type)}</td>
+          <td className="text-center">{valueFormat(item.amount, 2)}</td>
+          <td className="text-center">{item.userName}</td>
+          <td className="text-center">{item.notes}</td>
           {selectedTab !== 'processed' && this.renderActionCell()}
         </tr>
       )
@@ -190,8 +185,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchTransactions,
-  filterTransactions
+  fetchTransactions
 }, dispatch)
 
 export default connect(

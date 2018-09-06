@@ -1,7 +1,5 @@
 import { createReducer } from "redux-action"
 import axios from 'axios'
-import { push } from 'react-router-redux'
-import qs from 'query-string'
 
 export const FETCH = "transactions/FETCH"
 export const FETCH_SUCCESS = "transactions/FETCH_SUCCESS"
@@ -27,14 +25,6 @@ export const fetchTransactions = (fetchMoreType = 'none', offset = 0) => {
     }).catch(err => {
       dispatch({ type: FETCH_FAILURE, payload: err.data })
     })
-  }
-}
-
-export function filterTransactions(value) {
-  return dispatch => {
-    dispatch(push({
-      search: qs.stringify({ filter: value })
-    }))
   }
 }
 
