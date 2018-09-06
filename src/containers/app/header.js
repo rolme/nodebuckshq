@@ -83,14 +83,14 @@ class Header extends Component {
 
   displayLoginLink() {
     const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders } = this.props
-    const pendingTransactions = transactions.filter(transaction => transaction.status === 'pending')
+    const pendingTransactions = transactions.pendingTotal || 0
     let navigation = []
     if ( !!user ) {
       navigation.push(<NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink>)
       navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
       navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
-      navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions.length})</NavLink>)
+      navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions})</NavLink>)
       navigation.push(<NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements</NavLink>)
       navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink>)
       navigation.push(<NavLink key="orders" onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className="headerMenuItem nav-item nav-link">Orders ({orders.length})</NavLink>)
