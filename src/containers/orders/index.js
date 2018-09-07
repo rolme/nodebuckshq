@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import {valueFormat} from '../../lib/helpers'
 
 import {
   fetchOrders
@@ -69,7 +70,7 @@ class Orders extends Component {
           <td>{username} ({email})</td>
           <td>{masternode}</td>
           <td>{orderType}</td>
-          <td>{amount}</td>
+          <td>$ {valueFormat(amount, 2)}</td>
           <td>{status}</td>
         </tr>
       )
