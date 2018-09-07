@@ -1,26 +1,23 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Button } from 'reactstrap'
 import moment from 'moment'
 
 import {
-  fetchOrders
+  fetchOrders,
+  orderPaid,
+  orderUnpaid,
 } from '../../reducers/orders'
 
 class Orders extends Component {
+  
   componentWillMount() {
     this.props.fetchOrders()
   }
 
-  sortData(data) {
-    return data.sort((a, b) => {
-      if ( a.status === b.status ) {
-        return moment(b.node.createdAt) - moment(a.node.createdAt)
-      } else if ( a.status === 'unpaid' ) {
-        return -1
-      }
-      return 1
-    })
+  tooglePaid = (status, slug) => {
+    status === 'unpaid' ? this.props.orderPaid(slug) : this.props.orderUnpaid(slug)
   }
 
   render() {
@@ -28,8 +25,6 @@ class Orders extends Component {
 
     if ( list === null ) {
       return <div>Loading Orders</div>
-    } else {
-      list = this.sortData(list)
     }
 
     return (
@@ -39,12 +34,13 @@ class Orders extends Component {
           <table className="table table-striped">
             <thead>
             <tr>
-              <th>date</th>
-              <th>username</th>
-              <th>masternode</th>
-              <th>type</th>
-              <th>amount</th>
-              <th>status</th>
+              <th>Date</th>
+              <th>Username</th>
+              <th>Masternode</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -62,7 +58,7 @@ class Orders extends Component {
         username = !!order.user ? order.user.first : '-',
         email = !!order.user ? order.user.email : '',
         masternode = !!order.node && !!order.node.crypto ? order.node.crypto.name + ' (' + order.node.slug + ')' : '-',
-        { orderType, amount, status } = order;
+        { orderType, amount, status, slug } = order;
       return (
         <tr key={order.orderId}>
           <td style={{ verticalAlign: 'middle' }}>{date}</td>
@@ -71,6 +67,11 @@ class Orders extends Component {
           <td>{orderType}</td>
           <td>{amount}</td>
           <td>{status}</td>
+          <td>
+            <Button onClick={() => this.tooglePaid(status, slug)}>
+              {status === 'unpaid' ? 'Paid' : 'Unpaid'}
+            </Button>
+          </td>
         </tr>
       )
     })
@@ -82,7 +83,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchOrders
+  fetchOrders,
+  orderPaid,
+  orderUnpaid,
 }, dispatch)
 
 export default connect(
