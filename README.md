@@ -11,16 +11,15 @@ NodebucksHQ is a React single page application using Redux.
 ## Requirements
 This section assumes you have MacOS. If not, replicate steps appropriate for your OS.
 
-### Install required pacakges
+### Install required packages
 ```
 $ brew install node
 ```
 
 ### Update your node version
 ```
-$ npm install --global n
+$ npm install --global n yarn@^1.9.4
 $ n 10.10.0
-$ npm install --global yarn@^1.9.4
 ```
 
 ## Setup
