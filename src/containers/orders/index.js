@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
-import moment from 'moment'
 import {valueFormat} from '../../lib/helpers'
 
 import {
@@ -12,7 +11,7 @@ import {
 } from '../../reducers/orders'
 
 class Orders extends Component {
-  
+
   componentWillMount() {
     this.props.fetchOrders()
   }

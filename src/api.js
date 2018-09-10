@@ -1,9 +1,13 @@
 import axios from 'axios'
 
-if (process.env.REACT_APP_API_SOURCE !== undefined) {
-  axios.interceptors.request.use(function (config) {
-    const url = process.env.REACT_APP_API_SOURCE
-    config.url = url + config.url
-    return config
-  })
+let api = 'https://nodebucks.herokuapp.com'
+if (process.env.REACT_APP_NODEBUCKS_API !== undefined) {
+  api = process.env.REACT_APP_NODEBUCKS_API
 }
+
+axios.interceptors.request.use(function (config) {
+  if ( !config.url.includes('http') ) {
+    config.url = api + config.url
+  }
+  return config
+})

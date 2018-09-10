@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import moment from 'moment'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const CONFIRM_REGISTRATION = 'user/CONFIRM_REGISTRATION'

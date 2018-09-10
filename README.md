@@ -1,9 +1,11 @@
-# Nodebucks Admin
-> The admins are the difference
+# NodebucksHQ
+> Admin are for bucking nodes.
 ---
 
-Nodebucks Admin is a single page application using React/Redux.
-- Node 10.4.1
+NodebucksHQ is a React single page application using Redux.
+- Node 10.10
+- NPM 6.2
+- Yarn 1.9.4
 
 ---
 ## Requirements
@@ -14,30 +16,50 @@ This section assumes you have MacOS. If not, replicate steps appropriate for you
 $ brew install node
 ```
 
+### Update your node version
+```
+$ npm install --global n
+$ n 10.10.0
+$ npm install --global yarn@^1.9.4
+```
+
 ## Setup
 __Initialize Project__
 
 Clone the project if you have not yet
 ```
-$ cd ~/code
-~/code $ git clone git@github.com:rolme/nodebuckshq.git
-~/code $ cd nodebuckshq
+$ git clone git@github.com:rolme/nodebuckshq.git
+$ cd nodebuckshq
+```
+
+__Enviroment Setup__
+Prior to running, you will need to setup your local environment variable(s)
+```
+# Make a copy of .env.local.template
+~/nodebuckshq $ cp .env.local.template .env.local
 ```
 
 After cloning the project and cd'ing into the directory.
 ```
-~/code/nodebuckshq $ yarn install
-```
-
-__Update Environment__
-The application will make API calls to your local server. Ex. http://localhost:3001
-```
-$ export REACT_APP_API_SOURCE=http://localhost:3001
+~/nodebuckshq $ yarn install
 ```
 
 __Start Project__
 ```
-~/project/nodebuckshq $ yarn start
+~/nodebuckshq $ yarn start
 ```
-The application may ask you to choose a different port if you have the server running.
-Visit: [http://localhost:3002](http://localhost:3002)
+
+If you want to use a local instance of Nodebucks
+```
+# edit .env.local and replace the value to your local instance
+REACT_APP_NODEBUCKS_API=http://localhost:3000
+```
+
+The application should automatically start or you can visit it here:
+Visit: [https://localhost:3000](https://localhost:3000)
+
+## Running the tests
+And run the following command:
+```
+~/nodebuckshq $ npm run test
+```
