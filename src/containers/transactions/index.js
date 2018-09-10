@@ -6,7 +6,10 @@ import { capitalize, valueFormat } from '../../lib/helpers'
 import { Row, Col, Button, Input } from 'reactstrap'
 import './index.css'
 
-import { fetchTransactions } from '../../reducers/transactions'
+import { 
+  fetchTransactions,
+  updateTransaction,
+} from '../../reducers/transactions'
 
 
 class Transactions extends Component {
@@ -159,16 +162,19 @@ class Transactions extends Component {
           <td className="text-center">{valueFormat(item.amount, 2)}</td>
           <td className="text-center">{item.userName}</td>
           <td className="text-center">{item.notes}</td>
-          {selectedTab !== 'processed' && this.renderActionCell()}
+          {selectedTab !== 'processed' && this.renderActionCell(item.Id)}
         </tr>
       )
     })
   }
 
-  renderActionCell() {
+  renderActionCell(id) {
     const { selectedTab } = this.state
     return selectedTab === 'pending' ? <td>
-      <div className="d-flex justify-content-center"><Button className="mr-2">Process</Button> <Button>Cancel</Button></div>
+      <div className="d-flex justify-content-center">
+        <Button className="mr-2" onClick={() => this.props.updateTransaction(id, {status: 'processed'})}>Process</Button> 
+        <Button onClick={() => this.props.updateTransaction(id, {status: 'canceled'})}>Cancel</Button>
+      </div>
     </td> : <td>
       <div className="d-flex justify-content-center"><Button>Undo</Button></div>
     </td>
@@ -185,7 +191,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchTransactions
+  fetchTransactions,
+  updateTransaction,
 }, dispatch)
 
 export default connect(
