@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { capitalize, valueFormat } from '../../lib/helpers'
-import { Row, Col, Button, Input } from 'reactstrap'
+import { Row, Col, Input } from 'reactstrap'
+import TransactionsList from './list'
 import './index.css'
 
 import { 
@@ -40,9 +40,10 @@ class Transactions extends Component {
   trackScrolling = () => {
   const wrappedElement = document.getElementById('txsContainer');
     if (this.isBottom(wrappedElement)) {
+      const prevScrollHeight = wrappedElement.getBoundingClientRect().bottom
       const {
         data,
-        pendingTotal, 
+        pendingTotal,
         canceledTotal, 
         processedTotal,
       } = this.props
@@ -50,19 +51,25 @@ class Transactions extends Component {
       switch(this.state.selectedTab) {
         case 'pending':
           if(data.pending.length < pendingTotal)
-            this.props.fetchTransactions('pending_offset', data.pending.length);
+            this.props.fetchTransactions('pending_offset', data.pending.length, () => {
+              window.scrollTo(0, prevScrollHeight);
+            });
           break;
         case 'processed':
           if(data.processed.length < processedTotal)
-            this.props.fetchTransactions('processed_offset', data.processed.length);
+            this.props.fetchTransactions('processed_offset', data.processed.length, () => {
+              window.scrollTo(0, prevScrollHeight);
+            });
           break;
         default:
           if(data.canceled.length < canceledTotal)
-            this.props.fetchTransactions('canceled_offset', data.canceled.length);
+            this.props.fetchTransactions('canceled_offset', data.canceled.length, () => {
+               window.scrollTo(0, prevScrollHeight);
+            });
       }
     }
   };
-  
+
   filter(transactions) {
     return transactions.filter((transaction) => {
       let values = Object.values(transaction);
@@ -155,31 +162,14 @@ class Transactions extends Component {
       </tr>
     }
 
-    return this.filter(data).map((item, index) => {
-      return (
-        <tr key={index}>
-          <td className="text-center">{capitalize(item.type)}</td>
-          <td className="text-center">{valueFormat(item.amount, 2)}</td>
-          <td className="text-center">{item.userName}</td>
-          <td className="text-center">{item.notes}</td>
-          {selectedTab !== 'processed' && this.renderActionCell(item.Id)}
-        </tr>
-      )
-    })
+    return (
+      <TransactionsList 
+        data={this.filter(data)}
+        selectedTab={selectedTab}
+        updateTransaction={this.props.updateTransaction}
+      />
+    )
   }
-
-  renderActionCell(id) {
-    const { selectedTab } = this.state
-    return selectedTab === 'pending' ? <td>
-      <div className="d-flex justify-content-center">
-        <Button className="mr-2" onClick={() => this.props.updateTransaction(id, {status: 'processed'})}>Process</Button> 
-        <Button onClick={() => this.props.updateTransaction(id, {status: 'canceled'})}>Cancel</Button>
-      </div>
-    </td> : <td>
-      <div className="d-flex justify-content-center"><Button>Undo</Button></div>
-    </td>
-  }
-
 }
 
 const mapStateToProps = state => ({
