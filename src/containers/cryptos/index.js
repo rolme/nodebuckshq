@@ -30,9 +30,10 @@ class Cryptos extends Component {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>id</th>
-                <th>name</th>
-                <th>symbol</th>
+                <th className="text-center">Id</th>
+                <th className="text-center">Name</th>
+                <th className="text-center">Symbol</th>
+                <th className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -48,9 +49,10 @@ class Cryptos extends Component {
     return list.map(item => {
       return(
         <tr key={item.slug}>
-          <td style={{verticalAlign: 'middle'}}>{item.slug}</td>
-          <td><NavLink to={`/cryptos/${item.slug}`}>{item.name}</NavLink></td>
-          <td>{item.symbol}</td>
+          <td className="text-center">{item.slug}</td>
+          <td className="text-center"><NavLink to={`/cryptos/${item.slug}`}>{item.name}</NavLink></td>
+          <td className="text-center">{item.symbol}</td>
+          <td className="text-center"><NavLink to={`/cryptos/${item.slug}/edit`}>Edit</NavLink></td>
         </tr>
       )
     })

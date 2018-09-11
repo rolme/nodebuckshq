@@ -14,6 +14,7 @@ import { setReferer } from '../../lib/helpers'
 const Announcements = Loadable({ loader: () => import('../announcements'), loading: Loading })
 const Crypto = Loadable({ loader: () => import('../cryptos/crypto'), loading: Loading })
 const Cryptos = Loadable({ loader: () => import('../cryptos'), loading: Loading })
+const CryptoEdit = Loadable({ loader: () => import('../cryptos/edit'), loading: Loading })
 const Header = Loadable({ loader: () => import('./header'), loading: Loading })
 const Login = Loadable({ loader: () => import('../authenticate/login'), loading: Loading })
 const Logout = Loadable({ loader: () => import('../authenticate/logout'), loading: Loading })
@@ -42,6 +43,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Users}/>
             <Route exact path="/cryptos/:slug" component={Crypto}/>
+            <Route exact path="/cryptos/:slug/edit" component={CryptoEdit}/>
             <Route exact path="/cryptos" component={Cryptos}/>
             <Route exact path="/nodes/:slug" component={Node}/>
             <Route exact path="/nodes" component={Nodes}/>
