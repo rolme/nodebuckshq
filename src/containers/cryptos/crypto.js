@@ -20,17 +20,50 @@ class Crypto extends Component {
     }
 
     return (
+      <div>
+        <div className="row">
+          <div className="col-md-6">
+            { this.renderFees(crypto) }
+            <br/>
+            { this.renderRoi(crypto) }
+          </div>
+          <div className="col-md-6">
+            { this.renderOrderBookTable(crypto) }
+            <br/>
+            { this.renderScrapedTable(crypto) }
+          </div>
+        </div>
+        { this.renderOrderBookPrices(crypto) }
+      </div>
+    )
+  }
+
+  renderOrderBookPrices(crypto) {
+    if (crypto.orders === undefined) { return }
+
+    const sortedOrders = crypto.orders.sort((a,b) => a.price - b.price)
+    return(
       <div className="row">
-        <div className="col-md-6">
-          { this.renderFees(crypto) }
-          <br/>
-          { this.renderRoi(crypto) }
-        </div>
-        <div className="col-md-6">
-          { this.renderOrderBookTable( crypto) }
-          <br/>
-          { this.renderScrapedTable( crypto) }
-        </div>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Price (BTC)</th>
+              <th>Volume</th>
+              <th>Exchange</th>
+            </tr>
+          </thead>
+          <tbody>
+            { !!sortedOrders && sortedOrders.map(order => {
+              return(
+                <tr key={order.id}>
+                  <td>{order.price}</td>
+                  <td>{order.volume}</td>
+                  <td>{order.exchange}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     )
   }
