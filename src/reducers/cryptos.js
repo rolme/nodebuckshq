@@ -80,7 +80,7 @@ export function fetchCrypto(slug) {
   return dispatch => {
     dispatch({ type: FETCH })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get(`/api/cryptos/${slug}`)
+    axios.get(`/api/cryptos/${slug}?orders=true`)
       .then((response) => {
         dispatch({ type: FETCH_SUCCESS, payload: response.data })
       })
