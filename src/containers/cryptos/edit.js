@@ -23,11 +23,6 @@ class CryptoEdit extends Component {
     this.props.fetchCrypto(params.slug, false)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { description } = nextProps.crypto
-    this.setState({ description })
-  }
-
   handleInputChange = (name) => (event) => {
     this.setState({ [name]: event.target.value })
   }
@@ -39,12 +34,12 @@ class CryptoEdit extends Component {
   }
 
   render() {
-    const { match: { params }, crypto } = this.props
+    const { match: { params }, crypto, message, error } = this.props
 
     if (Object.keys(crypto).length === 0) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
-    console.log(this.state)
+
     return(
       <Container>
         <h1>Edit {crypto.name}</h1>
@@ -59,7 +54,7 @@ class CryptoEdit extends Component {
                   name="description" 
                   placeholder="Crypto description" 
                   onChange={this.handleInputChange('description')}
-                  value={this.state.description || ''}
+                  value={this.state.description || crypto.description}
                 />
               </FormGroup>
               <Button 
@@ -68,6 +63,7 @@ class CryptoEdit extends Component {
               >
                 Save
               </Button>
+              <p className={`mt-3 ${error ? 'text-warning' : 'text-success'}`}>{message}</p> 
             </Form>
           </Col>
         </Row>
@@ -78,8 +74,8 @@ class CryptoEdit extends Component {
 
 const mapStateToProps = state => ({
   crypto: state.cryptos.data,
-  error: state.cryptos.error,
-  message: state.cryptos.message,
+  error: state.cryptos.errorUpdating,
+  message: state.cryptos.updateMessage,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
