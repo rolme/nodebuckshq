@@ -10,18 +10,19 @@ const initialState = {
   error: false,
   message: '',
   list: [],
-  pending: false
+  pending: false,
+  verifications: [],
 }
 
-export const fetchUsers = () => {
+export const fetchUsers = (verificationsPending = false) => {
   return dispatch => {
     dispatch({ type: FETCH })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get('/api/users').then(response => {
+    axios.get(`/api/users?verifications_pending=${verificationsPending}`).then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: FETCH_FAILURE, payload: response.data })
       } else {
-        dispatch({ type: FETCH_SUCCESS, payload: response.data })
+        dispatch({ type: FETCH_SUCCESS, payload: { data: response.data, verificationsPending } })
       }
     }).catch(err => {
       dispatch({ type: FETCH_FAILURE, payload: err.data })
@@ -38,11 +39,21 @@ export default createReducer(initialState, ({
     }
   },
   [FETCH_SUCCESS]: (payload, state) => {
-    return {
-      ...state,
-      error: false,
-      pending: false,
-      list: payload
+    if(payload.verificationsPending) {
+      return {
+        ...state,
+        error: false,
+        pending: false,
+        verifications: payload.data
+      }
+    }
+    else {
+      return {
+        ...state,
+        error: false,
+        pending: false,
+        list: payload.data
+      }
     }
   },
   [FETCH_FAILURE]: (payload, state) => {
