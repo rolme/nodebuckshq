@@ -3,8 +3,9 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import {
-  fetchUsers
+import { 
+  fetchUsers, 
+  updateUserIdVerification 
 } from '../../reducers/users'
 
 class Verifications extends Component {
@@ -21,7 +22,7 @@ class Verifications extends Component {
     return (
       <div className="row">
         <div className="offset-1 col-10">
-          <h2 className="mt-2">Verificatons (list.length})</h2>
+          <h2 className="mt-2">Verificatons ({list.length})</h2>
           <table className="table table-striped">
             <thead>
             <tr>
@@ -52,12 +53,16 @@ class Verifications extends Component {
         <tr key={item.id}>
           <td align="center">{item.fullName}</td>
           <td align="center">{item.email}</td>
-          <td align="center">{item.verificationImage.url}</td>
           <td align="center">
-            <button className="btn btn-info mr-3">
+            <a style={{color: '#007bff', cursor: 'pointer'}} onClick={()=> window.open(item.verificationImage.url, "_blank")}>
+              View Picture
+            </a>
+          </td>
+          <td align="center">
+            <button onClick={() => this.props.updateUserIdVerification(item.slug, true)} className="btn btn-info mr-3">
               Verify
             </button>
-            <button className="btn btn-info">
+            <button onClick={() => this.props.updateUserIdVerification(item.slug, false)} className="btn btn-info">
               Decline
             </button>
           </td>
@@ -73,7 +78,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchUsers
+  fetchUsers,
+  updateUserIdVerification,
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Verifications))

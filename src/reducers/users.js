@@ -4,6 +4,9 @@ import axios from 'axios'
 export const FETCH = "users/FETCH"
 export const FETCH_SUCCESS = "users/FETCH_SUCCESS"
 export const FETCH_FAILURE = "users/FETCH_FAILURE"
+export const UPDATE_USER_ID_VERIFICATION = 'user/UPDATE_USER_ID_VERIFICATION'
+export const UPDATE_USER_ID_VERIFICATION_SUCCESS = 'user/UPDATE_USER_ID_VERIFICATION_SUCCESS'
+export const UPDATE_USER_ID_VERIFICATION_FAILURE = 'user/UPDATE_USER_ID_VERIFICATION_FAILURE'
 
 const initialState = {
   data: {},
@@ -29,6 +32,19 @@ export const fetchUsers = (verificationsPending = false) => {
     })
   }
 }
+
+export function updateUserIdVerification(slug, verified) {
+  return dispatch => {
+    dispatch({ type: UPDATE_USER_ID_VERIFICATION })
+    axios.patch(`/api/users/${slug}/verify_id_image`, { user: { verified } }).then(response => {
+      dispatch({ type: UPDATE_USER_ID_VERIFICATION_SUCCESS, payload: { data: response.data, slug } })
+    })
+    .catch((error) => {
+      dispatch({ type: UPDATE_USER_ID_VERIFICATION_FAILURE, payload: error.message })
+    })
+  }
+}
+
 
 export default createReducer(initialState, ({
   [FETCH]: (payload, state) => {
@@ -62,6 +78,16 @@ export default createReducer(initialState, ({
       error: true,
       pending: false,
       message: payload
+    }
+  },
+  [UPDATE_USER_ID_VERIFICATION_SUCCESS]: (payload, state) => {
+    let verifications = [...state.verifications];
+    const index = verifications.findIndex(v => v.slug === payload.slug)
+    console.log(index)
+    verifications.splice(index, 1);
+    return {
+      ...state,
+      verifications,
     }
   }
 }))
