@@ -15,6 +15,7 @@ class CryptoEdit extends Component {
     super(props)
     this.state = {
       description: this.props.crypto.description,
+      profile: this.props.crypto.profile,
     }
   }
 
@@ -29,8 +30,8 @@ class CryptoEdit extends Component {
 
   handleSubmit = () => {
     const { crypto } = this.props
-    const { description } = this.state
-    this.props.updateCrypto(crypto.slug, { description })
+    const { description, profile } = this.state
+    this.props.updateCrypto(crypto.slug, { description, profile })
   }
 
   render() {
@@ -55,6 +56,17 @@ class CryptoEdit extends Component {
                   placeholder="Crypto description" 
                   onChange={this.handleInputChange('description')}
                   value={this.state.description || crypto.description}
+                />
+              </FormGroup>
+               <FormGroup>
+                <Label for="profile">Profile:</Label>
+                <Input 
+                  type="textarea"
+                  rows="12"
+                  name="profile" 
+                  placeholder="Crypto profile" 
+                  onChange={this.handleInputChange('profile')}
+                  value={this.state.profile || crypto.profile}
                 />
               </FormGroup>
               <Button 
