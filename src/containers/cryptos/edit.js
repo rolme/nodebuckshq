@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { withRouter } from 'react-router-dom'
+import Editor from '../../components/editor'
 
 import {
   fetchCrypto,
@@ -28,6 +29,10 @@ class CryptoEdit extends Component {
     this.setState({ [name]: event.target.value })
   }
 
+  handleProfileChange = (profile) => {
+    this.setState({ profile })
+  }
+
   handleSubmit = () => {
     const { crypto } = this.props
     const { description, profile } = this.state
@@ -40,7 +45,7 @@ class CryptoEdit extends Component {
     if (Object.keys(crypto).length === 0) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
-
+    console.log(crypto)
     return(
       <Container>
         <h1>Edit {crypto.name}</h1>
@@ -58,20 +63,19 @@ class CryptoEdit extends Component {
                   value={this.state.description || crypto.description}
                 />
               </FormGroup>
-               <FormGroup>
+              <FormGroup>
                 <Label for="profile">Profile:</Label>
-                <Input 
-                  type="textarea"
-                  rows="12"
-                  name="profile" 
-                  placeholder="Crypto profile" 
-                  onChange={this.handleInputChange('profile')}
-                  value={this.state.profile || crypto.profile}
+                <Editor 
+                  onChange={this.handleProfileChange}
+                  text={this.state.profile || crypto.profile}
+                  showEditor={true}
+                  style={{height: 200}}
                 />
               </FormGroup>
               <Button 
                 color="primary" 
                 onClick={this.handleSubmit}
+                style={{marginTop: 50}}
               >
                 Save
               </Button>
