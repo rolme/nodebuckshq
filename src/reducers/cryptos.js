@@ -17,7 +17,9 @@ const initialState = {
   list: [],
   pending: false,
   error: false,
-  message: ''
+  errorUpdating: false,
+  message: '',
+  updateMessage: ''
 }
 
 // STATE ///////////////////////////////////////////////////////////////////////
@@ -25,7 +27,6 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case FETCH:
     case FETCH_LIST:
-    case UPDATE:
       return {
         ...state,
         pending: true,
@@ -33,14 +34,28 @@ export default (state = initialState, action) => {
         message: ''
       }
 
+    case UPDATE: {
+      return {
+        ...state,
+        errorUpdating: false,
+        updateMessage: ''
+      }
+    }
+
     case FETCH_ERROR:
     case FETCH_LIST_ERROR:
-    case UPDATE_ERROR:
       return {
         ...state,
         pending: false,
         error: true,
         message: action.payload.message
+      }
+
+    case UPDATE_ERROR:
+      return {
+        ...state,
+        errorUpdating: true,
+        updateMessage: action.payload.message
       }
 
     case FETCH_SUCCESS:
@@ -66,8 +81,8 @@ export default (state = initialState, action) => {
         ...state,
         data: action.payload,
         pending: false,
-        error: false,
-        message: 'Update cryptocurrency successful.'
+        errorUpdating: false,
+        updateMessage: 'Update cryptocurrency successful.'
       }
 
     default:
@@ -76,11 +91,11 @@ export default (state = initialState, action) => {
 }
 
 // ACTIONS /////////////////////////////////////////////////////////////////////
-export function fetchCrypto(slug) {
+export function fetchCrypto(slug, orders = true) {
   return dispatch => {
     dispatch({ type: FETCH })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get(`/api/cryptos/${slug}`)
+    axios.get(`/api/cryptos/${slug}?orders=${orders}`)
       .then((response) => {
         dispatch({ type: FETCH_SUCCESS, payload: response.data })
       })

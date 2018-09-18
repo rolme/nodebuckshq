@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
 
 import announcements from './announcements'
 import contacts from './contacts'
@@ -15,7 +14,6 @@ export default combineReducers({
   announcements,
   cryptos,
   nodes,
-  router: routerReducer,
   user,
   users,
   withdrawals,
