@@ -15,8 +15,8 @@ class CryptoEdit extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      description: this.props.crypto.description,
-      profile: this.props.crypto.profile,
+      description: '',
+      profile: '',
     }
   }
 
@@ -25,8 +25,13 @@ class CryptoEdit extends Component {
     this.props.fetchCrypto(params.slug, false)
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { crypto: { description, profile }, pending } = nextProps
+    !pending && this.setState({ description, profile })
+  }
+
   handleInputChange = (name) => (event) => {
-    this.setState({ [name]: event.target.value })
+    this.setState({ [ name ]: event.target.value })
   }
 
   handleProfileChange = (profile) => {
@@ -40,46 +45,46 @@ class CryptoEdit extends Component {
   }
 
   render() {
-    const { match: { params }, crypto, message, error } = this.props
+    const { match: { params }, crypto, message, error, pending } = this.props
+    const { description, profile } = this.state
 
-    if (Object.keys(crypto).length === 0) {
+    if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
-    console.log(crypto)
-    return(
+    return (
       <Container>
-        <h1>Edit {crypto.name}</h1>
+        <h1>Edit {pending ? '' : crypto.name}</h1>
         <Row>
           <Col xs="8">
             <Form>
               <FormGroup>
                 <Label for="description">Description:</Label>
-                <Input 
+                <Input
                   type="textarea"
                   rows="8"
-                  name="description" 
-                  placeholder="Crypto description" 
+                  name="description"
+                  placeholder="Crypto description"
                   onChange={this.handleInputChange('description')}
-                  value={this.state.description || crypto.description}
+                  value={description}
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="profile">Profile:</Label>
-                <Editor 
+                <Editor
                   onChange={this.handleProfileChange}
-                  text={this.state.profile || crypto.profile}
+                  text={profile}
                   showEditor={true}
-                  style={{height: 200}}
+                  style={{ height: 200 }}
                 />
               </FormGroup>
-              <Button 
-                color="primary" 
+              <Button
+                color="primary"
                 onClick={this.handleSubmit}
-                style={{marginTop: 50}}
+                style={{ marginTop: 50 }}
               >
                 Save
               </Button>
-              <p className={`mt-3 ${error ? 'text-warning' : 'text-success'}`}>{message}</p> 
+              <p className={`mt-3 ${error ? 'text-warning' : 'text-success'}`}>{message}</p>
             </Form>
           </Col>
         </Row>
@@ -91,6 +96,7 @@ class CryptoEdit extends Component {
 const mapStateToProps = state => ({
   crypto: state.cryptos.data,
   error: state.cryptos.errorUpdating,
+  pending: state.cryptos.pending,
   message: state.cryptos.updateMessage,
 })
 
