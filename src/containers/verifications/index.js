@@ -22,7 +22,7 @@ class Verifications extends Component {
     return (
       <div className="row">
         <div className="offset-1 col-10">
-          <h2 className="mt-2">Verificatons ({list.length})</h2>
+          <h2 className="mt-2">Verifications ({list.length})</h2>
           <table className="table table-striped">
             <thead>
             <tr>
