@@ -8,9 +8,12 @@ export default class TransactionsList extends Component {
     return data.map((item) => {
       return (
         <tr key={item.id}>
+          <td className="text-center">{item.id}</td>
           <td className="text-center">{capitalize(item.type)}</td>
           <td className="text-center">{valueFormat(item.amount, 2)}</td>
           <td className="text-center">{item.userName}</td>
+          <td className="text-center">{item.slug || '-'}</td>
+          <td className="text-center">{item.date || '-'}</td>
           <td className="text-center">{item.notes}</td>
           {selectedTab !== 'processed' && this.renderActionCell(item.id)}
         </tr>
@@ -22,7 +25,7 @@ export default class TransactionsList extends Component {
     const { selectedTab } = this.props
     return selectedTab === 'pending' ? <td>
       <div className="d-flex justify-content-center">
-        <Button className="mr-2" onClick={() => this.props.updateTransaction(id, {status: 'processed'})}>Process</Button> 
+        <Button className="mr-2" onClick={() => this.props.updateTransaction(id, {status: 'processed'})}>Process</Button>
         <Button onClick={() => this.props.updateTransaction(id, {status: 'canceled'})}>Cancel</Button>
       </div>
     </td> : <td>

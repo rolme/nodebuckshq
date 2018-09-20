@@ -6,7 +6,7 @@ import { Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
 import './index.css'
 
-import { 
+import {
   fetchTransactions,
   updateTransaction,
 } from '../../reducers/transactions'
@@ -44,7 +44,7 @@ class Transactions extends Component {
       const {
         data,
         pendingTotal,
-        canceledTotal, 
+        canceledTotal,
         processedTotal,
       } = this.props
 
@@ -137,9 +137,12 @@ class Transactions extends Component {
           <table className="table table-striped">
             <thead>
             <tr>
+              <th className="text-center">Id</th>
               <th className="text-center">Type</th>
               <th className="text-center">Amount</th>
               <th className="text-center">User</th>
+              <th className="text-center">Slug</th>
+              <th className="text-center">Date</th>
               <th className="text-center">Notes</th>
               {this.state.selectedTab !== 'processed' && <th className="text-center">Action</th>}
             </tr>
@@ -158,12 +161,12 @@ class Transactions extends Component {
     const { selectedTab } = this.state
     if ( !data.length ) {
       return <tr>
-        <td colSpan='5' className="text-center">There is no data to show.</td>
+        <td colSpan='8' className="text-center">There is no data to show.</td>
       </tr>
     }
 
     return (
-      <TransactionsList 
+      <TransactionsList
         data={this.filter(data)}
         selectedTab={selectedTab}
         updateTransaction={this.props.updateTransaction}
