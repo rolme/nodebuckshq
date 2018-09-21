@@ -6,7 +6,7 @@ import { Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
 import './index.css'
 
-import { 
+import {
   fetchTransactions,
   updateTransaction,
 } from '../../reducers/transactions'
@@ -44,7 +44,7 @@ class Transactions extends Component {
       const {
         data,
         pendingTotal,
-        canceledTotal, 
+        canceledTotal,
         processedTotal,
       } = this.props
 
@@ -115,11 +115,11 @@ class Transactions extends Component {
     const { data } = this.props
     switch(this.state.selectedTab) {
       case 'pending':
-        return data.pending
+        return data.filter(item => item.pending)
       case 'processed':
-        return data.processed
+        return data.filter(item => item.processed)
       default:
-        return data.canceled
+        return data.filter(item => item.canceled)
     }
   }
 
@@ -163,7 +163,7 @@ class Transactions extends Component {
     }
 
     return (
-      <TransactionsList 
+      <TransactionsList
         data={this.filter(data)}
         selectedTab={selectedTab}
         updateTransaction={this.props.updateTransaction}
