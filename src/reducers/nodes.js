@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
+export const CLEAR_MESSAGES = 'nodes/CLEAR_MESSAGES'
 export const FETCH = 'nodes/FETCH'
 export const FETCH_ERROR = 'nodes/FETCH_ERROR'
 export const FETCH_SUCCESS = 'nodes/FETCH_SUCCESS'
@@ -16,6 +17,9 @@ export const ONLINE_SUCCESS = 'nodes/ONLINE_SUCCESS'
 export const UPDATE = 'nodes/UPDATE'
 export const UPDATE_ERROR = 'nodes/UPDATE_ERROR'
 export const UPDATE_SUCCESS = 'nodes/UPDATE_SUCCESS'
+export const DISBURSE = 'nodes/DISBURSE'
+export const DISBURSE_ERROR = 'nodes/DISBURSE_ERROR'
+export const DISBURSE_SUCCESS = 'nodes/DISBURSE_SUCCESS'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -34,6 +38,7 @@ export default (state = initialState, action) => {
     case OFFLINE:
     case ONLINE:
     case UPDATE:
+    case DISBURSE:
       return {
         ...state,
         pending: true,
@@ -46,6 +51,7 @@ export default (state = initialState, action) => {
     case OFFLINE_ERROR:
     case ONLINE_ERROR:
     case UPDATE_ERROR:
+    case DISBURSE_ERROR:
       return {
         ...state,
         pending: false,
@@ -71,6 +77,14 @@ export default (state = initialState, action) => {
         message: 'Fetch node list successful.'
       }
 
+    case DISBURSE_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        error: false,
+        message: 'Disbursed successful.'
+      }
+
     case OFFLINE_SUCCESS:
     case ONLINE_SUCCESS:
     case UPDATE_SUCCESS:
@@ -80,6 +94,15 @@ export default (state = initialState, action) => {
         pending: false,
         error: false,
         message: 'Update node successful.'
+      }
+
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: ''
       }
 
     default:
@@ -126,9 +149,9 @@ export function updateNode(slug, data) {
       .then((response) => {
         dispatch({ type: UPDATE_SUCCESS, payload: response.data })
       }).catch((error) => {
-        dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
-        console.log(error)
-      })
+      dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
+      console.log(error)
+    })
   }
 }
 
@@ -140,9 +163,9 @@ export function offlineNode(slug) {
       .then((response) => {
         dispatch({ type: OFFLINE_SUCCESS, payload: response.data })
       }).catch((error) => {
-        dispatch({ type: OFFLINE_ERROR, payload: {message: error.data} })
-        console.log(error)
-      })
+      dispatch({ type: OFFLINE_ERROR, payload: {message: error.data} })
+      console.log(error)
+    })
   }
 }
 
@@ -154,8 +177,34 @@ export function onlineNode(slug) {
       .then((response) => {
         dispatch({ type: ONLINE_SUCCESS, payload: response.data })
       }).catch((error) => {
-        dispatch({ type: ONLINE_ERROR, payload: {message: error.data} })
-        console.log(error)
-      })
+      dispatch({ type: ONLINE_ERROR, payload: {message: error.data} })
+      console.log(error)
+    })
+  }
+}
+
+export function disburseNode(slug) {
+  return dispatch => {
+    dispatch({ type: DISBURSE })
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/nodes/${slug}/disburse`)
+      .then((response) => {
+        if ( response.data.status !== 'error' ) {
+          dispatch({ type: DISBURSE_SUCCESS, payload: response.data })
+        } else {
+          dispatch({ type: DISBURSE_ERROR, payload: response.data })
+        }
+      }).catch((error) => {
+      dispatch({ type: DISBURSE_ERROR, payload: {message: error.data} })
+      console.log(error)
+    })
+  }
+}
+
+
+
+export function clearMessages() {
+  return dispatch => {
+    dispatch({ type: CLEAR_MESSAGES })
   }
 }
