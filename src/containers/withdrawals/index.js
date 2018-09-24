@@ -63,13 +63,12 @@ class Withdrawals extends Component {
               <table className="table table-striped mt-3">
                 <thead>
                   <tr>
-                    <th>id</th>
-                    <th>user</th>
-                    <th>balance</th>
-                    <th>amount</th>
-                    <th>requested at</th>
-                    <th>status</th>
-                    <th>action</th>
+                    <th className="text-center">User</th>
+                    <th className="text-center">Amount (usd)</th>
+                    <th className="text-center">Amount (btc)</th>
+                    <th className="text-center">Requested At</th>
+                    <th className="text-center">Status</th>
+                    <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,12 +80,12 @@ class Withdrawals extends Component {
               <table className="table table-striped mt-3">
                 <thead>
                   <tr>
-                    <th>id</th>
-                    <th>user</th>
-                    <th>amount</th>
-                    <th>requested at</th>
-                    <th>processed at</th>
-                    <th>action</th>
+                    <th className="text-center">User</th>
+                    <th className="text-center">Amount (usd)</th>
+                    <th className="text-center">Amount (btc)</th>
+                    <th className="text-center">Requested At</th>
+                    <th className="text-center">Status</th>
+                    <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -98,12 +97,12 @@ class Withdrawals extends Component {
               <table className="table table-striped mt-3">
                 <thead>
                   <tr>
-                    <th>id</th>
-                    <th>user</th>
-                    <th>amount</th>
-                    <th>requested at</th>
-                    <th>cancelled at</th>
-                    <th>action</th>
+                    <th className="text-center">User</th>
+                    <th className="text-center">Amount (usd)</th>
+                    <th className="text-center">Amount (btc)</th>
+                    <th className="text-center">Requested At</th>
+                    <th className="text-center">Status</th>
+                    <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -122,21 +121,20 @@ class Withdrawals extends Component {
 
     console.log("list:", list)
     return list.map(item => {
-      const itemUser      = users.find(u => u.slug === item.owner.slug)
-      const balance       = itemUser.balances.find(b => b.symbol === item.crypto.symbol)
+      const itemUser      = users.find(u => u.slug === item.user.slug)
+      // const balance       = itemUser.balances.find(b => b.symbol === item.crypto.symbol)
 
       return(
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
-          <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+          <td align="center" style={{verticalAlign: 'middle'}}>
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{balance.value} {item.crypto.symbol}</td>
-          <td>{item.amount} {item.crypto.symbol}</td>
-          <td>{item.createdAt}</td>
-          <td>{item.status}</td>
-          <td>
+          <td align="center">{parseFloat(item.amount.usd).toFixed(2)}</td>
+          <td align="center">{parseFloat(item.amount.btc).toFixed(2)}</td>
+          <td align="center">{item.createdAt}</td>
+          <td align="center">{item.status}</td>
+          <td align="center">
             <button onClick={this.handleProcessClick.bind(this, item.slug)} className="btn btn-small btn-primary">Process</button>&nbsp;
             <button onClick={this.handleCancelClick.bind(this, item.slug)} className="btn btn-small btn-secondary">Cancel</button>
           </td>
@@ -149,14 +147,14 @@ class Withdrawals extends Component {
     return list.map(item => {
       return(
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
-          <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+          <td align="center" style={{verticalAlign: 'middle'}}>
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{item.amount} {item.crypto.symbol}</td>
-          <td>{item.createdAt}</td>
-          <td>{item.processedAt}</td>
+          <td align="center">{parseFloat(item.amount.usd).toFixed(2)}</td>
+          <td align="center">{parseFloat(item.amount.btc).toFixed(2)}</td>
+          <td align="center">{item.createdAt}</td>
+          <td align="center">{item.processedAt}</td>
             <td>
               <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
             </td>
@@ -169,15 +167,15 @@ class Withdrawals extends Component {
     return list.map(item => {
       return(
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
-          <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+          <td  align="center" style={{verticalAlign: 'middle'}}>
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{item.amount} {item.crypto.symbol}</td>
-          <td>{item.createdAt}</td>
-          <td>{item.cancelledAt}</td>
-          <td>
+          <td align="center">{parseFloat(item.amount.usd).toFixed(2)}</td>
+          <td align="center">{parseFloat(item.amount.btc).toFixed(2)}</td>
+          <td align="center">{item.createdAt}</td>
+          <td align="center">{item.cancelledAt}</td>
+          <td align="center">
             <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
           </td>
         </tr>
