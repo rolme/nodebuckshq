@@ -118,22 +118,22 @@ class Withdrawals extends Component {
   }
 
   displayPendingWithdrawals(list) {
-    const { users } = this.props
-
-    console.log("list:", list)
     return list.map(item => {
-      const itemUser      = users.find(u => u.slug === item.owner.slug)
-      const balance       = itemUser.balances.find(b => b.symbol === item.crypto.symbol)
-
       return(
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
           <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{balance.value} {item.crypto.symbol}</td>
-          <td>{item.amount} {item.crypto.symbol}</td>
+          <td>
+            <ul>
+              { !!item.balances && item.balances.map(balance => {
+                return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
+              }) }
+            </ul>
+          </td>
+          <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{item.createdAt}</td>
           <td>{item.status}</td>
           <td>
@@ -151,10 +151,17 @@ class Withdrawals extends Component {
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
           <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{item.amount} {item.crypto.symbol}</td>
+          <td>
+            <ul>
+              { !!item.balances && item.balances.map(balance => {
+                return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
+              }) }
+            </ul>
+          </td>
+          <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{item.createdAt}</td>
           <td>{item.processedAt}</td>
             <td>
@@ -171,10 +178,17 @@ class Withdrawals extends Component {
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
           <td style={{verticalAlign: 'middle'}}>
-            {item.owner.fullName}<br/>
-            ({item.owner.email})
+            {item.user.fullName}<br/>
+            ({item.user.email})
           </td>
-          <td>{item.amount} {item.crypto.symbol}</td>
+          <td>
+            <ul>
+              { !!item.balances && item.balances.map(balance => {
+                return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
+              }) }
+            </ul>
+          </td>
+          <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{item.createdAt}</td>
           <td>{item.cancelledAt}</td>
           <td>
