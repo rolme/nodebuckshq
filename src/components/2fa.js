@@ -61,19 +61,12 @@ class Modal2FA extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  error: state.user.error,
-  user: state.user.data,
-  message: state.user.message,
-  authenticated: state.user.data !== null
-})
-
 const mapDispatchToProps = dispatch => bindActionCreators({
   login,
 }, dispatch)
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(Modal2FA)
 
