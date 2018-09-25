@@ -20,6 +20,9 @@ export const UPDATE_SUCCESS = 'nodes/UPDATE_SUCCESS'
 export const DISBURSE = 'nodes/DISBURSE'
 export const DISBURSE_ERROR = 'nodes/DISBURSE_ERROR'
 export const DISBURSE_SUCCESS = 'nodes/DISBURSE_SUCCESS'
+export const UN_DISBURSE = 'nodes/UN_DISBURSE'
+export const UN_DISBURSE_ERROR = 'nodes/UN_DISBURSE_ERROR'
+export const UN_DISBURSE_SUCCESS = 'nodes/UN_DISBURSE_SUCCESS'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -32,13 +35,14 @@ const initialState = {
 
 // STATE ///////////////////////////////////////////////////////////////////////
 export default (state = initialState, action) => {
-  switch (action.type) {
+  switch ( action.type ) {
     case FETCH:
     case FETCH_LIST:
     case OFFLINE:
     case ONLINE:
     case UPDATE:
     case DISBURSE:
+    case UN_DISBURSE:
       return {
         ...state,
         pending: true,
@@ -52,6 +56,7 @@ export default (state = initialState, action) => {
     case ONLINE_ERROR:
     case UPDATE_ERROR:
     case DISBURSE_ERROR:
+    case UN_DISBURSE_ERROR:
       return {
         ...state,
         pending: false,
@@ -80,9 +85,19 @@ export default (state = initialState, action) => {
     case DISBURSE_SUCCESS:
       return {
         ...state,
+        data: action.payload,
         pending: false,
         error: false,
         message: 'Disbursed successful.'
+      }
+
+    case UN_DISBURSE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Undisbursed successful.'
       }
 
     case OFFLINE_SUCCESS:
@@ -114,13 +129,13 @@ export default (state = initialState, action) => {
 export function fetchNode(slug) {
   return dispatch => {
     dispatch({ type: FETCH })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get(`/api/nodes/${slug}`)
       .then((response) => {
         dispatch({ type: FETCH_SUCCESS, payload: response.data })
       })
       .catch((error) => {
-        dispatch({ type: FETCH_ERROR, payload: {message: error.data} })
+        dispatch({ type: FETCH_ERROR, payload: { message: error.data } })
         console.log(error)
       })
   }
@@ -129,13 +144,13 @@ export function fetchNode(slug) {
 export function fetchNodes() {
   return dispatch => {
     dispatch({ type: FETCH_LIST })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get('/api/nodes?all')
       .then((response) => {
         dispatch({ type: FETCH_LIST_SUCCESS, payload: response.data })
       })
       .catch((error) => {
-        dispatch({ type: FETCH_LIST_ERROR, payload: {message: error.data} })
+        dispatch({ type: FETCH_LIST_ERROR, payload: { message: error.data } })
         console.log(error)
       })
   }
@@ -144,12 +159,12 @@ export function fetchNodes() {
 export function updateNode(slug, data) {
   return dispatch => {
     dispatch({ type: UPDATE })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}`, { node: data })
       .then((response) => {
         dispatch({ type: UPDATE_SUCCESS, payload: response.data })
       }).catch((error) => {
-      dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
+      dispatch({ type: UPDATE_ERROR, payload: { message: error.data } })
       console.log(error)
     })
   }
@@ -158,12 +173,12 @@ export function updateNode(slug, data) {
 export function offlineNode(slug) {
   return dispatch => {
     dispatch({ type: OFFLINE })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}/offline`)
       .then((response) => {
         dispatch({ type: OFFLINE_SUCCESS, payload: response.data })
       }).catch((error) => {
-      dispatch({ type: OFFLINE_ERROR, payload: {message: error.data} })
+      dispatch({ type: OFFLINE_ERROR, payload: { message: error.data } })
       console.log(error)
     })
   }
@@ -172,12 +187,12 @@ export function offlineNode(slug) {
 export function onlineNode(slug) {
   return dispatch => {
     dispatch({ type: ONLINE })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}/online`)
       .then((response) => {
         dispatch({ type: ONLINE_SUCCESS, payload: response.data })
       }).catch((error) => {
-      dispatch({ type: ONLINE_ERROR, payload: {message: error.data} })
+      dispatch({ type: ONLINE_ERROR, payload: { message: error.data } })
       console.log(error)
     })
   }
@@ -186,7 +201,7 @@ export function onlineNode(slug) {
 export function disburseNode(slug) {
   return dispatch => {
     dispatch({ type: DISBURSE })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}/disburse`)
       .then((response) => {
         if ( response.data.status !== 'error' ) {
@@ -195,13 +210,29 @@ export function disburseNode(slug) {
           dispatch({ type: DISBURSE_ERROR, payload: response.data })
         }
       }).catch((error) => {
-      dispatch({ type: DISBURSE_ERROR, payload: {message: error.data} })
+      dispatch({ type: DISBURSE_ERROR, payload: { message: error.data } })
       console.log(error)
     })
   }
 }
 
-
+export function unDisburseNode(slug) {
+  return dispatch => {
+    dispatch({ type: UN_DISBURSE })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/nodes/${slug}/undisburse`)
+      .then((response) => {
+        if ( response.data.status !== 'error' ) {
+          dispatch({ type: UN_DISBURSE_SUCCESS, payload: response.data })
+        } else {
+          dispatch({ type: UN_DISBURSE_ERROR, payload: response.data })
+        }
+      }).catch((error) => {
+      dispatch({ type: UN_DISBURSE_ERROR, payload: { message: error.data } })
+      console.log(error)
+    })
+  }
+}
 
 export function clearMessages() {
   return dispatch => {
