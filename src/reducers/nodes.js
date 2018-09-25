@@ -77,6 +77,7 @@ export default (state = initialState, action) => {
     case DELETE_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -86,6 +87,7 @@ export default (state = initialState, action) => {
     case DISBURSE_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -95,6 +97,7 @@ export default (state = initialState, action) => {
     case FETCH_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -113,6 +116,7 @@ export default (state = initialState, action) => {
     case UN_DISBURSE_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -122,6 +126,7 @@ export default (state = initialState, action) => {
     case RESTORE_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -134,6 +139,7 @@ export default (state = initialState, action) => {
     case UPDATE_SUCCESS:
       return {
         ...state,
+        list: merge(state.list, action.payload),
         data: action.payload,
         pending: false,
         error: false,
@@ -295,4 +301,18 @@ export function clearMessages() {
   return dispatch => {
     dispatch({ type: CLEAR_MESSAGES })
   }
+}
+
+// TODO: Move into a helper with an optional key
+function merge(originalList, newItem) {
+  let found = false
+  let list = originalList.map(item => {
+    if (item.slug === newItem.slug) {
+      found = true
+      return newItem
+    } else {
+      return item
+    }
+  })
+  return (found) ? list : list.push(newItem) && list
 }
