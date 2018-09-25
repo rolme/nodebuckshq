@@ -45,36 +45,6 @@ class Transactions extends Component {
   }
 
   trackScrolling = () => {
-    const wrappedElement = document.getElementById('txsContainer');
-    if ( this.isBottom(wrappedElement) ) {
-      const prevScrollHeight = wrappedElement.getBoundingClientRect().bottom
-      const {
-        data,
-        pendingTotal,
-        canceledTotal,
-        processedTotal,
-      } = this.props
-
-      switch ( this.state.selectedTab ) {
-        case 'pending':
-          if ( data.pending.length < pendingTotal )
-            this.props.fetchTransactions('pending_offset', data.pending.length, () => {
-              window.scrollTo(0, prevScrollHeight);
-            });
-          break;
-        case 'processed':
-          if ( data.processed.length < processedTotal )
-            this.props.fetchTransactions('processed_offset', data.processed.length, () => {
-              window.scrollTo(0, prevScrollHeight);
-            });
-          break;
-        default:
-          if ( data.canceled.length < canceledTotal )
-            this.props.fetchTransactions('canceled_offset', data.canceled.length, () => {
-              window.scrollTo(0, prevScrollHeight);
-            });
-      }
-    }
   };
 
   filter(transactions) {
@@ -145,7 +115,8 @@ class Transactions extends Component {
 
   filterByStatusData() {
     const { data } = this.props
-    switch ( this.state.selectedTab ) {
+    if (data.length === 0) { return data }
+    switch(this.state.selectedTab) {
       case 'pending':
         return data.pending
       case 'processed':
