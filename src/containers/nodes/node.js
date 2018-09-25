@@ -4,16 +4,24 @@ import { connect } from 'react-redux'
 
 import moment from 'moment'
 import Editable from 'react-x-editable'
-import { Button } from 'reactstrap'
+import { Button, Alert } from 'reactstrap'
 
 import {
   fetchNode,
   offlineNode,
   onlineNode,
-  updateNode
+  disburseNode,
+  clearMessages,
+  updateNode,
+  unDisburseNode
 } from '../../reducers/nodes'
 
 class Node extends Component {
+  constructor(props) {
+    super(props)
+    this.toggleAlert = this.toggleAlert.bind(this)
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchNode(params.slug)
@@ -21,21 +29,30 @@ class Node extends Component {
 
   handleSubmit(name, el) {
     const { node } = this.props
-    let data   = {}
-    data[name] = el.value
+    let data = {}
+    data[ name ] = el.value
 
     this.props.updateNode(node.slug, data)
   }
 
-  render() {
-    const { match: { params }, node, pending } = this.props
+  toggleAlert() {
+    this.props.clearMessages()
+  }
 
-    if (pending || node.slug === undefined) {
+  render() {
+    const { match: { params }, node, pending, error, message } = this.props
+
+    if ( pending || node.slug === undefined ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
 
-    return(
+    return (
       <div>
+        <div className="col-8 offset-2">
+          <Alert color={error ? 'danger' : 'success'} isOpen={!!message} toggle={this.toggleAlert}>
+            {message}
+          </Alert>
+        </div>
         {this.displayHeader(node)}
         <div className="row pt-3">
           <div className="col-md-4">
@@ -67,28 +84,28 @@ class Node extends Component {
   }
 
   displaySummary(node) {
-    return(
+    return (
       <div className="row">
         <div className="col-md-12">
           <h5>Summary</h5>
           <table className="table">
             <tbody>
-              <tr>
-                <th>Value</th>
-                <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
-              </tr>
-              <tr>
-                <th>Cost</th>
-                <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-              </tr>
-              <tr>
-                <th>Total Rewards</th>
-                <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-              </tr>
-              <tr>
-                <th>Reward %</th>
-                <td>{(node.rewardTotal/node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
-              </tr>
+            <tr>
+              <th>Value</th>
+              <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
+            </tr>
+            <tr>
+              <th>Cost</th>
+              <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+            </tr>
+            <tr>
+              <th>Total Rewards</th>
+              <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+            </tr>
+            <tr>
+              <th>Reward %</th>
+              <td>{(node.rewardTotal / node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -97,52 +114,52 @@ class Node extends Component {
   }
 
   displayConfiguration(node) {
-    return(
+    return (
       <div className="row">
         <div className="col-md-12">
           <h5>Configuration</h5>
           <table className="table">
             <tbody>
-              <tr>
-                <th>IP</th>
-                <td>
-                  <Editable
-                    dataType="text"
-                    mode="inline"
-                    name="ip"
-                    showButtons={false}
-                    value={node.ip}
-                    display={value => {
-                      return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
-                    }}
-                    handleSubmit={this.handleSubmit.bind(this, 'ip')}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Wallet</th>
-                  <td>
-                    <Editable
-                      dataType="text"
-                      mode="inline"
-                      name="wallet"
-                      showButtons={false}
-                      value={node.wallet}
-                      display={value => {
-                        return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
-                      }}
-                      handleSubmit={this.handleSubmit.bind(this, 'wallet')}
-                    />
-                  </td>
-              </tr>
-              <tr>
-                <th>Status</th>
-                <td><span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span></td>
-              </tr>
-              <tr>
-                <th></th>
-                <td>{this.displayActionButton(node)}</td>
-              </tr>
+            <tr>
+              <th>IP</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="ip"
+                  showButtons={false}
+                  value={node.ip}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'ip')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Wallet</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="wallet"
+                  showButtons={false}
+                  value={node.wallet}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'wallet')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td><span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span></td>
+            </tr>
+            <tr>
+              <th></th>
+              <td>{this.displayActionButtons(node)}</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -150,44 +167,51 @@ class Node extends Component {
     )
   }
 
-  displayActionButton(node) {
-    if (node.isReady) {
-      if (node.status === 'online') {
-        return <Button onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>
+  displayActionButtons(node) {
+    let buttons = []
+    if ( node.isReady ) {
+      if ( node.status === 'online' ) {
+        buttons.push(<Button key="disable" onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>)
       } else {
-        return <Button onClick={this.props.onlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-primary">Enable</Button>
+        buttons.push(<Button key="enable" onClick={this.props.onlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-primary">Enable</Button>)
       }
     } else {
-      return <Button disabled={true}>Enable (missing data)</Button>
+      buttons.push(<Button key="enableMissingData" disabled={true}>Enable (missing data)</Button>)
     }
+    if ( node.status === 'sold' ) {
+      buttons.push(<Button key="disburse" onClick={this.props.disburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Disburse</Button>)
+    } else if ( node.status === 'disbursed' ) {
+      buttons.push(<Button key="unDisburse" onClick={this.props.unDisburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Undisburse</Button>)
+    }
+    return buttons
   }
 
   displayHistory(node) {
     let total = node.events.map(e => e.value).reduce((t, v) => +t + +v)
-    return(
+    return (
       <div className="col-md-8">
         <h5>History</h5>
         <table className="table">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Event</th>
-              <th>Total Rewards</th>
-            </tr>
+          <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Total Rewards</th>
+          </tr>
           </thead>
           <tbody>
-            {true && node.events.map(event => {
-              total = (total < 0) ? 0.00 : +total
-              const row = (
-                <tr key={event.id}>
-                  <td>{event.timestamp}</td>
-                  <td>{event.description}</td>
-                  <td>{total.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-                </tr>
-              )
-              total = +total - +event.value
-              return row
-            })}
+          {true && node.events.map(event => {
+            total = (total < 0) ? 0.00 : +total
+            const row = (
+              <tr key={event.id}>
+                <td>{event.timestamp}</td>
+                <td>{event.description}</td>
+                <td>{total.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+              </tr>
+            )
+            total = +total - +event.value
+            return row
+          })}
           </tbody>
         </table>
       </div>
@@ -206,7 +230,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchNode,
   offlineNode,
   onlineNode,
-  updateNode
+  disburseNode,
+  updateNode,
+  clearMessages,
+  unDisburseNode
 }, dispatch)
 
 export default connect(
