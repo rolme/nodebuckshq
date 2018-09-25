@@ -23,6 +23,9 @@ export const RESET_PASSWORD_FAILURE = 'user/RESET_PASSWORD_FAILURE'
 export const UPDATE_USER = 'user/UPDATE_USER'
 export const UPDATE_USER_SUCCESS = 'user/UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'user/UPDATE_USER_FAILURE'
+export const GET_2FA_SECRET = 'user/GET_2FA_SECRET'
+export const GET_2FA_SECRET_SUCCESS = 'user/GET_2FA_SECRET_SUCCESS'
+export const GET_2FA_SECRET_FAILURE = 'user/GET_2FA_SECRET_FAILURE'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 
@@ -81,6 +84,14 @@ export default (state = initialState, action) => {
         error: true,
         message: action.payload.message,
         pending: false,
+        token: ''
+      }
+    case GET_2FA_SECRET_FAILURE:
+      return {
+        ...state,
+        data: null,
+        error: true,
+        message: action.payload,
         token: ''
       }
 
@@ -263,5 +274,22 @@ export function resetPassword(resetToken, password, passwordConfirmation) {
     .catch((error) => {
       dispatch({ type: RESET_PASSWORD_FAILURE, payload: error.message })
     })
+  }
+}
+
+export function get2FASecret(data, callback) {
+  return dispatch => {
+    dispatch({ type: GET_2FA_SECRET })
+    axios.post(`/api/users/secret_2fa`, data).then(response => {
+      if (response.data.status === 'ok' ) {
+        dispatch({ type: GET_2FA_SECRET_SUCCESS, payload: response.data })
+        callback(response.data)
+      } else {
+        dispatch({ type: GET_2FA_SECRET_FAILURE, payload: 'Email and/or password is invalid.' })
+      }
+    })
+      .catch((error) => {
+        dispatch({ type: GET_2FA_SECRET_FAILURE, payload: error.message })
+      })
   }
 }

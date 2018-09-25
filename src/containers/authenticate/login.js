@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-
 import {
   Col,
   Form,
@@ -11,8 +10,12 @@ import {
   Label,
   Row
 } from 'reactstrap'
-
-import { isAuthenticated, login } from '../../reducers/user'
+import Modal2FA from '../../components/2fa'
+import { 
+  isAuthenticated, 
+  get2FASecret, 
+  login 
+} from '../../reducers/user'
 
 class Login extends Component {
   constructor(props) {
@@ -21,7 +24,9 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      redirect: false
+      redirect: false,
+      show2fa: false,
+      secret: '',
     }
   }
 
@@ -38,7 +43,13 @@ class Login extends Component {
   submit(e) {
     let { email, password } = this.state
     e.preventDefault()
-    this.props.login(email, password, this.handleResponse.bind(this))
+    this.props.get2FASecret({email, password}, (response) => {
+      if(response.enabled_2fa) {
+        this.setState({ show2fa: true, secret: response.secret })
+      } else {
+        this.props.login(email, password)
+      }
+    })
   }
 
   handleEmailChange(e) {
@@ -49,15 +60,14 @@ class Login extends Component {
     this.setState({ password: e.target.value })
   }
 
-  handleResponse() {
-    let { authenticated } = this.props
-    if (authenticated) {
-      this.setState({ redirect: true })
-    }
+  toggleModal = () => {
+    this.setState({
+      show2fa: !this.state.show2fa
+    });
   }
 
   render() {
-    let { email, password, redirect } = this.state
+    let { email, password, redirect, show2fa, secret } = this.state
 
     if (redirect) { return <Redirect to='/users' /> }
 
@@ -78,6 +88,14 @@ class Login extends Component {
             <button className="btn btn-primary" onClick={this.submit.bind(this)}>Login</button>
           </Form>
         </Col>
+        <Modal2FA 
+          show={show2fa} 
+          onToggle={this.toggleModal}
+          email={email}
+          password={password}
+          secret={secret}
+          login={this.props.login}
+        />
       </Row>
     )
   }
@@ -100,7 +118,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   isAuthenticated,
-  login
+  login,
+  get2FASecret,
 }, dispatch)
 
 export default connect(
