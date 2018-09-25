@@ -7,13 +7,15 @@ import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
 
 import {
+  clearMessages,
+  deleteNode,
+  disburseNode,
   fetchNode,
   offlineNode,
   onlineNode,
-  disburseNode,
-  clearMessages,
+  unDisburseNode,
   updateNode,
-  unDisburseNode
+  restoreNode
 } from '../../reducers/nodes'
 
 class Node extends Component {
@@ -25,6 +27,13 @@ class Node extends Component {
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchNode(params.slug)
+  }
+
+  handleDelete() {
+    const { node } = this.props
+    if (window.confirm("Are you sure you want to delete this node?")) {
+      this.props.deleteNode(node.slug)
+    }
   }
 
   handleSubmit(name, el) {
@@ -154,7 +163,10 @@ class Node extends Component {
             </tr>
             <tr>
               <th>Status</th>
-              <td><span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span></td>
+              <td>
+                { !node.deletedAt && <span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span> }
+                { !!node.deletedAt && <span className="badge badge-danger ml-1">Deleted</span> }
+              </td>
             </tr>
             <tr>
               <th></th>
@@ -169,6 +181,7 @@ class Node extends Component {
 
   displayActionButtons(node) {
     let buttons = []
+
     if ( node.isReady ) {
       if ( node.status === 'online' ) {
         buttons.push(<Button key="disable" onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>)
@@ -178,10 +191,17 @@ class Node extends Component {
     } else {
       buttons.push(<Button key="enableMissingData" disabled={true}>Enable (missing data)</Button>)
     }
+
     if ( node.status === 'sold' ) {
       buttons.push(<Button key="disburse" onClick={this.props.disburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Disburse</Button>)
     } else if ( node.status === 'disbursed' ) {
       buttons.push(<Button key="unDisburse" onClick={this.props.unDisburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Undisburse</Button>)
+    }
+
+    if (node.deletedAt === null) {
+      buttons.push(<Button key="delete" onClick={this.handleDelete.bind(this)} className="btn btn-sm ml-2 btn-danger">Delete</Button>)
+    } else {
+      buttons.push(<Button key="restore" onClick={this.props.restoreNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-danger">Restore</Button>)
     }
     return buttons
   }
@@ -227,12 +247,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  clearMessages,
   fetchNode,
   offlineNode,
   onlineNode,
+  deleteNode,
   disburseNode,
+  restoreNode,
   updateNode,
-  clearMessages,
   unDisburseNode
 }, dispatch)
 

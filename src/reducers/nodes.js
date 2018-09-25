@@ -2,6 +2,12 @@ import axios from 'axios'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const CLEAR_MESSAGES = 'nodes/CLEAR_MESSAGES'
+export const DELETE = 'nodes/DELETE'
+export const DELETE_ERROR = 'nodes/DELETE_ERROR'
+export const DELETE_SUCCESS = 'nodes/DELETE_SUCCESS'
+export const DISBURSE = 'nodes/DISBURSE'
+export const DISBURSE_ERROR = 'nodes/DISBURSE_ERROR'
+export const DISBURSE_SUCCESS = 'nodes/DISBURSE_SUCCESS'
 export const FETCH = 'nodes/FETCH'
 export const FETCH_ERROR = 'nodes/FETCH_ERROR'
 export const FETCH_SUCCESS = 'nodes/FETCH_SUCCESS'
@@ -14,15 +20,15 @@ export const OFFLINE_SUCCESS = 'nodes/OFFLINE_SUCCESS'
 export const ONLINE = 'nodes/ONLINE'
 export const ONLINE_ERROR = 'nodes/ONLINE_ERROR'
 export const ONLINE_SUCCESS = 'nodes/ONLINE_SUCCESS'
-export const UPDATE = 'nodes/UPDATE'
-export const UPDATE_ERROR = 'nodes/UPDATE_ERROR'
-export const UPDATE_SUCCESS = 'nodes/UPDATE_SUCCESS'
-export const DISBURSE = 'nodes/DISBURSE'
-export const DISBURSE_ERROR = 'nodes/DISBURSE_ERROR'
-export const DISBURSE_SUCCESS = 'nodes/DISBURSE_SUCCESS'
+export const RESTORE = 'nodes/RESTORE'
+export const RESTORE_ERROR = 'nodes/RESTORE_ERROR'
+export const RESTORE_SUCCESS = 'nodes/RESTORE_SUCCESS'
 export const UN_DISBURSE = 'nodes/UN_DISBURSE'
 export const UN_DISBURSE_ERROR = 'nodes/UN_DISBURSE_ERROR'
 export const UN_DISBURSE_SUCCESS = 'nodes/UN_DISBURSE_SUCCESS'
+export const UPDATE = 'nodes/UPDATE'
+export const UPDATE_ERROR = 'nodes/UPDATE_ERROR'
+export const UPDATE_SUCCESS = 'nodes/UPDATE_SUCCESS'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -36,13 +42,15 @@ const initialState = {
 // STATE ///////////////////////////////////////////////////////////////////////
 export default (state = initialState, action) => {
   switch ( action.type ) {
+    case DELETE:
+    case DISBURSE:
     case FETCH:
     case FETCH_LIST:
     case OFFLINE:
     case ONLINE:
-    case UPDATE:
-    case DISBURSE:
     case UN_DISBURSE:
+    case UPDATE:
+    case RESTORE:
       return {
         ...state,
         pending: true,
@@ -50,18 +58,38 @@ export default (state = initialState, action) => {
         message: ''
       }
 
+    case DELETE_ERROR:
+    case DISBURSE_ERROR:
     case FETCH_ERROR:
     case FETCH_LIST_ERROR:
     case OFFLINE_ERROR:
     case ONLINE_ERROR:
-    case UPDATE_ERROR:
-    case DISBURSE_ERROR:
     case UN_DISBURSE_ERROR:
+    case UPDATE_ERROR:
+    case RESTORE_ERROR:
       return {
         ...state,
         pending: false,
         error: true,
         message: action.payload.message
+      }
+
+    case DELETE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Delete successful.'
+      }
+
+    case DISBURSE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Disbursed successful.'
       }
 
     case FETCH_SUCCESS:
@@ -82,15 +110,6 @@ export default (state = initialState, action) => {
         message: 'Fetch node list successful.'
       }
 
-    case DISBURSE_SUCCESS:
-      return {
-        ...state,
-        data: action.payload,
-        pending: false,
-        error: false,
-        message: 'Disbursed successful.'
-      }
-
     case UN_DISBURSE_SUCCESS:
       return {
         ...state,
@@ -99,6 +118,16 @@ export default (state = initialState, action) => {
         error: false,
         message: 'Undisbursed successful.'
       }
+
+    case RESTORE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Restore successful.'
+      }
+
 
     case OFFLINE_SUCCESS:
     case ONLINE_SUCCESS:
@@ -165,6 +194,34 @@ export function updateNode(slug, data) {
         dispatch({ type: UPDATE_SUCCESS, payload: response.data })
       }).catch((error) => {
       dispatch({ type: UPDATE_ERROR, payload: { message: error.data } })
+      console.log(error)
+    })
+  }
+}
+
+export function deleteNode(slug) {
+  return dispatch => {
+    dispatch({ type: DELETE })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.delete(`/api/nodes/${slug}`)
+      .then((response) => {
+        dispatch({ type: DELETE_SUCCESS, payload: response.data })
+      }).catch((error) => {
+      dispatch({ type: DELETE_ERROR, payload: { message: error.data } })
+      console.log(error)
+    })
+  }
+}
+
+export function restoreNode(slug) {
+  return dispatch => {
+    dispatch({ type: RESTORE })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/nodes/${slug}/restore`)
+      .then((response) => {
+        dispatch({ type: RESTORE_SUCCESS, payload: response.data })
+      }).catch((error) => {
+      dispatch({ type: RESTORE_ERROR, payload: { message: error.data } })
       console.log(error)
     })
   }

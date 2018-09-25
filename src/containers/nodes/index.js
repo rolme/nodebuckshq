@@ -68,7 +68,10 @@ class Nodes extends Component {
           <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
           <td style={{ verticalAlign: 'middle' }}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>
-          <td>{this.displayBadge(item)}</td>
+          <td>
+            { !item.deletedAt && this.displayBadge(item) }
+            { !!item.deletedAt && <span className="badge badge-danger ml-1">Deleted</span> }
+          </td>
         </tr>
       )
     })
