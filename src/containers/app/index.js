@@ -25,6 +25,7 @@ const Users = Loadable({ loader: () => import('../users'), loading: Loading })
 const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
 const Transactions = Loadable({ loader: () => import('../transactions'), loading: Loading })
 const Contacts = Loadable({ loader: () => import('../contacts'), loading: Loading })
+const Verifications = Loadable({ loader: () => import('../verifications'), loading: Loading })
 
 class App extends Component {
   componentDidMount() {
@@ -53,6 +54,7 @@ class App extends Component {
             <Route exact path="/contacts" component={Contacts}/>
             <Route exact path="/orders" component={Orders}/>
             <Route exact path="/announcements" component={Announcements}/>
+            <Route exact path="/verifications" component={Verifications}/>
           </Switch>
         </main>
       </Container>

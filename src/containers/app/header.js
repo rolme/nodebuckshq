@@ -25,7 +25,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
-    let { cryptos, nodes, user, users, transactions, contacts, orders } = this.props
+    let { cryptos, nodes, user, users, transactions, contacts, orders, verifications } = this.props
 
     if ( cryptos.length === 0 && user !== null ) {
       this.props.fetchCryptos()
@@ -49,6 +49,10 @@ class Header extends Component {
 
     if ( orders.length === 0 && user !== null ) {
       this.props.fetchOrders()
+    }
+
+    if ( verifications.length === 0 && user !== null ) {
+      this.props.fetchUsers(true)
     }
   }
 
@@ -82,7 +86,7 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders } = this.props
+    const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders, verifications } = this.props
     const pendingTransactions = transactions.pendingTotal || 0
     let navigation = []
     if ( !!user ) {
@@ -90,6 +94,7 @@ class Header extends Component {
       navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
       navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
       navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
+      navigation.push(<NavLink key="verifications" onClick={() => this.toggleNavbar(true)} to="/verifications" className="nav-link nav-item" activeClassName="active">Verifications ({verifications.length})</NavLink>)
       navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions})</NavLink>)
       navigation.push(<NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements</NavLink>)
       navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink>)
@@ -109,7 +114,8 @@ const mapStateToProps = state => ({
   users: state.users.list,
   withdrawals: state.withdrawals.list,
   contacts: state.contacts.list,
-  orders: state.orders.list
+  orders: state.orders.list,
+  verifications: state.users.verifications,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
