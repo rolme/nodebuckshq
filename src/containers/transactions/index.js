@@ -6,19 +6,26 @@ import { Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
 import './index.css'
 
-import { 
+import {
   fetchTransactions,
   updateTransaction,
 } from '../../reducers/transactions'
 
 
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
+
 class Transactions extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      sortedColumnName: 'createdAt',
+      isDescending: true,
       selectedTab: 'pending',
       filterValue: '',
+      sortedData: []
     }
+    this.onSortClick = this.onSortClick.bind(this)
   }
 
   componentWillMount() {
@@ -34,40 +41,10 @@ class Transactions extends Component {
   }
 
   isBottom(el) {
-    if(el) return el.getBoundingClientRect().bottom <= window.innerHeight;
+    if ( el ) return el.getBoundingClientRect().bottom <= window.innerHeight;
   }
 
   trackScrolling = () => {
-  const wrappedElement = document.getElementById('txsContainer');
-    if (this.isBottom(wrappedElement)) {
-      const prevScrollHeight = wrappedElement.getBoundingClientRect().bottom
-      const {
-        data,
-        pendingTotal,
-        canceledTotal, 
-        processedTotal,
-      } = this.props
-
-      switch(this.state.selectedTab) {
-        case 'pending':
-          if(data.pending.length < pendingTotal)
-            this.props.fetchTransactions('pending_offset', data.pending.length, () => {
-              window.scrollTo(0, prevScrollHeight);
-            });
-          break;
-        case 'processed':
-          if(data.processed.length < processedTotal)
-            this.props.fetchTransactions('processed_offset', data.processed.length, () => {
-              window.scrollTo(0, prevScrollHeight);
-            });
-          break;
-        default:
-          if(data.canceled.length < canceledTotal)
-            this.props.fetchTransactions('canceled_offset', data.canceled.length, () => {
-               window.scrollTo(0, prevScrollHeight);
-            });
-      }
-    }
   };
 
   filter(transactions) {
@@ -75,14 +52,14 @@ class Transactions extends Component {
       let values = Object.values(transaction);
       let flag = false
       values.forEach((val) => {
-        if(val) {
-          if(val.toString().toLowerCase().indexOf(this.state.filterValue) > -1) {
+        if ( val ) {
+          if ( val.toString().toLowerCase().indexOf(this.state.filterValue) > -1 ) {
             flag = true;
             return;
           }
         }
       })
-      if(flag) return transaction
+      if ( flag ) return transaction
       else return null
     });
   }
@@ -111,8 +88,34 @@ class Transactions extends Component {
     )
   }
 
+  onSortClick(columnName) {
+    let { sortedColumnName, isDescending } = this.state
+    isDescending = sortedColumnName === columnName && !isDescending
+    this.setState({ sortedColumnName: columnName, isDescending })
+  }
+
+  sortTable(list) {
+    let { sortedColumnName, isDescending } = this.state
+
+    let sortedData = [].concat(list)
+
+    sortedData.sort((a, b) => {
+      if ( isDescending ) {
+        if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return -1;
+        if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return 1;
+        return 0;
+      }
+      if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return -1;
+      if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return 1;
+      return 0;
+    })
+
+    return sortedData
+  }
+
   filterByStatusData() {
     const { data } = this.props
+    if (data.length === 0) { return data }
     switch(this.state.selectedTab) {
       case 'pending':
         return data.pending
@@ -125,6 +128,7 @@ class Transactions extends Component {
 
   render() {
     const { fetching } = this.props
+    const { sortedColumnName, isDescending } = this.state
     if ( fetching ) {
       return <div>Loading Transactions</div>
     }
@@ -137,9 +141,12 @@ class Transactions extends Component {
           <table className="table table-striped">
             <thead>
             <tr>
-              <th className="text-center">Type</th>
+              <th className="text-center">Id</th>
+              <th className="text-center"><p onClick={() => this.onSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onSortClick('type')} icon={sortedColumnName === 'type' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th className="text-center">Amount</th>
-              <th className="text-center">User</th>
+              <th className="text-center"><p onClick={() => this.onSortClick('userName')} className="clickableCell mb-0">User <FontAwesomeIcon onClick={() => this.onSortClick('userName')} icon={sortedColumnName === 'userName' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+              <th className="text-center">Slug</th>
+              <th className="text-center"><p onClick={() => this.onSortClick('createdAt')} className="clickableCell mb-0">Date <FontAwesomeIcon onClick={() => this.onSortClick('createdAt')} icon={sortedColumnName === 'createdAt' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th className="text-center">Notes</th>
               {this.state.selectedTab !== 'processed' && <th className="text-center">Action</th>}
             </tr>
@@ -154,17 +161,17 @@ class Transactions extends Component {
   }
 
   displayTransactions() {
-    const data = this.filterByStatusData()
+    let data = this.filterByStatusData()
     const { selectedTab } = this.state
     if ( !data.length ) {
       return <tr>
-        <td colSpan='5' className="text-center">There is no data to show.</td>
+        <td colSpan='8' className="text-center">There is no data to show.</td>
       </tr>
     }
-
+    data = this.sortTable(this.filter(data))
     return (
-      <TransactionsList 
-        data={this.filter(data)}
+      <TransactionsList
+        data={data}
         selectedTab={selectedTab}
         updateTransaction={this.props.updateTransaction}
       />
