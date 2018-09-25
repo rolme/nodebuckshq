@@ -4,6 +4,9 @@ import axios from 'axios'
 export const FETCH_LIST = 'orders/FETCH_LIST'
 export const FETCH_LIST_ERROR = 'orders/FETCH_LIST_ERROR'
 export const FETCH_LIST_SUCCESS = 'orders/FETCH_LIST_SUCCESS'
+export const FETCH_ORDER = 'orders/FETCH_ORDER'
+export const FETCH_ORDER_SUCCESS = 'orders/FETCH_ORDER_SUCCESS'
+export const FETCH_ORDER_ERROR = 'orders/FETCH_ORDER_ERROR'
 export const REQUEST_PAID = 'orders/REQUEST_PAID'
 export const REQUEST_PAID_ERROR = 'orders/REQUEST_PAID_ERROR'
 export const REQUEST_PAID_SUCCESS = 'orders/REQUEST_PAID_SUCCESS'
@@ -13,6 +16,7 @@ export const REQUEST_UNPAID_SUCCESS = 'orders/REQUEST_UNPAID_SUCCESS'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
+  data: {},
   list: [],
   pending: false,
   error: false,
@@ -23,6 +27,7 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case FETCH_LIST:
+    case FETCH_ORDER:
       return {
         ...state,
         pending: true,
@@ -31,6 +36,7 @@ export default (state = initialState, action) => {
       }
 
     case FETCH_LIST_ERROR:
+    case FETCH_ORDER_ERROR:
       return {
         ...state,
         pending: false,
@@ -46,6 +52,16 @@ export default (state = initialState, action) => {
         pending: false,
         error: false,
         message: 'Fetch orders list successful.'
+      }
+
+
+    case FETCH_ORDER_SUCCESS:
+      return {
+        ...state,
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Fetch order successful.'
       }
 
     case REQUEST_PAID:
@@ -91,6 +107,23 @@ export function fetchOrders() {
       })
   }
 }
+
+export function fetchOrder(slug) {
+  return dispatch => {
+    dispatch({ type: FETCH_ORDER })
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.get(`/api/orders/${slug}`)
+      .then((response) => {
+        dispatch({ type: FETCH_ORDER_SUCCESS, payload: response.data })
+      })
+      .catch((error) => {
+        dispatch({ type: FETCH_ORDER_ERROR, payload: {message: error.data} })
+        console.log(error)
+      })
+  }
+}
+
+
 
 export function orderPaid(slug) {
   return dispatch => {

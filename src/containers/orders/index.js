@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
-import {valueFormat} from '../../lib/helpers'
+import { valueFormat } from '../../lib/helpers'
 
 import {
   fetchOrders,
@@ -35,6 +35,8 @@ class Orders extends Component {
             <thead>
             <tr>
               <th>Date</th>
+              <th>Id</th>
+              <th>Slug</th>
               <th>Username</th>
               <th>Masternode</th>
               <th>Type</th>
@@ -58,10 +60,12 @@ class Orders extends Component {
         username = !!order.user ? order.user.first : '-',
         email = !!order.user ? order.user.email : '',
         masternode = !!order.node && !!order.node.crypto ? order.node.crypto.name + ' (' + order.node.slug + ')' : '-',
-        { orderType, amount, status, slug } = order;
+        { orderType, amount, status, slug, orderId } = order;
       return (
-        <tr key={order.orderId}>
+        <tr key={order.orderId} onClick={() => this.props.history.push('/orders/' + slug)}>
           <td style={{ verticalAlign: 'middle' }}>{date}</td>
+          <td>{orderId}</td>
+          <td>{slug}</td>
           <td>{username} ({email})</td>
           <td>{masternode}</td>
           <td>{orderType}</td>

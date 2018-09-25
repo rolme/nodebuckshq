@@ -21,6 +21,7 @@ const Logout = Loadable({ loader: () => import('../authenticate/logout'), loadin
 const Node = Loadable({ loader: () => import('../nodes/node'), loading: Loading })
 const Nodes = Loadable({ loader: () => import('../nodes'), loading: Loading })
 const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
+const Order = Loadable({ loader: () => import('../orders/order'), loading: Loading })
 const Users = Loadable({ loader: () => import('../users'), loading: Loading })
 const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
 const Transactions = Loadable({ loader: () => import('../transactions'), loading: Loading })
@@ -52,6 +53,7 @@ class App extends Component {
             <Route exact path="/transactions" component={Transactions}/>
             <Route exact path="/contacts" component={Contacts}/>
             <Route exact path="/orders" component={Orders}/>
+            <Route exact path="/orders/:slug" component={Order}/>
             <Route exact path="/announcements" component={Announcements}/>
           </Switch>
         </main>
