@@ -13,7 +13,7 @@ export default class Modal2FA extends Component {
   }
 
   handleTokenChange = (e) => {
-    this.setState({ token: e.target.value })
+    this.setState({ token: e.target.value, message: '' })
   }
 
   handleSubmit = () => {
@@ -28,7 +28,7 @@ export default class Modal2FA extends Component {
       this.props.login(email, password)
       this.props.onToggle()
     } else
-      this.setState({ message: 'Token is invalid'})
+      this.setState({ message: 'Token is invalid.'})
   }
 
   render() {
@@ -39,12 +39,12 @@ export default class Modal2FA extends Component {
           <Input 
             type="password"
             name="2fa"
-            placeholder="Enter google authenticator token here"
+            placeholder="Enter Google authenticator token here"
             value={this.state.token}
             onChange={this.handleTokenChange}
             autoFocus={true}
           />
-          <p className="text-danger">{this.state.message}</p>
+          <p className="text-danger mt-2">{this.state.message}</p>
         </ModalBody>
         <ModalFooter>
           <Button 
