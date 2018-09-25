@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input } from 'reactstrap';
 import speakeasy from 'speakeasy'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { login } from '../reducers/user'
 
-class Modal2FA extends Component {
+export default class Modal2FA extends Component {
   constructor(props) {
     super(props)
 
@@ -45,6 +42,7 @@ class Modal2FA extends Component {
             placeholder="Enter google authenticator token here"
             value={this.state.token}
             onChange={this.handleTokenChange}
+            autoFocus={true}
           />
           <p className="text-danger">{this.state.message}</p>
         </ModalBody>
@@ -60,13 +58,3 @@ class Modal2FA extends Component {
     );
   }
 }
-
-const mapDispatchToProps = dispatch => bindActionCreators({
-  login,
-}, dispatch)
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(Modal2FA)
-
