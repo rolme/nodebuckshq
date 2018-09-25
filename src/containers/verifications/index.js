@@ -2,25 +2,49 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { Alert } from 'reactstrap'
 
 import { 
   fetchUsers, 
-  updateUserIdVerification 
+  updateUserIdVerificationStatus 
 } from '../../reducers/users'
 
 class Verifications extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      showAlert: false,
+    }
+  }
+
   componentWillMount() {
     this.props.fetchUsers(true)
   }
 
+  handleAction = (slug, status) => {
+    this.props.updateUserIdVerificationStatus(slug, status, () => {
+      this.setState({ showAlert: true })
+      setTimeout(() => { 
+        this.setState({ showAlert: false }) }, 
+      3000);
+    })
+  }
+
   render() {
-    let { list, user } = this.props
+    let { list, user, error, message } = this.props
     if ( user === null || list === null ) {
       return <div>Loading Contacts</div>
     }
 
     return (
-      <div className="row">
+      <div>
+        <Alert 
+          color={error ? "danger" : "success"} 
+          isOpen={this.state.showAlert}
+        >
+          <div style={{ textAlign: 'center'}}>{message}</div>
+        </Alert>
         <div className="offset-1 col-10">
           <h2 className="mt-2">Verifications ({list.length})</h2>
           <table className="table table-striped">
@@ -59,10 +83,10 @@ class Verifications extends Component {
             </a>
           </td>
           <td align="center">
-            <button onClick={() => this.props.updateUserIdVerification(item.slug, true)} className="btn btn-info mr-3">
+            <button onClick={() => this.handleAction(item.slug, 'approved')} className="btn btn-info mr-3">
               Verify
             </button>
-            <button onClick={() => this.props.updateUserIdVerification(item.slug, false)} className="btn btn-info">
+            <button onClick={() => this.handleAction(item.slug, 'denied')} className="btn btn-info">
               Decline
             </button>
           </td>
@@ -74,12 +98,14 @@ class Verifications extends Component {
 
 const mapStateToProps = state => ({
   list: state.users.verifications,
-  user: state.user.user
+  user: state.user.user,
+  error: state.users.verificationError,
+  message: state.users.verificationMessage,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchUsers,
-  updateUserIdVerification,
+  updateUserIdVerificationStatus,
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Verifications))
