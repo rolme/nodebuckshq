@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
 import { Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
+import Pagination from "react-js-pagination";
+import qs from 'query-string'
 import './index.css'
 
 import {
@@ -17,28 +18,15 @@ class Transactions extends Component {
     super(props)
     this.state = {
       selectedTab: 'pending',
-      filterValue: '',
+      filter: '',
+      page: parseInt(qs.parse(props.location.search).page, 10) || 1,
+      limit: parseInt(qs.parse(props.location.search).limit, 10) || 25,
     }
   }
 
   componentWillMount() {
-    this.props.fetchTransactions()
+    this.props.fetchTransactions();
   }
-
-  componentDidMount() {
-    document.addEventListener('scroll', this.trackScrolling);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('scroll', this.trackScrolling);
-  }
-
-  isBottom(el) {
-    if(el) return el.getBoundingClientRect().bottom <= window.innerHeight;
-  }
-
-  trackScrolling = () => {
-  };
 
   filter(transactions) {
     return transactions.filter((transaction) => {
@@ -46,7 +34,7 @@ class Transactions extends Component {
       let flag = false
       values.forEach((val) => {
         if(val) {
-          if(val.toString().toLowerCase().indexOf(this.state.filterValue) > -1) {
+          if(val.toString().toLowerCase().indexOf(this.state.filter) > -1) {
             flag = true;
             return;
           }
@@ -58,15 +46,20 @@ class Transactions extends Component {
   }
 
   handleFilterChange = (e) => {
-    this.setState({ filterValue: e.target.value.toLowerCase() })
+    this.setState({ filter: e.target.value.toLowerCase() })
   }
 
   handleTabClick = (index) => {
     this.setState({ selectedTab: index })
   }
 
+  handlePageChange = (page) => {
+    this.setState({ page })
+    this.props.fetchTransactions(page, this.state.limit)
+  }
+
   renderHeader() {
-    const { selectedTab, filterValue } = this.state
+    const { selectedTab, filter } = this.state
     return (
       <Row>
         <Col className="d-flex flex-wrap mb-3 mx-0">
@@ -75,7 +68,7 @@ class Transactions extends Component {
           <div className={selectedTab === 'canceled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('canceled')}>Canceled</div>
         </Col>
         <Col>
-          <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterChange}/>
+          <Input placeholder="Search..." maxLength="100" value={filter} onChange={this.handleFilterChange}/>
         </Col>
       </Row>
     )
@@ -91,6 +84,17 @@ class Transactions extends Component {
         return data.processed
       default:
         return data.canceled
+    }
+  }
+
+  totalItems() {
+    switch(this.state.selectedTab) {
+      case 'pending':
+        return this.props.pendingTotal
+      case 'processed':
+        return this.props.processedTotal
+      default:
+        return this.props.canceledTotal
     }
   }
 
@@ -119,6 +123,15 @@ class Transactions extends Component {
             {this.displayTransactions()}
             </tbody>
           </table>
+          <div className="pagination-container">
+            <Pagination
+              activePage={this.state.page}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.totalItems()}
+              pageRangeDisplayed={10}
+              onChange={this.handlePageChange}
+            />
+          </div>
         </div>
       </div>
     )
