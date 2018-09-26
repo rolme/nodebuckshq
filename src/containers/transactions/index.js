@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
 import { Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
+import Pagination from "react-js-pagination";
+import qs from 'query-string'
 import './index.css'
 
 import {
@@ -22,6 +23,8 @@ class Transactions extends Component {
       sortedColumnName: 'createdAt',
       isDescending: true,
       selectedTab: 'pending',
+      page: parseInt(qs.parse(props.location.search).page, 10) || 1,
+      limit: parseInt(qs.parse(props.location.search).limit, 10) || 25,
       filterValue: '',
       sortedData: []
     }
@@ -29,23 +32,8 @@ class Transactions extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchTransactions()
+    this.props.fetchTransactions();
   }
-
-  componentDidMount() {
-    document.addEventListener('scroll', this.trackScrolling);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('scroll', this.trackScrolling);
-  }
-
-  isBottom(el) {
-    if ( el ) return el.getBoundingClientRect().bottom <= window.innerHeight;
-  }
-
-  trackScrolling = () => {
-  };
 
   filter(transactions) {
     return transactions.filter((transaction) => {
@@ -70,6 +58,11 @@ class Transactions extends Component {
 
   handleTabClick = (index) => {
     this.setState({ selectedTab: index })
+  }
+
+  handlePageChange = (page) => {
+    this.setState({ page })
+    this.props.fetchTransactions(page, this.state.limit)
   }
 
   renderHeader() {
@@ -126,6 +119,17 @@ class Transactions extends Component {
     }
   }
 
+  totalItems() {
+    switch(this.state.selectedTab) {
+      case 'pending':
+        return this.props.pendingTotal
+      case 'processed':
+        return this.props.processedTotal
+      default:
+        return this.props.canceledTotal
+    }
+  }
+
   render() {
     const { fetching } = this.props
     const { sortedColumnName, isDescending } = this.state
@@ -138,6 +142,15 @@ class Transactions extends Component {
         <div className="offset-1 col-10">
           <h2 className="mt-2">Transactions</h2>
           {this.renderHeader()}
+          <div className="pagination-container">
+            <Pagination
+              activePage={this.state.page}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.totalItems()}
+              pageRangeDisplayed={10}
+              onChange={this.handlePageChange}
+            />
+          </div>
           <table className="table table-striped">
             <thead>
             <tr>

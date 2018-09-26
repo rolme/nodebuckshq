@@ -1,6 +1,8 @@
 import { createReducer } from "redux-action"
 import axios from 'axios'
 import cloneDeep from 'lodash/cloneDeep';
+import qs from 'query-string'
+import { push } from 'connected-react-router'
 
 export const FETCH = "transactions/FETCH"
 export const FETCH_SUCCESS = "transactions/FETCH_SUCCESS"
@@ -17,16 +19,16 @@ const initialState = {
   fetching: false,
 }
 
-export const fetchTransactions = (fetchMoreType = 'none', offset = 0, callback) => {
+export const fetchTransactions = (page = 1, limit = 25) => {
   return dispatch => {
+    dispatch(push({ search: qs.stringify({ limit, page }) }))
     dispatch({ type: FETCH })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get(`/api/transactions?${fetchMoreType ? `${fetchMoreType}=${offset}` : ''}`).then(response => {
+    axios.get(`/api/transactions?page=${page - 1}&limit=${limit}`).then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: FETCH_FAILURE, payload: response.data })
       } else {
-        dispatch({ type: FETCH_SUCCESS, payload: { data: response.data, fetchMoreType }})
-        callback()
+        dispatch({ type: FETCH_SUCCESS, payload: { data: response.data }})
       }
     }).catch(err => {
       dispatch({ type: FETCH_FAILURE, payload: err.data })
@@ -59,22 +61,11 @@ export default createReducer(initialState, ({
     }
   },
   [FETCH_SUCCESS]: (payload, state) => {
-    let _list = cloneDeep(state.list);
-    if(payload.fetchMoreType === 'pending_offset') {
-      _list.pending = [..._list.pending, ...payload.data.pending] 
-    } else if(payload.fetchMoreType === 'processed_offset') {
-      _list.processed = [..._list.processed, ...payload.data.processed]
-    } else if(payload.fetchMoreType === 'canceled_offset') {
-      _list.canceled = [..._list.canceled, ...payload.data.canceled]
-    } else {
-      _list = payload.data
-    }
-
     return {
       ...state,
       error: false,
       fetching: false,
-      list: _list
+      list: payload.data
     }
   },
   [UPDATE_SUCCESS]: (payload, state) => {
