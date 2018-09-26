@@ -97,7 +97,7 @@ export default (state = initialState, action) => {
 export function fetchOrders() {
   return dispatch => {
     dispatch({ type: FETCH_LIST })
-    axios.get('/api/orders')
+    axios.get('/api/orders?all')
       .then((response) => {
         dispatch({ type: FETCH_LIST_SUCCESS, payload: response.data })
       })
@@ -152,4 +152,3 @@ export function orderUnpaid(slug) {
       })
   }
 }
-

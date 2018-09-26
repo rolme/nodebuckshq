@@ -6,14 +6,12 @@ import { Alert } from 'reactstrap'
 
 import {
   fetchNodes,
-  disburseNode,
   clearMessages
 } from '../../reducers/nodes'
 
 class Nodes extends Component {
   constructor(props) {
     super(props)
-    this.onDisburse = this.onDisburse.bind(this)
     this.toggleAlert = this.toggleAlert.bind(this)
   }
 
@@ -23,10 +21,6 @@ class Nodes extends Component {
     if ( list.length <= 1 && user !== '' ) {
       this.props.fetchNodes()
     }
-  }
-
-  onDisburse(slug) {
-    this.props.disburseNode(slug)
   }
 
   toggleAlert() {
@@ -74,7 +68,10 @@ class Nodes extends Component {
           <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
           <td style={{ verticalAlign: 'middle' }}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>
-          <td>{this.displayBadge(item)} {item.status === 'sold' && <button onClick={() => this.onDisburse(item.slug)} className="btn btn-primary">Disburse</button>}</td>
+          <td>
+            { !item.deletedAt && this.displayBadge(item) }
+            { !!item.deletedAt && <span className="badge badge-danger ml-1">Deleted</span> }
+          </td>
         </tr>
       )
     })
@@ -99,7 +96,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchNodes,
-  disburseNode,
   clearMessages
 }, dispatch)
 
