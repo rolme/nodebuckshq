@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import moment from 'moment'
-import Editable from 'react-x-editable'
-import { Button } from 'reactstrap'
+import { valueFormat } from '../../lib/helpers'
+import { Table, Button } from 'reactstrap'
 
 import {
   fetchOrder,
@@ -18,180 +18,129 @@ class Order extends Component {
     this.props.fetchOrder(params.slug)
   }
 
-  handleSubmit(name, el) {
-    const { node } = this.props
-    let data   = {}
-    data[name] = el.value
+  togglePaid = (status, slug) => {
+    status === 'unpaid' ? this.props.orderPaid(slug) : this.props.orderUnpaid(slug)
+  }
 
-    this.props.updateNode(node.slug, data)
+  displayOrderData(order) {
+    const { orderId, slug, description, orderType, paymentMethod, status } = order,
+      date = order.node.createdAt,
+      amount = valueFormat(order.amount, 2)
+    return (
+      <tr>
+        <td>{orderId}</td>
+        <td>{date}</td>
+        <td>{slug}</td>
+        <td>{description}</td>
+        <td>${amount}</td>
+        <td>{orderType}</td>
+        <td>{paymentMethod}</td>
+        <td>{status}</td>
+        <td>
+          <Button onClick={() => this.togglePaid(status, slug)}>
+            {status === 'unpaid' ? 'Paid' : 'Unpaid'}
+          </Button>
+        </td>
+      </tr>
+    )
+  }
+
+  displayNodeData(node) {
+    const { id, slug, status } = node,
+      name = node.crypto.name,
+      value = valueFormat(node.value, 2),
+      cost = valueFormat(node.cost, 2)
+    return (
+      <tr>
+        <td>{id}</td>
+        <td>{name}</td>
+        <td>{slug}</td>
+        <td>${value}</td>
+        <td>${cost}</td>
+        <td>{status}</td>
+      </tr>
+    )
+  }
+
+  displayUserData(user) {
+    const { email, slug } = user,
+      name = user.fullName
+    return (
+      <tr>
+        <td>{name}</td>
+        <td>{email}</td>
+        <td>{slug}</td>
+      </tr>
+    )
   }
 
   render() {
     const { match: { params }, order, pending } = this.props
 
-    if (pending || order.slug === undefined) {
+    if ( pending || order.slug === undefined ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
 
-    return(
-      <div>
-        {this.displayHeader(order)}
-        <div className="row pt-3">
-          <div className="col-md-4">
-            {this.displaySummary(order)}
-            {this.displayConfiguration(order)}
-          </div>
-          {this.displayHistory(order)}
-        </div>
-      </div>
-    )
-  }
-
-  displayHeader(node) {
-    const uptime = (node.onlineAt !== null) ? moment().diff(moment(node.onlineAt), 'days') : 0
-
     return (
       <div className="row">
-        <h5 className="col-md-4">
-          <img alt={node.crypto.slug} src={`/assets/images/logos/${node.crypto.slug}.png`} height="45px" width="45px"/> {node.crypto.name}
-        </h5>
-        <h5 className="col-md-4">
-          IP: {node.ip}
-        </h5>
-        <h5 className="col-md-4">
-          Uptime: {uptime} days
-        </h5>
-      </div>
-    )
-  }
-
-  displaySummary(node) {
-    return(
-      <div className="row">
-        <div className="col-md-12">
-          <h5>Summary</h5>
-          <table className="table">
-            <tbody>
+        <div className="offset-1 col-10">
+          <h2 className="mt-2">Order ({order.slug})</h2>
+          <Table striped>
+            <thead>
             <tr>
-              <th>Value</th>
-              <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
-            </tr>
-            <tr>
-              <th>Cost</th>
-              <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-            </tr>
-            <tr>
-              <th>Total Rewards</th>
-              <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-            </tr>
-            <tr>
-              <th>Reward %</th>
-              <td>{(node.rewardTotal/node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )
-  }
-
-  displayConfiguration(node) {
-    return(
-      <div className="row">
-        <div className="col-md-12">
-          <h5>Configuration</h5>
-          <table className="table">
-            <tbody>
-            <tr>
-              <th>IP</th>
-              <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="ip"
-                  showButtons={false}
-                  value={node.ip}
-                  display={value => {
-                    return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'ip')}
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Wallet</th>
-              <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="wallet"
-                  showButtons={false}
-                  value={node.wallet}
-                  display={value => {
-                    return(<span style={{borderBottom: "1px dashed", textDecoration: "none"}}>{value}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'wallet')}
-                />
-              </td>
-            </tr>
-            <tr>
+              <th>Id</th>
+              <th>Date</th>
+              <th>Slug</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Payment Method</th>
               <th>Status</th>
-              <td><span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span></td>
+              <th>Action</th>
             </tr>
-            <tr>
-              <th></th>
-              <td>{this.displayActionButton(node)}</td>
-            </tr>
+            </thead>
+            <tbody>
+            {this.displayOrderData(order)}
             </tbody>
-          </table>
+          </Table>
+        </div>
+        <div className="offset-1 col-5 mt-4">
+          <h2 className="mt-2">Node ({order.node.crypto.name})</h2>
+          <Table striped>
+            <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Slug</th>
+              <th>Value</th>
+              <th>Cost</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {this.displayNodeData(order.node)}
+            </tbody>
+          </Table>
+        </div>
+        <div className="offset-1 col-4 mt-4">
+          <h2 className="mt-2">User</h2>
+          <Table striped>
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Slug</th>
+            </tr>
+            </thead>
+            <tbody>
+            {this.displayUserData(order.user)}
+            </tbody>
+          </Table>
         </div>
       </div>
     )
   }
 
-  displayActionButton(node) {
-    if (node.isReady) {
-      if (node.status === 'online') {
-        return <Button onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>
-      } else {
-        return <Button onClick={this.props.onlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-primary">Enable</Button>
-      }
-    } else {
-      return <Button disabled={true}>Enable (missing data)</Button>
-    }
-  }
-
-  displayHistory(node) {
-    let total = node.events.map(e => e.value).reduce((t, v) => +t + +v)
-    return(
-      <div className="col-md-8">
-        <h5>History</h5>
-        <table className="table">
-          <thead>
-          <tr>
-            <th>Date</th>
-            <th>Event</th>
-            <th>Total Rewards</th>
-          </tr>
-          </thead>
-          <tbody>
-          {true && node.events.map(event => {
-            total = (total < 0) ? 0.00 : +total
-            const row = (
-              <tr key={event.id}>
-                <td>{event.timestamp}</td>
-                <td>{event.description}</td>
-                <td>{total.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
-              </tr>
-            )
-            total = +total - +event.value
-            return row
-          })}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
 }
 
 const mapStateToProps = state => ({

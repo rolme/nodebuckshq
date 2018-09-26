@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Button } from 'reactstrap'
+import { Table } from 'reactstrap'
 import { valueFormat } from '../../lib/helpers'
 
 import {
   fetchOrders,
-  orderPaid,
-  orderUnpaid,
 } from '../../reducers/orders'
 
 class Orders extends Component {
@@ -16,9 +14,6 @@ class Orders extends Component {
     this.props.fetchOrders()
   }
 
-  tooglePaid = (status, slug) => {
-    status === 'unpaid' ? this.props.orderPaid(slug) : this.props.orderUnpaid(slug)
-  }
 
   render() {
     let { list } = this.props
@@ -31,7 +26,7 @@ class Orders extends Component {
       <div className="row">
         <div className="offset-1 col-10">
           <h2 className="mt-2">Orders ({list.length})</h2>
-          <table className="table table-striped">
+          <Table striped hover responsive>
             <thead>
             <tr>
               <th>Date</th>
@@ -42,13 +37,12 @@ class Orders extends Component {
               <th>Type</th>
               <th>Amount</th>
               <th>Status</th>
-              <th>Action</th>
             </tr>
             </thead>
             <tbody>
             {this.displayOrders(list)}
             </tbody>
-          </table>
+          </Table>
         </div>
       </div>
     )
@@ -62,20 +56,15 @@ class Orders extends Component {
         masternode = !!order.node && !!order.node.crypto ? order.node.crypto.name + ' (' + order.node.slug + ')' : '-',
         { orderType, amount, status, slug, orderId } = order;
       return (
-        <tr key={order.orderId} onClick={() => this.props.history.push('/orders/' + slug)}>
+        <tr key={order.orderId} onClick={() => this.props.history.push('/orders/' + slug)}  style={{ cursor: 'pointer' }}>
           <td style={{ verticalAlign: 'middle' }}>{date}</td>
-          <td>{orderId}</td>
-          <td>{slug}</td>
-          <td>{username} ({email})</td>
-          <td>{masternode}</td>
-          <td>{orderType}</td>
-          <td>$ {valueFormat(amount, 2)}</td>
-          <td>{status}</td>
-          <td>
-            <Button onClick={() => this.tooglePaid(status, slug)}>
-              {status === 'unpaid' ? 'Paid' : 'Unpaid'}
-            </Button>
-          </td>
+          <td style={{ verticalAlign: 'middle' }}>{orderId}</td>
+          <td style={{ verticalAlign: 'middle' }}>{slug}</td>
+          <td style={{ verticalAlign: 'middle' }}>{username} ({email})</td>
+          <td style={{ verticalAlign: 'middle' }}>{masternode}</td>
+          <td style={{ verticalAlign: 'middle' }}>{orderType}</td>
+          <td style={{ verticalAlign: 'middle' }}>$ {valueFormat(amount, 2)}</td>
+          <td style={{ verticalAlign: 'middle' }}>{status}</td>
         </tr>
       )
     })
@@ -87,9 +76,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchOrders,
-  orderPaid,
-  orderUnpaid,
+  fetchOrders
 }, dispatch)
 
 export default connect(

@@ -79,6 +79,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: newList,
+        data: action.payload,
       }
 
     case REQUEST_PAID_ERROR:
