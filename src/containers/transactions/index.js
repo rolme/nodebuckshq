@@ -53,7 +53,7 @@ class Transactions extends Component {
   }
 
   handleFilterChange = (e) => {
-    this.setState({ filter: e.target.value.toLowerCase() })
+    this.setState({ filterValue: e.target.value.toLowerCase() })
   }
 
   handleTabClick = (index) => {
@@ -66,7 +66,7 @@ class Transactions extends Component {
   }
 
   renderHeader() {
-    const { selectedTab, filter } = this.state
+    const { selectedTab, filterValue } = this.state
     return (
       <Row>
         <Col className="d-flex flex-wrap mb-3 mx-0">
@@ -75,7 +75,7 @@ class Transactions extends Component {
           <div className={selectedTab === 'canceled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('canceled')}>Canceled</div>
         </Col>
         <Col>
-          <Input placeholder="Search..." maxLength="100" value={filter} onChange={this.handleFilterChange}/>
+          <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterChange}/>
         </Col>
       </Row>
     )
@@ -142,6 +142,15 @@ class Transactions extends Component {
         <div className="offset-1 col-10">
           <h2 className="mt-2">Transactions</h2>
           {this.renderHeader()}
+          <div className="pagination-container">
+            <Pagination
+              activePage={this.state.page}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.totalItems()}
+              pageRangeDisplayed={10}
+              onChange={this.handlePageChange}
+            />
+          </div>
           <table className="table table-striped">
             <thead>
             <tr>
@@ -159,15 +168,6 @@ class Transactions extends Component {
             {this.displayTransactions()}
             </tbody>
           </table>
-          <div className="pagination-container">
-            <Pagination
-              activePage={this.state.page}
-              itemsCountPerPage={this.state.limit}
-              totalItemsCount={this.totalItems()}
-              pageRangeDisplayed={10}
-              onChange={this.handlePageChange}
-            />
-          </div>
         </div>
       </div>
     )
