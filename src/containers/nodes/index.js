@@ -54,6 +54,7 @@ class Nodes extends Component {
             <thead>
             <tr>
               <th>id</th>
+              <th>date</th>
               <th>owner</th>
               <th>type</th>
               <th>status</th>
@@ -73,6 +74,7 @@ class Nodes extends Component {
       return (
         <tr key={item.slug}>
           <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
+          <td>{item.createdAt}</td>
           <td style={{ verticalAlign: 'middle' }}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>
           <td>
