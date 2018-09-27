@@ -128,7 +128,7 @@ class Withdrawals extends Component {
       const date = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
+          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{date}</td>
           <td style={{ verticalAlign: 'middle' }}>
             {item.user.fullName}<br/>
@@ -139,6 +139,9 @@ class Withdrawals extends Component {
               {!!item.balances && item.balances.map(balance => {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
+              {!!item.affiliateBalance &&
+              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              }
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
@@ -159,7 +162,7 @@ class Withdrawals extends Component {
       const date = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
+          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{date}</td>
           <td style={{ verticalAlign: 'middle' }}>
             {item.user.fullName}<br/>
@@ -170,6 +173,9 @@ class Withdrawals extends Component {
               {!!item.balances && item.balances.map(balance => {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
+              {!!item.affiliateBalance &&
+              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              }
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
@@ -189,7 +195,7 @@ class Withdrawals extends Component {
       const cancelledDate = !!item.cancelledAt ? moment(item.cancelledAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
         <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.slug.toUpperCase().substring(0, 5)}...</NavLink></td>
+          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{createdDate}</td>
           <td>{cancelledDate}</td>
           <td style={{ verticalAlign: 'middle' }}>
@@ -201,6 +207,9 @@ class Withdrawals extends Component {
               {!!item.balances && item.balances.map(balance => {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
+              {!!item.affiliateBalance &&
+              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              }
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
