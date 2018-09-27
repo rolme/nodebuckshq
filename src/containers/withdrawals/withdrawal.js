@@ -40,7 +40,7 @@ class Withdrawal extends Component {
   }
 
   displayWithdrawalData(withdrawal) {
-    const { slug, createdAt, cancelledAt, processedAt, status, balances } = withdrawal,
+    const { slug, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
       amount = valueFormat(withdrawal.amount.usd, 2)
     return (
       <tr>
@@ -57,6 +57,9 @@ class Withdrawal extends Component {
             {!!balances && balances.map(balance => {
               return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
             })}
+            {!!affiliateBalance &&
+            <li key = 'affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
+            }
           </ul>
         </td>
         <td>${amount}</td>
