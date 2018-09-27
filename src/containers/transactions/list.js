@@ -31,7 +31,7 @@ export default class TransactionsList extends Component {
         <Button onClick={() => this.props.updateTransaction(id, { status: 'canceled' })}>Cancel</Button>
       </div>
     </td> : <td>
-      <div className="d-flex justify-content-center"><Button>Undo</Button></div>
+      <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
     </td>
   }
 }

@@ -60,6 +60,13 @@ export default createReducer(initialState, ({
       fetching: true
     }
   },
+  [UPDATE]: (payload, state) => {
+    return {
+      ...state,
+      error: false,
+      fetching: true
+    }
+  },
   [FETCH_SUCCESS]: (payload, state) => {
     return {
       ...state,
@@ -89,6 +96,8 @@ export default createReducer(initialState, ({
 
     return {
       ...state,
+      error: false,
+      fetching: false
     }
   },
   [FETCH_FAILURE]: (payload, state) => {
@@ -103,7 +112,8 @@ export default createReducer(initialState, ({
     return {
       ...state,
       error: true,
-      message: payload
+      message: payload,
+      fetching: false
     }
   },
 }))

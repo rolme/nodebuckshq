@@ -3,17 +3,28 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import { valueFormat } from '../../lib/helpers'
-import { Table } from 'reactstrap'
+import { Table, Button } from 'reactstrap'
 
 import {
   fetchWithdrawal,
   updateWithdrawal
 } from '../../reducers/withdrawals'
 
+import {
+  updateTransaction,
+} from '../../reducers/transactions'
+
 class Withdrawal extends Component {
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchWithdrawal(params.slug)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { match: { params }, transactionsUpdating, withdrawal } = this.props
+    if ( transactionsUpdating && !nextProps.transactionsUpdating && !!Object.keys(withdrawal).length ) {
+      this.props.fetchWithdrawal(params.slug)
+    }
   }
 
   handleProcessClick(slug) {
@@ -97,7 +108,7 @@ class Withdrawal extends Component {
 
   displayTransactionsData(transactions) {
     return transactions.map(transaction => {
-      const { id, createdAt, userName, userEmail,  notes, type, amount, status } = transaction
+      const { id, createdAt, userName, userEmail, notes, type, amount, status } = transaction
       return (
         <tr key={id}>
           <td>{id}</td>
@@ -107,6 +118,15 @@ class Withdrawal extends Component {
           <td>{type}</td>
           <td>$ {valueFormat(amount, 2)}</td>
           <td>{status}</td>
+          <td>
+            {status === 'pending' ?
+              <div className="d-flex justify-content-center">
+                <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
+                <Button onClick={() => this.props.updateTransaction(id, { status: 'canceled' })}>Cancel</Button>
+              </div> :
+              <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
+            }
+          </td>
         </tr>
       )
     })
@@ -157,6 +177,7 @@ class Withdrawal extends Component {
               <th>Type</th>
               <th>Amount</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -189,6 +210,7 @@ class Withdrawal extends Component {
 
 const mapStateToProps = state => ({
   withdrawal: state.withdrawals.data,
+  transactionsUpdating: state.transactions.fetching,
   error: state.withdrawals.error,
   message: state.withdrawals.message,
   pending: state.withdrawals.pending
@@ -196,7 +218,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchWithdrawal,
-  updateWithdrawal
+  updateWithdrawal,
+  updateTransaction
 }, dispatch)
 
 export default connect(
