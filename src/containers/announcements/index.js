@@ -25,7 +25,7 @@ class Announcements extends React.Component {
 
     return (
       <div className="row">
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Announcements</h2>
           {
             message === 'Announcement created' && !error &&

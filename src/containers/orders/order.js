@@ -83,7 +83,7 @@ class Order extends Component {
 
     return (
       <div className="row">
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Order ({order.slug})</h2>
           <Table striped>
             <thead>
@@ -104,7 +104,7 @@ class Order extends Component {
             </tbody>
           </Table>
         </div>
-        <div className="offset-1 col-5 mt-4">
+        <div className="col-5 px-5 mt-4">
           <h2 className="mt-2">Node ({order.node.crypto.name})</h2>
           <Table striped>
             <thead>
@@ -122,7 +122,7 @@ class Order extends Component {
             </tbody>
           </Table>
         </div>
-        <div className="offset-1 col-4 mt-4">
+        <div className="offset-1 col-6 px-5 mt-4">
           <h2 className="mt-2">User</h2>
           <Table striped>
             <thead>

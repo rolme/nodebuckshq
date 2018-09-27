@@ -58,7 +58,7 @@ class Withdrawals extends Component {
     const filteredList = list.filter(item => item.status === tab.toLowerCase())
     return (
       <div className="row">
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Withdrawals</h2>
           <Tabs onSelect={(idx, label) => this.setState({ tab: label })} selected={tab}>
             <Tab label="Pending">

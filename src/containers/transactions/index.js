@@ -138,7 +138,7 @@ class Transactions extends Component {
 
     return (
       <div id="txsContainer" className="row">
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Transactions</h2>
           {this.renderHeader()}
           <div className="pagination-container">

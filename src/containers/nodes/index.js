@@ -36,12 +36,12 @@ class Nodes extends Component {
 
     return (
       <div className="row">
-        <div className="col-8 offset-2">
+        <div className="col-8 offset-2 mt-2">
           <Alert color={error ? 'danger' : 'success'} isOpen={!!message} toggle={this.toggleAlert}>
             {message}
           </Alert>
         </div>
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Nodes ({list.length})</h2>
           <ul className="list-inline">
             <li className="list-inline-item">New: {list.filter(node => { return node.status === 'new' && node.deletedAt === null }).length}</li>

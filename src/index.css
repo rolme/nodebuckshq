@@ -1,5 +1,9 @@
-body {
-  margin-top: 70px;
+#root > div {
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 .spinnerContainer {
@@ -11,7 +15,7 @@ body {
   justify-content: center;
 }
 
-.ql-editor{
+.ql-editor {
   height: 80px;
   overflow-y: auto;
 }
