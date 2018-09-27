@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
-import moment from 'moment'
 import { valueFormat } from '../../lib/helpers'
 import { Table, Button } from 'reactstrap'
 
