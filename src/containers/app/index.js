@@ -37,7 +37,7 @@ class App extends Component {
 
   render() {
     return (
-      <Container fluid={true}>
+      <Container fluid={true} className="d-flex">
         <Header/>
         <main>
           <PublicRoute exact path="/login" component={Login}/>

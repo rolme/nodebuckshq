@@ -121,7 +121,7 @@ class Withdrawal extends Component {
 
     return (
       <div className="row">
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Withdrawal ({withdrawal.slug})</h2>
           <Table striped>
             <thead>
@@ -145,7 +145,7 @@ class Withdrawal extends Component {
             </tbody>
           </Table>
         </div>
-        <div className="offset-1 col-10 mt-4">
+        <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">Transactions</h2>
           <Table striped>
             <thead>
@@ -164,7 +164,7 @@ class Withdrawal extends Component {
             </tbody>
           </Table>
         </div>
-        <div className="offset-1 col-10 mt-4">
+        <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">User</h2>
           <Table striped>
             <thead>

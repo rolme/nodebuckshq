@@ -31,7 +31,7 @@ class Node extends Component {
 
   handleDelete() {
     const { node } = this.props
-    if (window.confirm("Are you sure you want to delete this node?")) {
+    if ( window.confirm("Are you sure you want to delete this node?") ) {
       this.props.deleteNode(node.slug)
     }
   }
@@ -57,18 +57,20 @@ class Node extends Component {
 
     return (
       <div>
-        <div className="col-8 offset-2">
+        <div className="col-8 offset-2 mt-2">
           <Alert color={error ? 'danger' : 'success'} isOpen={!!message} toggle={this.toggleAlert}>
             {message}
           </Alert>
         </div>
         {this.displayHeader(node)}
         <div className="row pt-3">
-          <div className="col-md-4">
-            {this.displaySummary(node)}
-            {this.displayConfiguration(node)}
+          <div className="col-12 px-5">
+            <div className="col-md-4">
+              {this.displaySummary(node)}
+              {this.displayConfiguration(node)}
+            </div>
+            {this.displayHistory(node)}
           </div>
-          {this.displayHistory(node)}
         </div>
       </div>
     )
@@ -164,8 +166,8 @@ class Node extends Component {
             <tr>
               <th>Status</th>
               <td>
-                { !node.deletedAt && <span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span> }
-                { !!node.deletedAt && <span className="badge badge-danger ml-1">Deleted</span> }
+                {!node.deletedAt && <span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span>}
+                {!!node.deletedAt && <span className="badge badge-danger ml-1">Deleted</span>}
               </td>
             </tr>
             <tr>
@@ -198,7 +200,7 @@ class Node extends Component {
       buttons.push(<Button key="unDisburse" onClick={this.props.unDisburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Undisburse</Button>)
     }
 
-    if (node.deletedAt === null) {
+    if ( node.deletedAt === null ) {
       buttons.push(<Button key="delete" onClick={this.handleDelete.bind(this)} className="btn btn-sm ml-2 btn-danger">Delete</Button>)
     } else {
       buttons.push(<Button key="restore" onClick={this.props.restoreNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-danger">Restore</Button>)

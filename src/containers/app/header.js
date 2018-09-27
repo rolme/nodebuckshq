@@ -71,17 +71,18 @@ class Header extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top pb-70">
-        <NavLink to="/" className="navbar-brand">
-          Nodebucks HQ
-        </NavLink>
-        <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
-        <Collapse isOpen={!this.state.collapsed} navbar>
-          <div className="navbar-nav mr-auto">
-            {this.displayLoginLink()}
+      <aside className="col-12 col-md-2 p-0 bg-light">
+        <nav className="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start py-2">
+          <NavLink to="/" className="navbar-brand">
+            Nodebucks HQ
+          </NavLink>
+          <div className="collapse navbar-collapse">
+            <ul className="flex-md-column flex-row navbar-nav w-100 justify-content-between">
+              {this.displayLoginLink()}
+            </ul>
           </div>
-        </Collapse>
-      </nav>
+        </nav>
+      </aside>
     )
   }
 
@@ -90,16 +91,16 @@ class Header extends Component {
     const pendingTransactions = transactions.pendingTotal || 0
     let navigation = []
     if ( !!user ) {
-      navigation.push(<NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink>)
-      navigation.push(<NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink>)
-      navigation.push(<NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink>)
-      navigation.push(<NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink>)
-      navigation.push(<NavLink key="verifications" onClick={() => this.toggleNavbar(true)} to="/verifications" className="nav-link nav-item" activeClassName="active">Verifications ({verifications.length})</NavLink>)
-      navigation.push(<NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions})</NavLink>)
-      navigation.push(<NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements</NavLink>)
-      navigation.push(<NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink>)
-      navigation.push(<NavLink key="orders" onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className="headerMenuItem nav-item nav-link">Orders ({orders.length})</NavLink>)
-      navigation.push(<NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink>)
+      navigation.push(<li><NavLink key="cryptos" onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className="headerMenuItem nav-item nav-link">Cryptos ({cryptos.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="nodes" onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className="headerMenuItem nav-item nav-link">Nodes ({nodes.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="withdrawals" onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className="headerMenuItem nav-item nav-link">Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink></li>)
+      navigation.push(<li><NavLink key="users" onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className="headerMenuItem nav-item nav-link">Users ({users.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="verifications" onClick={() => this.toggleNavbar(true)} to="/verifications" className="nav-link nav-item" activeClassName="active">Verifications ({verifications.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="transactions" onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className="headerMenuItem nav-item nav-link">Transactions ({pendingTransactions} pending)</NavLink></li>)
+      navigation.push(<li><NavLink key="announcements" onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className="headerMenuItem nav-item nav-link">Announcements</NavLink></li>)
+      navigation.push(<li><NavLink key="contacts" onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className="headerMenuItem nav-item nav-link">Contacts ({contacts.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="orders" onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className="headerMenuItem nav-item nav-link">Orders ({orders.length})</NavLink></li>)
+      navigation.push(<li><NavLink key="logout" onClick={() => this.toggleNavbar(true)} to="/logout" className="nav-link nav-item" activeClassName="active">Logout</NavLink></li>)
       return (navigation)
     }
     return (<div></div>)

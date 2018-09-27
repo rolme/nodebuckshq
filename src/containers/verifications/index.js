@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Alert } from 'reactstrap'
 
-import { 
-  fetchUsers, 
-  updateUserIdVerificationStatus 
+import {
+  fetchUsers,
+  updateUserIdVerificationStatus
 } from '../../reducers/users'
 
 class Verifications extends Component {
@@ -25,8 +25,8 @@ class Verifications extends Component {
   handleAction = (slug, status) => {
     this.props.updateUserIdVerificationStatus(slug, status, () => {
       this.setState({ showAlert: true })
-      setTimeout(() => { 
-        this.setState({ showAlert: false }) }, 
+      setTimeout(() => {
+        this.setState({ showAlert: false }) },
       3000);
     })
   }
@@ -39,13 +39,13 @@ class Verifications extends Component {
 
     return (
       <div>
-        <Alert 
-          color={error ? "danger" : "success"} 
+        <Alert
+          color={error ? "danger" : "success"}
           isOpen={this.state.showAlert}
         >
           <div style={{ textAlign: 'center'}}>{message}</div>
         </Alert>
-        <div className="offset-1 col-10">
+        <div className="col-12 px-5">
           <h2 className="mt-2">Verifications ({list.length})</h2>
           <table className="table table-striped">
             <thead>
