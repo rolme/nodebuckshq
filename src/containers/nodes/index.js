@@ -73,7 +73,7 @@ class Nodes extends Component {
     return list.map(item => {
       return (
         <tr key={item.slug}>
-          <td><NavLink to={`/nodes/${item.slug}`}>{item.slug.toUpperCase()}</NavLink></td>
+          <td><NavLink to={`/nodes/${item.slug}`}>{item.id}</NavLink></td>
           <td>{item.createdAt}</td>
           <td style={{ verticalAlign: 'middle' }}>{item.owner.fullName}</td>
           <td>{item.crypto.name}</td>

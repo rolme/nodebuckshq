@@ -1,3 +1,4 @@
+/* eslint no-eval: 0 */
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -7,7 +8,6 @@ import { valueFormat } from '../../lib/helpers'
 import {
   fetchOrders,
 } from '../../reducers/orders'
-import qs from "query-string";
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
@@ -71,7 +71,6 @@ class Orders extends Component {
             <thead>
             <tr>
               <th><p onClick={() => this.onSortClick('node.createdAt')} className="clickableCell mb-0">Date <FontAwesomeIcon onClick={() => this.onSortClick('node.createdAt')} icon={sortedColumnName === 'node.createdAt' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th><p onClick={() => this.onSortClick('slug')} className="clickableCell mb-0">Slug <FontAwesomeIcon onClick={() => this.onSortClick('slug')} icon={sortedColumnName === 'slug' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th><p onClick={() => this.onSortClick('user.first')} className="clickableCell mb-0">Username <FontAwesomeIcon onClick={() => this.onSortClick('user.first')} icon={sortedColumnName === 'user.first' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th><p onClick={() => this.onSortClick('node.crypto.name')} className="clickableCell mb-0">Masternode <FontAwesomeIcon onClick={() => this.onSortClick('node.crypto.name')} icon={sortedColumnName === 'node.crypto.name' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th><p onClick={() => this.onSortClick('orderType')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onSortClick('orderType')} icon={sortedColumnName === 'orderType' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
@@ -98,7 +97,6 @@ class Orders extends Component {
       return (
         <tr key={order.orderId} onClick={() => this.props.history.push('/orders/' + slug)} style={{ cursor: 'pointer' }}>
           <td style={{ verticalAlign: 'middle' }}>{date}</td>
-          <td style={{ verticalAlign: 'middle' }}>{slug}</td>
           <td style={{ verticalAlign: 'middle' }}>{username} ({email})</td>
           <td style={{ verticalAlign: 'middle' }}>{masternode}</td>
           <td style={{ verticalAlign: 'middle' }}>{orderType}</td>
