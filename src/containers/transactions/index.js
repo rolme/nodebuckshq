@@ -12,7 +12,6 @@ import {
   updateTransaction,
 } from '../../reducers/transactions'
 
-
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
 
