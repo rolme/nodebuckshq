@@ -71,13 +71,13 @@ class Header extends Component {
 
   render() {
     return (
-      <aside className="col-12 col-md-2 p-0 bg-light">
-        <nav className="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start py-2">
+      <aside className="p-0 bg-light">
+        <nav className="navbar navbar-expand navbar-light bg-light flex-column align-items-start py-2">
           <NavLink to="/" className="navbar-brand">
             Nodebucks HQ
           </NavLink>
           <div className="collapse navbar-collapse">
-            <ul className="flex-md-column flex-row navbar-nav w-100 justify-content-between">
+            <ul className="flex-column navbar-nav w-100 justify-content-between">
               {this.displayLoginLink()}
             </ul>
           </div>

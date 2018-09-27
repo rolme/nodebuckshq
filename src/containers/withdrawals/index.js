@@ -5,6 +5,8 @@ import { withRouter, NavLink } from 'react-router-dom'
 
 import { Tabs, Tab } from 'react-bootstrap-tabs'
 
+import {Table} from 'reactstrap'
+
 import { fetchUsers } from '../../reducers/users'
 import {
   fetchWithdrawals,
@@ -62,7 +64,7 @@ class Withdrawals extends Component {
           <h2 className="mt-2">Withdrawals</h2>
           <Tabs onSelect={(idx, label) => this.setState({ tab: label })} selected={tab}>
             <Tab label="Pending">
-              <table className="table table-striped mt-3">
+              <Table striped responsive className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -78,10 +80,10 @@ class Withdrawals extends Component {
                 <tbody>
                 {this.displayPendingWithdrawals(filteredList)}
                 </tbody>
-              </table>
+              </Table>
             </Tab>
             <Tab label="Processed">
-              <table className="table table-striped mt-3">
+              <Table striped responsive className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -96,10 +98,10 @@ class Withdrawals extends Component {
                 <tbody>
                 {this.displayProcessedWithdrawals(filteredList)}
                 </tbody>
-              </table>
+              </Table>
             </Tab>
             <Tab label="Cancelled">
-              <table className="table table-striped mt-3">
+              <Table striped responsive className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -115,7 +117,7 @@ class Withdrawals extends Component {
                 <tbody>
                 {this.displayCancelledWithdrawals(filteredList)}
                 </tbody>
-              </table>
+              </Table>
             </Tab>
           </Tabs>
         </div>
@@ -130,7 +132,7 @@ class Withdrawals extends Component {
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{date}</td>
-          <td style={{ verticalAlign: 'middle' }}>
+          <td>
             {item.user.fullName}<br/>
             ({item.user.email})
           </td>
@@ -164,7 +166,7 @@ class Withdrawals extends Component {
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{date}</td>
-          <td style={{ verticalAlign: 'middle' }}>
+          <td>
             {item.user.fullName}<br/>
             ({item.user.email})
           </td>
@@ -198,7 +200,7 @@ class Withdrawals extends Component {
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
           <td>{createdDate}</td>
           <td>{cancelledDate}</td>
-          <td style={{ verticalAlign: 'middle' }}>
+          <td>
             {item.user.fullName}<br/>
             ({item.user.email})
           </td>

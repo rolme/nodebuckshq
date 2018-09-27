@@ -1,9 +1,14 @@
+head, body {
+  overflow-x: hidden;
+}
+
 #root > div {
   min-height: 100vh;
 }
 
 main {
   flex: 1;
+  overflow-x: hidden;
 }
 
 .spinnerContainer {
@@ -57,6 +62,10 @@ main {
   text-decoration: none;
 }
 
-.clickableCell{
+.clickableCell {
   cursor: pointer;
+}
+
+.fullWidthTable {
+  min-width: 1200px;
 }
