@@ -102,6 +102,10 @@ class Node extends Component {
           <table className="table">
             <tbody>
             <tr>
+              <th>Node ID</th>
+              <td>{node.id}</td>
+            </tr>
+            <tr>
               <th>Value</th>
               <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
             </tr>
