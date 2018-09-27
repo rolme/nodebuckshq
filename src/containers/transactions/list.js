@@ -14,7 +14,6 @@ export default class TransactionsList extends Component {
           <td className="text-center">{capitalize(item.type)}</td>
           <td className="text-center">{valueFormat(item.amount, 2)}</td>
           <td className="text-center">{item.userName}</td>
-          <td className="text-center">{item.slug || '-'}</td>
           <td className="text-center">{date}</td>
           <td className="text-center">{item.notes}</td>
           {selectedTab !== 'processed' && this.renderActionCell(item.id)}

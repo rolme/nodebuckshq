@@ -157,7 +157,6 @@ class Transactions extends Component {
               <th className="text-center"><p onClick={() => this.onSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onSortClick('type')} icon={sortedColumnName === 'type' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th className="text-center">Amount</th>
               <th className="text-center"><p onClick={() => this.onSortClick('userName')} className="clickableCell mb-0">User <FontAwesomeIcon onClick={() => this.onSortClick('userName')} icon={sortedColumnName === 'userName' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th className="text-center">Slug</th>
               <th className="text-center"><p onClick={() => this.onSortClick('createdAt')} className="clickableCell mb-0">Date <FontAwesomeIcon onClick={() => this.onSortClick('createdAt')} icon={sortedColumnName === 'createdAt' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th className="text-center">Notes</th>
               {this.state.selectedTab !== 'processed' && <th className="text-center">Action</th>}
