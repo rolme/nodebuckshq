@@ -43,6 +43,13 @@ class Nodes extends Component {
         </div>
         <div className="offset-1 col-10">
           <h2 className="mt-2">Nodes ({list.length})</h2>
+          <ul className="list-inline">
+            <li className="list-inline-item">New: {list.filter(node => { return node.status === 'new' && node.deletedAt === null }).length}</li>
+            <li className="list-inline-item">Sold: {list.filter(node => { return node.status === 'sold' && node.deletedAt === null }).length}</li>
+            <li className="list-inline-item">Offline: {list.filter(node => { return node.status === 'offline' && node.deletedAt === null }).length}</li>
+            <li className="list-inline-item">Online: {list.filter(node => { return node.status === 'online' && node.deletedAt === null }).length}</li>
+            <li className="list-inline-item">Deleted: {list.filter(node => { return node.deletedAt !== null }).length}</li>
+          </ul>
           <table className="table table-striped">
             <thead>
             <tr>
