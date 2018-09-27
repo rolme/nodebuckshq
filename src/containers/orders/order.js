@@ -28,7 +28,6 @@ class Order extends Component {
       <tr>
         <td>{orderId}</td>
         <td>{date}</td>
-        <td>{slug}</td>
         <td>{description}</td>
         <td>${amount}</td>
         <td>{orderType}</td>
@@ -44,7 +43,7 @@ class Order extends Component {
   }
 
   displayNodeData(node) {
-    const { id, slug, status } = node,
+    const { id, status } = node,
       name = node.crypto.name,
       value = valueFormat(node.value, 2),
       cost = valueFormat(node.cost, 2)
@@ -52,7 +51,6 @@ class Order extends Component {
       <tr>
         <td>{id}</td>
         <td>{name}</td>
-        <td>{slug}</td>
         <td>${value}</td>
         <td>${cost}</td>
         <td>{status}</td>
@@ -61,13 +59,12 @@ class Order extends Component {
   }
 
   displayUserData(user) {
-    const { email, slug } = user,
+    const { email } = user,
       name = user.fullName
     return (
       <tr>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{slug}</td>
       </tr>
     )
   }
@@ -88,7 +85,6 @@ class Order extends Component {
             <tr>
               <th>Id</th>
               <th>Date</th>
-              <th>Slug</th>
               <th>Description</th>
               <th>Amount</th>
               <th>Type</th>
@@ -109,7 +105,6 @@ class Order extends Component {
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th>Slug</th>
               <th>Value</th>
               <th>Cost</th>
               <th>Status</th>
@@ -127,7 +122,6 @@ class Order extends Component {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Slug</th>
             </tr>
             </thead>
             <tbody>
