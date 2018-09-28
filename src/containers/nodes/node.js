@@ -63,13 +63,15 @@ class Node extends Component {
           </Alert>
         </div>
         {this.displayHeader(node)}
-        <div className="row pt-3">
-          <div className="col-12 px-5">
-            <div className="col-md-4">
+        <div className="pt-3">
+          <div className="col-12 px-5 d-flex flex-xl-row flex-lg-row flex-column">
+            <div className="col-xl-4 col-lg-4 col-12 px-0">
               {this.displaySummary(node)}
               {this.displayConfiguration(node)}
             </div>
-            {this.displayHistory(node)}
+            <div className="col-xl-8 col-lg-8 col-12">
+              {this.displayHistory(node)}
+            </div>
           </div>
         </div>
       </div>
@@ -177,8 +179,11 @@ class Node extends Component {
               </td>
             </tr>
             <tr>
-              <th></th>
-              <td>{this.displayActionButtons(node)}</td>
+              <td colSpan='2'>
+                <div className="d-flex justify-content-center">
+                  {this.displayActionButtons(node)}
+                </div>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -217,7 +222,7 @@ class Node extends Component {
   displayHistory(node) {
     let total = node.events.map(e => e.value).reduce((t, v) => +t + +v)
     return (
-      <div className="col-md-8">
+      <div className="col-xl-10 offset-xl-1 col-12">
         <h5>History</h5>
         <table className="table">
           <thead>

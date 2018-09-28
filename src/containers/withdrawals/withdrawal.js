@@ -14,7 +14,19 @@ import {
   updateTransaction,
 } from '../../reducers/transactions'
 
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
+
 class Withdrawal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      transactionsSortedColumnName: 'id',
+      isTransactionDescending: false
+    }
+    this.onTransactionsSortClick = this.onTransactionsSortClick.bind(this)
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchWithdrawal(params.slug)
@@ -40,11 +52,11 @@ class Withdrawal extends Component {
   }
 
   displayWithdrawalData(withdrawal) {
-    const { slug, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
+    const { id, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
       amount = valueFormat(withdrawal.amount.usd, 2)
     return (
       <tr>
-        <td>{slug}</td>
+        <td>{id}</td>
         <td>{createdAt}</td>
         {status === 'processed' &&
         <td>{processedAt}</td>
@@ -58,7 +70,7 @@ class Withdrawal extends Component {
               return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
             })}
             {!!affiliateBalance &&
-            <li key = 'affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
+            <li key='affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
             }
           </ul>
         </td>
@@ -88,13 +100,12 @@ class Withdrawal extends Component {
   }
 
   displayUserData(user) {
-    const { email, slug, btcWallet, balances } = user,
+    const { email, btcWallet, balances } = user,
       name = user.fullName
     return (
       <tr>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{slug}</td>
         <td>{btcWallet || '-'}</td>
         <td>
           <ul>
@@ -107,6 +118,13 @@ class Withdrawal extends Component {
         </td>
       </tr>
     )
+  }
+
+
+  handleCancelTransaction(id) {
+    if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
+      this.props.updateTransaction(id, { status: 'canceled' })
+    }
   }
 
   displayTransactionsData(transactions) {
@@ -125,7 +143,7 @@ class Withdrawal extends Component {
             {status === 'pending' ?
               <div className="d-flex justify-content-center">
                 <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-                <Button onClick={() => this.props.updateTransaction(id, { status: 'canceled' })}>Cancel</Button>
+                <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
               </div> :
               <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
             }
@@ -135,21 +153,47 @@ class Withdrawal extends Component {
     })
   }
 
+  onTransactionsSortClick(columnName) {
+    let { transactionsSortedColumnName, isTransactionDescending } = this.state
+    isTransactionDescending = transactionsSortedColumnName === columnName && !isTransactionDescending
+    this.setState({ transactionsSortedColumnName: columnName, isTransactionDescending })
+  }
+
+  sortTable(list, sortedColumnName, isDescending) {
+    let sortedData = [].concat(list)
+
+    sortedData.sort((a, b) => {
+      if ( isDescending ) {
+        if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return -1;
+        if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return 1;
+        return 0;
+      }
+      if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return -1;
+      if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return 1;
+      return 0;
+    })
+
+    return sortedData
+  }
+
   render() {
+    const { transactionsSortedColumnName, isTransactionDescending } = this.state
     const { match: { params }, withdrawal, pending } = this.props
 
     if ( pending || withdrawal.slug === undefined ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
 
+    const transactions = this.sortTable(withdrawal.transactions, transactionsSortedColumnName, isTransactionDescending)
+
     return (
       <div className="row">
         <div className="col-12 px-5">
-          <h2 className="mt-2">Withdrawal ({withdrawal.slug})</h2>
+          <h2 className="mt-2">Withdrawal (ID: {withdrawal.id})</h2>
           <Table striped>
             <thead>
             <tr>
-              <th>Slug</th>
+              <th>Id</th>
               <th>Created Date</th>
               {withdrawal.status === 'processed' &&
               <th>Processed Date</th>
@@ -173,18 +217,18 @@ class Withdrawal extends Component {
           <Table striped>
             <thead>
             <tr>
-              <th>Id</th>
+              <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('id')} icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Created Date</th>
               <th>User</th>
               <th>Notes</th>
-              <th>Type</th>
+              <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('type')} icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Amount</th>
-              <th>Status</th>
+              <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('status')} icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            {this.displayTransactionsData(withdrawal.transactions)}
+            {this.displayTransactionsData(transactions)}
             </tbody>
           </Table>
         </div>
@@ -195,7 +239,6 @@ class Withdrawal extends Component {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Slug</th>
               <th>Btc Wallet</th>
               <th>Balances</th>
             </tr>

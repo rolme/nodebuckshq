@@ -26,12 +26,16 @@ class CryptoEdit extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { crypto: { description, profile }, pending } = nextProps
-    !pending && this.setState({ description, profile })
+    const { crypto: { description, profile, enabled }, pending } = nextProps
+    !pending && this.setState({ description, profile, enabled })
   }
 
   handleInputChange = (name) => (event) => {
     this.setState({ [ name ]: event.target.value })
+  }
+
+  handleCheckboxChange = () => {
+    this.setState({ enabled: !this.state.enabled})
   }
 
   handleProfileChange = (profile) => {
@@ -40,23 +44,34 @@ class CryptoEdit extends Component {
 
   handleSubmit = () => {
     const { crypto } = this.props
-    const { description, profile } = this.state
-    this.props.updateCrypto(crypto.slug, { description, profile })
+    const { description, profile, enabled } = this.state
+    this.props.updateCrypto(crypto.slug, { description, profile, enabled })
   }
 
   render() {
     const { match: { params }, crypto, message, error, pending } = this.props
-    const { description, profile } = this.state
+    const { description, profile, enabled } = this.state
 
     if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
+
     return (
       <Container>
         <h1>Edit {pending ? '' : crypto.name}</h1>
         <Row>
           <Col xs="8">
             <Form>
+              <FormGroup>
+                <Label for="enabled">Enabled:</Label>
+                <Input
+                  type="checkbox"
+                  name="enabled"
+                  onChange={this.handleCheckboxChange}
+                  checked={enabled}
+                  className="ml-2"
+                />
+              </FormGroup>
               <FormGroup>
                 <Label for="description">Description:</Label>
                 <Input
