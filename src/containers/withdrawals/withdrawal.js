@@ -40,11 +40,11 @@ class Withdrawal extends Component {
   }
 
   displayWithdrawalData(withdrawal) {
-    const { slug, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
+    const { id, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
       amount = valueFormat(withdrawal.amount.usd, 2)
     return (
       <tr>
-        <td>{slug}</td>
+        <td>{id}</td>
         <td>{createdAt}</td>
         {status === 'processed' &&
         <td>{processedAt}</td>
@@ -94,7 +94,6 @@ class Withdrawal extends Component {
       <tr>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{slug}</td>
         <td>{btcWallet || '-'}</td>
         <td>
           <ul>
@@ -145,11 +144,11 @@ class Withdrawal extends Component {
     return (
       <div className="row">
         <div className="col-12 px-5">
-          <h2 className="mt-2">Withdrawal ({withdrawal.slug})</h2>
+          <h2 className="mt-2">Withdrawal (ID: {withdrawal.id})</h2>
           <Table striped>
             <thead>
             <tr>
-              <th>Slug</th>
+              <th>Id</th>
               <th>Created Date</th>
               {withdrawal.status === 'processed' &&
               <th>Processed Date</th>
@@ -195,7 +194,6 @@ class Withdrawal extends Component {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Slug</th>
               <th>Btc Wallet</th>
               <th>Balances</th>
             </tr>
