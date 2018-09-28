@@ -68,11 +68,10 @@ class Withdrawals extends Component {
                 <thead>
                 <tr>
                   <th>id</th>
-                  <th>created date</th>
+                  <th>created at</th>
                   <th>user</th>
                   <th>balance</th>
                   <th>amount</th>
-                  <th>requested at</th>
                   <th>status</th>
                   <th>action</th>
                 </tr>
@@ -87,10 +86,10 @@ class Withdrawals extends Component {
                 <thead>
                 <tr>
                   <th>id</th>
-                  <th>created date</th>
                   <th>user</th>
+                  <th>balance</th>
                   <th>amount</th>
-                  <th>requested at</th>
+                  <th>created at</th>
                   <th>processed at</th>
                   <th>action</th>
                 </tr>
@@ -105,11 +104,10 @@ class Withdrawals extends Component {
                 <thead>
                 <tr>
                   <th>id</th>
-                  <th>created date</th>
-                  <th>cancelled date</th>
                   <th>user</th>
+                  <th>balance</th>
                   <th>amount</th>
-                  <th>requested at</th>
+                  <th>created at</th>
                   <th>cancelled at</th>
                   <th>action</th>
                 </tr>
@@ -147,7 +145,6 @@ class Withdrawals extends Component {
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
-          <td>{item.createdAt}</td>
           <td>{item.status}</td>
           <td>
             <button onClick={this.handleProcessClick.bind(this, item.slug)} className="btn btn-small btn-primary">Process</button>
@@ -161,11 +158,11 @@ class Withdrawals extends Component {
 
   displayProcessedWithdrawals(list) {
     return list.map(item => {
-      const date = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
+      const createdAt = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
+      const processedAt = !!item.processedAt ? moment(item.processedAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
-          <td>{date}</td>
           <td>
             {item.user.fullName}<br/>
             ({item.user.email})
@@ -181,8 +178,8 @@ class Withdrawals extends Component {
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
-          <td>{item.createdAt}</td>
-          <td>{item.processedAt}</td>
+          <td>{createdAt}</td>
+          <td>{processedAt}</td>
           <td>
             <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
           </td>
@@ -193,13 +190,11 @@ class Withdrawals extends Component {
 
   displayCancelledWithdrawals(list) {
     return list.map(item => {
-      const createdDate = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
-      const cancelledDate = !!item.cancelledAt ? moment(item.cancelledAt).format("MMM D, YYYY  HH:mm") : '-'
+      const createdAt = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
+      const cancelledAt = !!item.cancelledAt ? moment(item.cancelledAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
         <tr key={item.slug}>
           <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
-          <td>{createdDate}</td>
-          <td>{cancelledDate}</td>
           <td>
             {item.user.fullName}<br/>
             ({item.user.email})
@@ -215,8 +210,8 @@ class Withdrawals extends Component {
             </ul>
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
-          <td>{item.createdAt}</td>
-          <td>{item.cancelledAt}</td>
+          <td>{createdAt}</td>
+          <td>{cancelledAt}</td>
           <td>
             <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
           </td>
