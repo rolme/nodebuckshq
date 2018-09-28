@@ -13,7 +13,6 @@ import {
 import {
   updateTransaction,
 } from '../../reducers/transactions'
-import qs from "query-string";
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
@@ -101,7 +100,7 @@ class Withdrawal extends Component {
   }
 
   displayUserData(user) {
-    const { email, slug, btcWallet, balances } = user,
+    const { email, btcWallet, balances } = user,
       name = user.fullName
     return (
       <tr>
