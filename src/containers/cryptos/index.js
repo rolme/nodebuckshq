@@ -11,7 +11,7 @@ class Cryptos extends Component {
   componentWillMount() {
     const { list, user } = this.props
 
-    if (list.length <= 1 && user !== '') {
+    if ( list.length <= 1 && user !== '' ) {
       this.props.fetchCryptos()
     }
   }
@@ -19,25 +19,27 @@ class Cryptos extends Component {
   render() {
     let { list, user } = this.props
 
-    if (user === null || list === null) {
+    if ( user === null || list === null ) {
       return <div>Loading Cryptos</div>
     }
 
-    return(
+    const sortedList = this.sortTableByName(list)
+
+    return (
       <div className="row">
         <div className="col-12 px-5">
           <h2 className="mt-2">Cryptos ({list.length})</h2>
           <table className="table table-striped">
             <thead>
-              <tr>
-                <th className="text-center">Id</th>
-                <th className="text-center">Name</th>
-                <th className="text-center">Symbol</th>
-                <th className="text-center">Action</th>
-              </tr>
+            <tr>
+              <th className="text-center">Id</th>
+              <th className="text-center">Name</th>
+              <th className="text-center">Symbol</th>
+              <th className="text-center">Action</th>
+            </tr>
             </thead>
             <tbody>
-              {this.displayCryptos(list)}
+            {this.displayCryptos(sortedList)}
             </tbody>
           </table>
         </div>
@@ -45,9 +47,21 @@ class Cryptos extends Component {
     )
   }
 
+  sortTableByName(list) {
+    let sortedData = [].concat(list)
+
+    sortedData.sort((a, b) => {
+      if ( a.name < b.name ) return -1;
+      if ( a.name > b.name ) return 1;
+      return 0;
+    })
+
+    return sortedData
+  }
+
   displayCryptos(list) {
     return list.map(item => {
-      return(
+      return (
         <tr key={item.slug}>
           <td className="text-center">{item.slug}</td>
           <td className="text-center"><NavLink to={`/cryptos/${item.slug}`}>{item.name}</NavLink></td>
