@@ -31,15 +31,15 @@ class Cryptos extends Component {
           <h2 className="mt-2">Cryptos ({list.length})</h2>
           <table className="table table-striped">
             <thead>
-            <tr>
-              <th className="text-center">Id</th>
-              <th className="text-center">Name</th>
-              <th className="text-center">Symbol</th>
-              <th className="text-center">Action</th>
-            </tr>
+              <tr>
+                <th className="text-center">Id</th>
+                <th className="text-center">Name</th>
+                <th className="text-center">Symbol</th>
+                <th className="text-center">Action</th>
+              </tr>
             </thead>
             <tbody>
-            {this.displayCryptos(sortedList)}
+              {this.displayCryptos(sortedList)}
             </tbody>
           </table>
         </div>
