@@ -92,7 +92,7 @@ class Orders extends Component {
       const date = !!order.node ? order.node.createdAt : '-',
         username = !!order.user ? order.user.first : '-',
         email = !!order.user ? order.user.email : '',
-        masternode = !!order.node && !!order.node.crypto ? order.node.crypto.name + ' (' + order.node.slug + ')' : '-',
+        masternode = !!order.node && !!order.node.crypto ? order.node.crypto.name + ' (' + order.node.id + ')' : '-',
         { orderType, amount, status, slug } = order;
       return (
         <tr key={order.orderId} onClick={() => this.props.history.push('/orders/' + slug)} style={{ cursor: 'pointer' }}>
