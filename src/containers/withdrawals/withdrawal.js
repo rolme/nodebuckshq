@@ -13,8 +13,21 @@ import {
 import {
   updateTransaction,
 } from '../../reducers/transactions'
+import qs from "query-string";
+
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
 
 class Withdrawal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      transactionsSortedColumnName: 'id',
+      isTransactionDescending: false
+    }
+    this.onTransactionsSortClick = this.onTransactionsSortClick.bind(this)
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchWithdrawal(params.slug)
@@ -58,7 +71,7 @@ class Withdrawal extends Component {
               return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
             })}
             {!!affiliateBalance &&
-            <li key = 'affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
+            <li key='affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
             }
           </ul>
         </td>
@@ -141,12 +154,38 @@ class Withdrawal extends Component {
     })
   }
 
+  onTransactionsSortClick(columnName) {
+    let { transactionsSortedColumnName, isTransactionDescending } = this.state
+    isTransactionDescending = transactionsSortedColumnName === columnName && !isTransactionDescending
+    this.setState({ transactionsSortedColumnName: columnName, isTransactionDescending })
+  }
+
+  sortTable(list, sortedColumnName, isDescending) {
+    let sortedData = [].concat(list)
+
+    sortedData.sort((a, b) => {
+      if ( isDescending ) {
+        if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return -1;
+        if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return 1;
+        return 0;
+      }
+      if ( a[ sortedColumnName ] < b[ sortedColumnName ] ) return -1;
+      if ( a[ sortedColumnName ] > b[ sortedColumnName ] ) return 1;
+      return 0;
+    })
+
+    return sortedData
+  }
+
   render() {
+    const { transactionsSortedColumnName, isTransactionDescending } = this.state
     const { match: { params }, withdrawal, pending } = this.props
 
     if ( pending || withdrawal.slug === undefined ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
+
+    const transactions = this.sortTable(withdrawal.transactions, transactionsSortedColumnName, isTransactionDescending)
 
     return (
       <div className="row">
@@ -179,18 +218,18 @@ class Withdrawal extends Component {
           <Table striped>
             <thead>
             <tr>
-              <th>Id</th>
+              <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('id')} icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Created Date</th>
               <th>User</th>
               <th>Notes</th>
-              <th>Type</th>
+              <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('type')} icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Amount</th>
-              <th>Status</th>
+              <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('status')} icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
               <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            {this.displayTransactionsData(withdrawal.transactions)}
+            {this.displayTransactionsData(transactions)}
             </tbody>
           </Table>
         </div>
