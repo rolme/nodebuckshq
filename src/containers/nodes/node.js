@@ -149,6 +149,7 @@ class Node extends Component {
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'ip')}
                 />
+                { node.duplicatedIp && <p className="text-danger">Duplicated ip!</p> }
               </td>
             </tr>
             <tr>
@@ -165,6 +166,7 @@ class Node extends Component {
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'wallet')}
                 />
+                { node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p> }
               </td>
             </tr>
             <tr>
