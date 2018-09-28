@@ -4,11 +4,13 @@ head, body {
 
 #root > div {
   min-height: 100vh;
+  padding: 0 !important;
 }
 
 main {
   flex: 1;
   overflow-x: hidden;
+  padding: 20px;
 }
 
 .spinnerContainer {
@@ -68,4 +70,12 @@ main {
 
 .fullWidthTable {
   min-width: 1200px;
+}
+
+.sideBarItem {
+  padding: 10px 30px !important;
+}
+
+.sideBarItem.active {
+  background-color: #dfdfdf;
 }
