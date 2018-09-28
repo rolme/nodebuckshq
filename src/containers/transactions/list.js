@@ -4,6 +4,13 @@ import { capitalize, valueFormat } from '../../lib/helpers'
 import moment from 'moment'
 
 export default class TransactionsList extends Component {
+
+  handleCancel(id) {
+    if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
+      this.props.updateTransaction(id, { status: 'canceled' })
+    }
+  }
+
   render() {
     const { data, selectedTab } = this.props
     return data.map((item) => {
@@ -27,7 +34,7 @@ export default class TransactionsList extends Component {
     return selectedTab === 'pending' ? <td>
       <div className="d-flex justify-content-center">
         <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-        <Button onClick={() => this.props.updateTransaction(id, { status: 'canceled' })}>Cancel</Button>
+        <Button onClick={() => this.handleCancel.call(this, id)}>Cancel</Button>
       </div>
     </td> : <td>
       <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>

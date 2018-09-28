@@ -108,6 +108,13 @@ class Withdrawal extends Component {
     )
   }
 
+
+  handleCancelTransaction(id) {
+    if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
+      this.props.updateTransaction(id, { status: 'canceled' })
+    }
+  }
+
   displayTransactionsData(transactions) {
     return transactions.map(transaction => {
       const { id, createdAt, userName, userEmail, notes, type, amount, status } = transaction
@@ -124,7 +131,7 @@ class Withdrawal extends Component {
             {status === 'pending' ?
               <div className="d-flex justify-content-center">
                 <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-                <Button onClick={() => this.props.updateTransaction(id, { status: 'canceled' })}>Cancel</Button>
+                <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
               </div> :
               <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
             }
