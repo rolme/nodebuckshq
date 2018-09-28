@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Row, Col, Input } from 'reactstrap'
+import { Table, Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
 import Pagination from "react-js-pagination";
 import qs from 'query-string'
@@ -150,7 +150,7 @@ class Transactions extends Component {
               onChange={this.handlePageChange}
             />
           </div>
-          <table className="table table-striped">
+          <Table striped responsive>
             <thead>
             <tr>
               <th className="text-center">Id</th>
@@ -165,7 +165,7 @@ class Transactions extends Component {
             <tbody>
             {this.displayTransactions()}
             </tbody>
-          </table>
+          </Table>
         </div>
       </div>
     )
