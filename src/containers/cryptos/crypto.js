@@ -22,12 +22,12 @@ class Crypto extends Component {
     return (
       <div>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-6 px-2">
             { this.renderFees(crypto) }
             <br/>
             { this.renderRoi(crypto) }
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 px-2">
             { this.renderOrderBookTable(crypto) }
             <br/>
             { this.renderScrapedTable(crypto) }
@@ -43,7 +43,7 @@ class Crypto extends Component {
 
     const sortedOrders = crypto.orders.sort((a,b) => a.price - b.price)
     return(
-      <div className="row">
+      <div className="row mx-2">
         <table className="table">
           <thead>
             <tr>
