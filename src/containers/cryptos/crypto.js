@@ -53,9 +53,9 @@ class Crypto extends Component {
             </tr>
           </thead>
           <tbody>
-            { !!sortedOrders && sortedOrders.map(order => {
+            { !!sortedOrders && sortedOrders.map((order, index) => {
               return(
-                <tr key={order.id}>
+                <tr key={index}>
                   <td>{order.price}</td>
                   <td>{order.volume}</td>
                   <td>{order.exchange}</td>

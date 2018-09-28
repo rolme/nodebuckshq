@@ -145,7 +145,7 @@ class Withdrawal extends Component {
                 <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
                 <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
               </div> :
-              <div onClick={() => this.props.updateTransaction(id, { status: 'undo' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
+              <div onClick={() => this.props.updateTransaction(id, { status: 'pending' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
             }
           </td>
         </tr>
@@ -190,7 +190,7 @@ class Withdrawal extends Component {
       <div className="row">
         <div className="col-12 px-5">
           <h2 className="mt-2">Withdrawal (ID: {withdrawal.id})</h2>
-          <Table striped>
+          <Table striped responsive>
             <thead>
             <tr>
               <th>Id</th>
@@ -214,7 +214,7 @@ class Withdrawal extends Component {
         </div>
         <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">Transactions</h2>
-          <Table striped>
+          <Table striped responsive>
             <thead>
             <tr>
               <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('id')} icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
@@ -234,7 +234,7 @@ class Withdrawal extends Component {
         </div>
         <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">User</h2>
-          <Table striped>
+          <Table striped responsive>
             <thead>
             <tr>
               <th>Name</th>
