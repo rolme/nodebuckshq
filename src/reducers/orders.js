@@ -1,4 +1,6 @@
 import axios from 'axios'
+import qs from 'query-string'
+import { push } from 'connected-react-router'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const FETCH_LIST = 'orders/FETCH_LIST'
@@ -95,10 +97,11 @@ export default (state = initialState, action) => {
 }
 
 // ACTIONS /////////////////////////////////////////////////////////////////////
-export function fetchOrders() {
+export function fetchOrders(page = 1, limit = 25) {
   return dispatch => {
+    dispatch(push({ search: qs.stringify({ limit, page }) }))
     dispatch({ type: FETCH_LIST })
-    axios.get('/api/orders?all')
+    axios.get(`/api/orders?all&page=${page - 1}&limit=${limit}`)
       .then((response) => {
         dispatch({ type: FETCH_LIST_SUCCESS, payload: response.data })
       })

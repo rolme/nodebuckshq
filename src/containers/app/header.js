@@ -23,7 +23,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
-    let { cryptos, nodes, user, users, transactions, contacts, orders, verifications } = this.props
+    let { nodes, user, users, transactions, contacts, orders, verifications } = this.props
 
     this.props.fetchCounts();
 
