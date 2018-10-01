@@ -9,6 +9,7 @@ import transactions from './transactions'
 import user from './user'
 import users from './users'
 import withdrawals from './withdrawals'
+import counts from './counts'
 
 export default combineReducers({
   announcements,
@@ -19,5 +20,6 @@ export default combineReducers({
   withdrawals,
   transactions,
   contacts,
-  orders
+  orders,
+  counts,
 })
