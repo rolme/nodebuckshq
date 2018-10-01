@@ -4,13 +4,13 @@ import { NavHashLink as NavLink } from 'react-router-hash-link'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { fetchCryptos } from '../../reducers/cryptos'
 import { fetchNodes } from '../../reducers/nodes'
 import { fetchUsers } from '../../reducers/users'
 import { fetchWithdrawals } from '../../reducers/withdrawals'
 import { fetchTransactions } from '../../reducers/transactions'
 import { fetchContacts } from '../../reducers/contacts'
 import { fetchOrders } from '../../reducers/orders'
+import { fetchCounts } from '../../reducers/counts'
 
 class Header extends Component {
   constructor(props) {
@@ -25,9 +25,7 @@ class Header extends Component {
   componentWillMount() {
     let { cryptos, nodes, user, users, transactions, contacts, orders, verifications } = this.props
 
-    if ( cryptos.length === 0 && user !== null ) {
-      this.props.fetchCryptos()
-    }
+    this.props.fetchCounts();
 
     if ( nodes.length === 0 && user !== null ) {
       this.props.fetchNodes()
@@ -85,20 +83,20 @@ class Header extends Component {
   }
 
   displayLoginLink() {
-    const { cryptos, nodes, user, users, withdrawals, transactions, contacts, orders, verifications } = this.props
-    const pendingTransactions = transactions.pendingTotal || 0
-    let navigation = []
+    const { counts, user } = this.props
     const { pathname } = this.props.location
+    let navigation = []
+
     if ( !!user ) {
-      navigation.push(<li key="cryptos"><NavLink onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('cryptos') ? 'active' : ''}`}>Cryptos ({cryptos.length})</NavLink></li>)
-      navigation.push(<li key="nodes"><NavLink onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('nodes') ? 'active' : ''}`}>Nodes ({nodes.length})</NavLink></li>)
-      navigation.push(<li key="withdrawals"><NavLink onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('withdrawals') ? 'active' : ''}`}>Withdrawals ({withdrawals.filter(i => i.status === 'pending').length})</NavLink></li>)
-      navigation.push(<li key="users"><NavLink onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('users') ? 'active' : ''}`}>Users ({users.length})</NavLink></li>)
-      navigation.push(<li key="verifications"><NavLink onClick={() => this.toggleNavbar(true)} to="/verifications" className={`sideBarItem nav-item nav-link ${pathname.includes('verifications') ? 'active' : ''}`} activeClassName="active">Verifications ({verifications.length})</NavLink></li>)
-      navigation.push(<li key="transactions"><NavLink onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('transactions') ? 'active' : ''}`}>Transactions ({pendingTransactions} pending)</NavLink></li>)
+      navigation.push(<li key="cryptos"><NavLink onClick={() => this.toggleNavbar(true)} to="/cryptos" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('cryptos') ? 'active' : ''}`}>Cryptos ({counts.cryptos})</NavLink></li>)
+      navigation.push(<li key="nodes"><NavLink onClick={() => this.toggleNavbar(true)} to="/nodes" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('nodes') ? 'active' : ''}`}>Nodes ({counts.nodes})</NavLink></li>)
+      navigation.push(<li key="withdrawals"><NavLink onClick={() => this.toggleNavbar(true)} to="/withdrawals" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('withdrawals') ? 'active' : ''}`}>Withdrawals ({counts.pendingWithdrawals} pending)</NavLink></li>)
+      navigation.push(<li key="users"><NavLink onClick={() => this.toggleNavbar(true)} to="/users" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('users') ? 'active' : ''}`}>Users ({counts.users})</NavLink></li>)
+      navigation.push(<li key="verifications"><NavLink onClick={() => this.toggleNavbar(true)} to="/verifications" className={`sideBarItem nav-item nav-link ${pathname.includes('verifications') ? 'active' : ''}`} activeClassName="active">Verifications ({counts.verifications})</NavLink></li>)
+      navigation.push(<li key="transactions"><NavLink onClick={() => this.toggleNavbar(true)} to="/transactions" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('transactions') ? 'active' : ''}`}>Transactions ({counts.pendingTransactions} pending)</NavLink></li>)
+      navigation.push(<li key="contacts"><NavLink onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('contacts') ? 'active' : ''}`}>Contacts ({counts.contacts})</NavLink></li>)
+      navigation.push(<li key="orders"><NavLink onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('orders') ? 'active' : ''}`}>Orders ({counts.unpaidOrders} unpaid)</NavLink></li>)
       navigation.push(<li key="announcements"><NavLink onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('announcements') ? 'active' : ''}`}>Announcements</NavLink></li>)
-      navigation.push(<li key="contacts"><NavLink onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('contacts') ? 'active' : ''}`}>Contacts ({contacts.length})</NavLink></li>)
-      navigation.push(<li key="orders"><NavLink onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('orders') ? 'active' : ''}`}>Orders ({orders.length})</NavLink></li>)
       navigation.push(<li key="logout"><NavLink onClick={() => this.toggleNavbar(true)} to="/logout" className={`sideBarItem nav-item nav-link ${pathname.includes('logout') ? 'active' : ''}`} activeClassName="active">Logout</NavLink></li>)
       return (navigation)
     }
@@ -116,16 +114,17 @@ const mapStateToProps = state => ({
   contacts: state.contacts.list,
   orders: state.orders.list,
   verifications: state.users.verifications,
+  counts: state.counts.data,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchCryptos,
   fetchNodes,
   fetchUsers,
   fetchWithdrawals,
   fetchTransactions,
   fetchContacts,
-  fetchOrders
+  fetchOrders,
+  fetchCounts,
 }, dispatch)
 
 export default withRouter(connect(
