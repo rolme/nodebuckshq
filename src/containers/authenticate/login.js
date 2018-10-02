@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { withCookies } from 'react-cookie';
+import localIpUrl from 'local-ip-url';
 import {
   Col,
   Form,
@@ -41,15 +43,24 @@ class Login extends Component {
   }
 
   submit(e) {
-    let { email, password } = this.state
+    const { email, password } = this.state
+    const trustedIp = this.props.cookies.get('trustedIpNodebucks')
+
     e.preventDefault()
-    this.props.get2FASecret({email, password}, (response) => {
-      if(response.enabled_2fa) {
-        this.setState({ show2fa: true, secret: response.secret })
-      } else {
-        this.props.login(email, password)
-      }
-    })
+
+    if(trustedIp && trustedIp === localIpUrl()) {
+      this.props.login(email, password)
+    } else {
+      this.props.get2FASecret({email, password}, (response) => {
+        if(trustedIp && trustedIp !== localIpUrl()) {
+          this.setState({ show2fa: true, secret: response.secret, isOtherIP: true })
+        } else if(response.enabled_2fa) {
+          this.setState({ show2fa: true, secret: response.secret })
+        } else {
+          this.props.login(email, password)
+        }
+      })
+    }
   }
 
   handleEmailChange(e) {
@@ -67,7 +78,7 @@ class Login extends Component {
   }
 
   render() {
-    let { email, password, redirect, show2fa, secret } = this.state
+    let { email, password, redirect, show2fa, secret, isOtherIP } = this.state
 
     if (redirect) { return <Redirect to='/users' /> }
 
@@ -88,13 +99,14 @@ class Login extends Component {
             <button className="btn btn-primary" onClick={this.submit.bind(this)}>Login</button>
           </Form>
         </Col>
-        <Modal2FA 
-          show={show2fa} 
+        <Modal2FA
+          show={show2fa}
           onToggle={this.toggleModal}
           email={email}
           password={password}
           secret={secret}
           login={this.props.login}
+          isOtherIP={isOtherIP}
         />
       </Row>
     )
@@ -122,7 +134,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   get2FASecret,
 }, dispatch)
 
-export default connect(
+export default withCookies(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login)
+)(Login))
