@@ -49,11 +49,17 @@ export default (state = initialState, action) => {
     case OFFLINE:
     case ONLINE:
     case UN_DISBURSE:
-    case UPDATE:
     case RESTORE:
       return {
         ...state,
         pending: true,
+        error: false,
+        message: ''
+      }
+
+    case UPDATE:
+      return {
+        ...state,
         error: false,
         message: ''
       }
@@ -149,7 +155,6 @@ export default (state = initialState, action) => {
     case CLEAR_MESSAGES:
       return {
         ...state,
-        data: action.payload,
         pending: false,
         error: false,
         message: ''
@@ -197,7 +202,11 @@ export function updateNode(slug, data) {
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}`, { node: data })
       .then((response) => {
-        dispatch({ type: UPDATE_SUCCESS, payload: response.data })
+        if(response.data.status !== 'error') {
+          dispatch({ type: UPDATE_SUCCESS, payload: response.data })
+        } else {
+          dispatch({ type: UPDATE_ERROR, payload: { message: response.data.message } })
+        }
       }).catch((error) => {
       dispatch({ type: UPDATE_ERROR, payload: { message: error.data } })
       console.log(error)
