@@ -197,11 +197,11 @@ class Crypto extends Component {
           </tr>
           <tr>
             <th>Decommission Fee ({percentageDecommissionFee}%)</th>
-            <td style={{textAlign: 'right'}}>{decommissionFee}</td>
+            <td style={{textAlign: 'right', color: 'red'}}>(-{decommissionFee})</td>
           </tr>
           <tr>
             <th>Conversion Fee ({percentageConversionFee}%)</th>
-            <td style={{textAlign: 'right'}}>{conversionFee}</td>
+            <td style={{textAlign: 'right', color: 'red'}}>(-{conversionFee})</td>
           </tr>
         </tbody>
       </table>
@@ -209,20 +209,25 @@ class Crypto extends Component {
   }
 
   renderMonthlyFees(crypto) {
-    let nodePrice = (+crypto.nodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let monthlyReward = (+crypto.dailyReward * 30 * +crypto.price * +crypto.percentageHostingFee).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let dailyReward   = (+crypto.dailyReward * +crypto.price * +crypto.percentageHostingFee).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let percentageHostingFee = ((+crypto.percentageHostingFee) * 100.0).toFixed(0)
     return(
       <table className="table">
         <thead>
           <tr>
-            <th>{crypto.name} ({crypto.symbol}): Monthly Breakdown</th>
-            <th style={{textAlign: 'right'}}>${nodePrice} USD</th>
+            <th>{crypto.name} ({crypto.symbol}): Monthly Hosting/Reward</th>
+            <th style={{textAlign: 'right'}}>${monthlyReward} USD</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th>Hosting Fee ({percentageHostingFee}%)</th>
-            <td style={{textAlign: 'right'}}>monthly</td>
+            <th>Daily Reward Fee (USD)</th>
+            <td style={{textAlign: 'right'}}>${dailyReward}</td>
+          </tr>
+          <tr>
+            <th>Reward Fee %</th>
+            <td style={{textAlign: 'right'}}>{percentageHostingFee}%</td>
           </tr>
         </tbody>
       </table>
