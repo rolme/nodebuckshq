@@ -23,7 +23,11 @@ class Crypto extends Component {
       <div>
         <div className="row">
           <div className="col-md-6 px-2">
-            { this.renderFees(crypto) }
+            { this.renderBuyFees(crypto) }
+            <br/>
+            { this.renderSellFees(crypto) }
+            <br/>
+            { this.renderMonthlyFees(crypto) }
             <br/>
             { this.renderRoi(crypto) }
           </div>
@@ -127,12 +131,11 @@ class Crypto extends Component {
     )
   }
 
-  renderFees(crypto) {
+  renderBuyFees(crypto) {
     let purchasablePrice = (+crypto.purchasablePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let nodePrice = (+crypto.nodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     let percentageSetupFee = ((+crypto.percentageSetupFee) * 100.0).toFixed(0)
     let percentageConversionFee = ((+crypto.percentageConversionFee) * 100.0).toFixed(0)
-    let percentageHostingFee = ((+crypto.percentageHostingFee) * 100.0).toFixed(0)
     let flatSetupFee = (+crypto.flatSetupFee).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 
     let conversionFee = +crypto.purchasablePrice * +crypto.percentageConversionFee
@@ -145,7 +148,7 @@ class Crypto extends Component {
       <table className="table">
         <thead>
           <tr>
-            <th>{crypto.name} ({crypto.symbol}): Pricing Breakdown</th>
+            <th>{crypto.name} ({crypto.symbol}): Buy Breakdown</th>
             <th style={{textAlign: 'right'}}>${nodePrice} USD</th>
           </tr>
         </thead>
@@ -162,6 +165,61 @@ class Crypto extends Component {
             <th>Conversion Fee ({percentageConversionFee}%)</th>
             <td style={{textAlign: 'right'}}>{conversionFee}</td>
           </tr>
+        </tbody>
+      </table>
+    )
+  }
+
+  renderSellFees(crypto) {
+    let sellablePrice = (+crypto.sellablePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let nodeSellPrice = (+crypto.nodeSellPrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let percentageDecommissionFee = ((+crypto.percentageDecommissionFee) * 100.0).toFixed(0)
+    let percentageConversionFee = ((+crypto.percentageConversionFee) * 100.0).toFixed(0)
+
+    let conversionFee = +crypto.sellablePrice * +crypto.percentageConversionFee
+    conversionFee = (+conversionFee).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+
+    let decommissionFee = (+crypto.sellablePrice * +crypto.percentageDecommissionFee)
+    decommissionFee = (+decommissionFee).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+
+    return(
+      <table className="table">
+        <thead>
+          <tr>
+            <th>{crypto.name} ({crypto.symbol}): Sell Breakdown</th>
+            <th style={{textAlign: 'right'}}>${nodeSellPrice} USD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Selling Price</th>
+            <td style={{textAlign: 'right'}}>{sellablePrice}</td>
+          </tr>
+          <tr>
+            <th>Decommission Fee ({percentageDecommissionFee}%)</th>
+            <td style={{textAlign: 'right'}}>{decommissionFee}</td>
+          </tr>
+          <tr>
+            <th>Conversion Fee ({percentageConversionFee}%)</th>
+            <td style={{textAlign: 'right'}}>{conversionFee}</td>
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
+
+  renderMonthlyFees(crypto) {
+    let nodePrice = (+crypto.nodePrice).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    let percentageHostingFee = ((+crypto.percentageHostingFee) * 100.0).toFixed(0)
+    return(
+      <table className="table">
+        <thead>
+          <tr>
+            <th>{crypto.name} ({crypto.symbol}): Monthly Breakdown</th>
+            <th style={{textAlign: 'right'}}>${nodePrice} USD</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr>
             <th>Hosting Fee ({percentageHostingFee}%)</th>
             <td style={{textAlign: 'right'}}>monthly</td>
