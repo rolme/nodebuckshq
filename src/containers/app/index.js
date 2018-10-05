@@ -6,9 +6,7 @@ import Loadable from 'react-loadable'
 import Loading from "../../components/loadingComponent"
 
 import { withCookies } from 'react-cookie'
-
 import { Container } from 'reactstrap'
-
 import { setReferer } from '../../lib/helpers'
 
 const Announcements = Loadable({ loader: () => import('../announcements'), loading: Loading })
@@ -18,6 +16,7 @@ const CryptoEdit = Loadable({ loader: () => import('../cryptos/edit'), loading: 
 const Header = Loadable({ loader: () => import('./header'), loading: Loading })
 const Login = Loadable({ loader: () => import('../authenticate/login'), loading: Loading })
 const Logout = Loadable({ loader: () => import('../authenticate/logout'), loading: Loading })
+const NewNode = Loadable({ loader: () => import('../nodes/new'), loading: Loading })
 const Node = Loadable({ loader: () => import('../nodes/node'), loading: Loading })
 const Nodes = Loadable({ loader: () => import('../nodes'), loading: Loading })
 const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
@@ -48,6 +47,7 @@ class App extends Component {
             <Route exact path="/cryptos/:slug" component={Crypto}/>
             <Route exact path="/cryptos/:slug/edit" component={CryptoEdit}/>
             <Route exact path="/cryptos" component={Cryptos}/>
+            <Route exact path="/nodes/new" component={NewNode}/>
             <Route exact path="/nodes/:slug" component={Node}/>
             <Route exact path="/nodes" component={Nodes}/>
             <Route exact path="/users" component={Users}/>

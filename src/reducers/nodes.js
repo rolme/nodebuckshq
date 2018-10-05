@@ -2,6 +2,9 @@ import axios from 'axios'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const CLEAR_MESSAGES = 'nodes/CLEAR_MESSAGES'
+export const CREATE = 'nodes/CREATE'
+export const CREATE_ERROR = 'nodes/CREATE_ERROR'
+export const CREATE_SUCCESS = 'nodes/CREATE_SUCCESS'
 export const DELETE = 'nodes/DELETE'
 export const DELETE_ERROR = 'nodes/DELETE_ERROR'
 export const DELETE_SUCCESS = 'nodes/DELETE_SUCCESS'
@@ -42,6 +45,7 @@ const initialState = {
 // STATE ///////////////////////////////////////////////////////////////////////
 export default (state = initialState, action) => {
   switch ( action.type ) {
+    case CREATE:
     case DELETE:
     case DISBURSE:
     case FETCH:
@@ -64,6 +68,7 @@ export default (state = initialState, action) => {
         message: ''
       }
 
+    case CREATE_ERROR:
     case DELETE_ERROR:
     case DISBURSE_ERROR:
     case FETCH_ERROR:
@@ -78,6 +83,16 @@ export default (state = initialState, action) => {
         pending: false,
         error: true,
         message: action.payload.message
+      }
+
+    case CREATE_SUCCESS:
+      return {
+        ...state,
+        list: merge(state.list, action.payload),
+        data: action.payload,
+        pending: false,
+        error: false,
+        message: 'Create node successful.'
       }
 
     case DELETE_SUCCESS:
@@ -176,6 +191,21 @@ export function fetchNode(slug) {
       })
       .catch((error) => {
         dispatch({ type: FETCH_ERROR, payload: { message: error.data } })
+        console.log(error)
+      })
+  }
+}
+
+export function createNode(data) {
+  return dispatch => {
+    dispatch({ type: CREATE })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.post(`/api/nodes`, data)
+      .then((response) => {
+        dispatch({ type: CREATE_SUCCESS, payload: response.data })
+      })
+      .catch((error) => {
+        dispatch({ type: CREATE_ERROR, payload: { message: error.data } })
         console.log(error)
       })
   }
