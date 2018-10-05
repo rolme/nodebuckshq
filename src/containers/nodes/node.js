@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import moment from 'moment'
 import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
 
@@ -79,7 +78,21 @@ class Node extends Component {
   }
 
   displayHeader(node) {
-    const uptime = (node.onlineAt !== null) ? moment().diff(moment(node.onlineAt), 'days') : 0
+    let uptime = node.uptime
+    if ( +uptime === 0 ) {
+      uptime = '0 days'
+    } else {
+      if ( +uptime < 60 ) {
+        uptime = uptime + ' secs'
+      } else if ( +uptime < 3600 ) {
+        uptime = (+uptime/60).toFixed(0) + ' mins'
+      } else if ( +uptime < 86400 ) {
+        uptime = (+uptime/3600).toFixed(0) + ' hrs'
+      } else {
+        uptime = (+uptime/86400).toFixed(0) + ' days'
+      }
+    }
+
 
     return (
       <div className="row">
@@ -90,7 +103,7 @@ class Node extends Component {
           IP: {node.ip}
         </h5>
         <h5 className="col-md-4">
-          Uptime: {uptime} days
+          Uptime: {uptime}
         </h5>
       </div>
     )
