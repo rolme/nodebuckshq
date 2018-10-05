@@ -1,15 +1,34 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Container, Button, Form, FormGroup, Input } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import { fetchCrypto } from '../../reducers/cryptos'
 
-import {
-  fetchCrypto
-} from '../../reducers/cryptos'
+import 'react-datepicker/dist/react-datepicker.css';
 
 class Crypto extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      date: moment(),
+      wallet: ''
+    }
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchCrypto(params.slug)
+  }
+
+  handleDateChange = (date) => {
+    this.setState({ date });
+  }
+
+  handleWalletChange = (e) => {
+    this.setState({ wallet: e.target.value });
   }
 
   render() {
@@ -35,10 +54,36 @@ class Crypto extends Component {
             { this.renderOrderBookTable(crypto) }
             <br/>
             { this.renderScrapedTable(crypto) }
+            { this.renderCheckRewardScrapingForm(crypto) }
           </div>
         </div>
         { this.renderOrderBookPrices(crypto) }
       </div>
+    )
+  }
+
+  renderCheckRewardScrapingForm(crypto) {
+    return(
+      <Container className="mt-4 pt-4">
+        <Form>
+          <FormGroup>
+            <div>Wallet:</div>
+            <Input 
+              placeholder="Enter wallet here"
+              value={this.state.wallet}
+              onChange={this.handleWalletChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <div>Date:</div>
+            <DatePicker
+              selected={this.state.date}
+              onChange={this.handleDateChange}
+            />
+          </FormGroup>
+          <Button color="primary">Test Reward Scraping</Button>
+        </Form>
+      </Container>
     )
   }
 
