@@ -117,6 +117,10 @@ class Node extends Component {
           <table className="table">
             <tbody>
             <tr>
+              <th>Owner</th>
+              <td>{node.owner.fullName}</td>
+            </tr>
+            <tr>
               <th>Node ID</th>
               <td>{node.id}</td>
             </tr>
