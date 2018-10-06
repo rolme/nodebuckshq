@@ -104,7 +104,7 @@ class NewNode extends Component {
             <Input
               type="number"
               name="amount"
-              placeholder="100.00"
+              placeholder="ex. 100.00"
               onChange={this.handleInputChange('amount')}
               value={amount}
             />
