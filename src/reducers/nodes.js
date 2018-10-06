@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { push } from 'connected-react-router'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const CLEAR_MESSAGES = 'nodes/CLEAR_MESSAGES'
@@ -200,9 +201,10 @@ export function createNode(data) {
   return dispatch => {
     dispatch({ type: CREATE })
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.post(`/api/nodes`, data)
+    axios.post(`/api/nodes/generate`, data)
       .then((response) => {
         dispatch({ type: CREATE_SUCCESS, payload: response.data })
+        dispatch(push(`/nodes/${response.data.slug}`))
       })
       .catch((error) => {
         dispatch({ type: CREATE_ERROR, payload: { message: error.data } })
