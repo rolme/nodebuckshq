@@ -109,14 +109,7 @@ class NewNode extends Component {
               value={amount}
             />
           </FormGroup>
-          <Button
-            color="primary"
-            onClick={this.handleSubmit}
-            style={{ marginTop: 50 }}
-          >
-            Save
-          </Button>
-          <p className={`mt-3 ${error ? 'text-warning' : 'text-success'}`}>{message}</p>
+          <Button color="primary" onClick={this.handleSubmit} style={{ marginTop: 50 }}>Save</Button>
         </Form>
       </Container>
     )
