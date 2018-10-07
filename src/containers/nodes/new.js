@@ -75,7 +75,7 @@ class NewNode extends Component {
   }
 
   render() {
-    const { error, message, pending } = this.props
+    const { pending } = this.props
     const { cryptoId, userId, amount } = this.state
 
     if (pending && +cryptoId > 0) {
