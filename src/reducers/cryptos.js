@@ -88,6 +88,30 @@ export default (state = initialState, action) => {
         updateMessage: 'Update cryptocurrency successful.'
       }
 
+    case TEST_REWARD_SCRAPER:
+      return {
+        ...state,
+        rewarderError: false,
+        rewarderMessage: '',
+        successfullyScraped: false,
+      }
+
+    case TEST_REWARD_SCRAPER_SUCCESS:
+      return {
+        ...state,
+        rewarderError: false,
+        rewarderMessage: action.payload.message,
+        successfullyScraped: action.payload,
+      }
+
+    case TEST_REWARD_SCRAPER_ERROR:
+      return {
+        ...state,
+        rewarderError: true,
+        rewarderMessage: action.payload.message,
+        successfullyScraped: false,
+      }
+
     default:
       return state
   }
@@ -143,7 +167,11 @@ export function testRewardScraper(slug, wallet, date) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get(`/api/cryptos/${slug}/reward_scraper?wallet=${wallet}&date=${date}`)
       .then((response) => {
-      dispatch({ type: TEST_REWARD_SCRAPER_SUCCESS, payload: response.data })
+        if(response.data.status !== 'error') {
+          dispatch({ type: TEST_REWARD_SCRAPER_SUCCESS, payload: response.data })
+        } else {
+          dispatch({ type: TEST_REWARD_SCRAPER_ERROR, payload: response.data })
+        }
       }).catch((error) => {
         dispatch({ type: TEST_REWARD_SCRAPER_ERROR, payload: {message: error.data} })
         console.log(error)

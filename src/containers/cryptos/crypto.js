@@ -4,7 +4,10 @@ import { connect } from 'react-redux'
 import { Container, Button, Form, FormGroup, Input } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import { fetchCrypto } from '../../reducers/cryptos'
+import { 
+  fetchCrypto,
+  testRewardScraper 
+} from '../../reducers/cryptos'
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -63,6 +66,8 @@ class Crypto extends Component {
   }
 
   renderCheckRewardScrapingForm(crypto) {
+    const { wallet, date } = this.state
+    const { rewarderMessage, rewarderError, successfullyScraped } = this.props
     return(
       <Container className="mt-4 pt-4">
         <Form>
@@ -70,18 +75,34 @@ class Crypto extends Component {
             <div>Wallet:</div>
             <Input 
               placeholder="Enter wallet here"
-              value={this.state.wallet}
+              value={wallet}
               onChange={this.handleWalletChange}
             />
           </FormGroup>
           <FormGroup>
             <div>Date:</div>
             <DatePicker
-              selected={this.state.date}
+              selected={date}
               onChange={this.handleDateChange}
             />
           </FormGroup>
-          <Button color="primary">Test Reward Scraping</Button>
+          <Button 
+            color="primary"
+            onClick={() => this.props.testRewardScraper(crypto.slug, wallet, date)}
+          >
+            Test Reward Scraping
+          </Button>
+          { rewarderError && <p className='mt-2 text-danger'>{rewarderMessage}</p> }
+          { successfullyScraped &&
+            <div>
+              <div className="text-success mt-2">Url: {' '} 
+                <a onClick={()=> window.open(successfullyScraped.url, "_blank")} style={{cursor: 'pointer'}}>
+                  {successfullyScraped.url}
+                </a>
+              </div>
+              <div className="text-success">Balance: {successfullyScraped.total_balance}</div>
+            </div>
+          }
         </Form>
       </Container>
     )
@@ -321,11 +342,15 @@ const mapStateToProps = state => ({
   crypto: state.cryptos.data,
   error: state.cryptos.error,
   message: state.cryptos.message,
-  pending: state.cryptos.pending
+  pending: state.cryptos.pending,
+  rewarderMessage: state.cryptos.rewarderMessage,
+  rewarderError: state.cryptos.rewarderError,
+  successfullyScraped: state.cryptos.successfullyScraped,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchCrypto
+  fetchCrypto,
+  testRewardScraper,
 }, dispatch)
 
 export default connect(
