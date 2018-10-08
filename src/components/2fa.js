@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Modal, ModalHeader, ModalBody, Input, Label } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Input, Label } from 'reactstrap';
 import speakeasy from 'speakeasy'
 import { withCookies } from 'react-cookie';
 import localIpUrl from 'local-ip-url';
@@ -88,12 +88,6 @@ class Modal2FA extends Component {
                 />
                 <Label for="trusted">This is a trusted computer</Label>
               </div>
-              <Button 
-                color="primary" 
-                onClick={this.handleSubmit}
-              >
-                Submit
-              </Button>
             </div>
           }
         </ModalBody>
