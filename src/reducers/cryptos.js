@@ -62,6 +62,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: action.payload,
+        list: updateList(state.list, action.payload),
         pending: false,
         error: false,
         message: 'Fetch cryptocurrency successful.'
@@ -80,6 +81,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: action.payload,
+        list: updateList(state.list, action.payload),
         pending: false,
         errorUpdating: false,
         updateMessage: 'Update cryptocurrency successful.'
@@ -126,10 +128,14 @@ export function updateCrypto(slug, data) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/cryptos/${slug}`, { crypto: data })
       .then((response) => {
-      dispatch({ type: UPDATE_SUCCESS, payload: response.data })
+        dispatch({ type: UPDATE_SUCCESS, payload: response.data })
       }).catch((error) => {
         dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
         console.log(error)
       })
   }
+}
+
+function updateList(list, item) {
+  return list.map(i => { return (i.slug === item.slug) ? item : i })
 }
