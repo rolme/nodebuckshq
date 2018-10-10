@@ -5,10 +5,15 @@ import { Container, Row, Col, Button, Form, FormGroup, Label, Input } from 'reac
 import { withRouter } from 'react-router-dom'
 import Editor from '../../components/editor'
 
+import Dropdown from 'react-dropdown'
+import 'react-dropdown/style.css'
+
 import {
   fetchCrypto,
   updateCrypto,
 } from '../../reducers/cryptos'
+
+import { fetchPurchasableStatuses } from '../../reducers/purchasable_statuses'
 
 class CryptoEdit extends Component {
 
@@ -17,25 +22,36 @@ class CryptoEdit extends Component {
     this.state = {
       description: '',
       profile: '',
+      purchasableStatus: ''
     }
   }
 
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchCrypto(params.slug, false)
+    this.props.fetchPurchasableStatuses()
   }
 
   componentWillReceiveProps(nextProps) {
-    const { crypto: { description, profile, enabled }, pending } = nextProps
-    !pending && this.setState({ description, profile, enabled })
+    const { crypto: { description, profile, purchasableStatus }, pending } = nextProps
+    !pending && this.setState({ description, profile, purchasableStatus })
+  }
+
+  purchasableOptions() {
+    const { purchasableStatuses } = this.props
+    if (purchasableStatuses.count === 0) { return [{}] }
+
+    return purchasableStatuses.map(status => {
+      return { value: status, label: status }
+    })
   }
 
   handleInputChange = (name) => (event) => {
     this.setState({ [ name ]: event.target.value })
   }
 
-  handleCheckboxChange = () => {
-    this.setState({ enabled: !this.state.enabled})
+  handleSelectChange = (type) => (e) => {
+    this.setState({ [type]: e.value })
   }
 
   handleProfileChange = (profile) => {
@@ -44,13 +60,13 @@ class CryptoEdit extends Component {
 
   handleSubmit = () => {
     const { crypto } = this.props
-    const { description, profile, enabled } = this.state
-    this.props.updateCrypto(crypto.slug, { description, profile, enabled })
+    const { description, profile, purchasableStatus } = this.state
+    this.props.updateCrypto(crypto.slug, { description, profile, purchasable_status: purchasableStatus })
   }
 
   render() {
     const { match: { params }, crypto, message, error, pending } = this.props
-    const { description, profile, enabled } = this.state
+    const { description, profile, purchasableStatus } = this.state
 
     if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
@@ -63,14 +79,8 @@ class CryptoEdit extends Component {
           <Col xs="8">
             <Form>
               <FormGroup>
-                <Label for="enabled">Enabled:</Label>
-                <Input
-                  type="checkbox"
-                  name="enabled"
-                  onChange={this.handleCheckboxChange}
-                  checked={enabled}
-                  className="ml-2"
-                />
+                <Label for="purchasableStatus">Purchasable Status:</Label>
+                <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')} />
               </FormGroup>
               <FormGroup>
                 <Label for="description">Description:</Label>
@@ -110,6 +120,7 @@ class CryptoEdit extends Component {
 
 const mapStateToProps = state => ({
   crypto: state.cryptos.data,
+  purchasableStatuses: state.purchasableStatuses.list,
   error: state.cryptos.errorUpdating,
   pending: state.cryptos.pending,
   message: state.cryptos.updateMessage,
@@ -118,6 +129,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCrypto,
   updateCrypto,
+  fetchPurchasableStatuses
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CryptoEdit))
