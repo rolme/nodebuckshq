@@ -71,7 +71,7 @@ class Transactions extends Component {
         <Col className="d-flex flex-wrap mb-3 mx-0">
           <div className={selectedTab === 'pending' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('pending')}>Pending</div>
           <div className={selectedTab === 'processed' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('processed')}>Processed</div>
-          <div className={selectedTab === 'canceled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('canceled')}>Canceled</div>
+          <div className={selectedTab === 'cancelled' ? 'transactionsTab active' : 'transactionsTab'} onClick={() => this.handleTabClick('cancelled')}>Canceled</div>
         </Col>
         <Col>
           <Input placeholder="Search..." maxLength="100" value={filterValue} onChange={this.handleFilterChange}/>
@@ -114,7 +114,7 @@ class Transactions extends Component {
       case 'processed':
         return data.processed
       default:
-        return data.canceled
+        return data.cancelled
     }
   }
 
@@ -125,7 +125,7 @@ class Transactions extends Component {
       case 'processed':
         return this.props.processedTotal
       default:
-        return this.props.canceledTotal
+        return this.props.cancelledTotal
     }
   }
 
@@ -194,7 +194,7 @@ const mapStateToProps = state => ({
   data: state.transactions.list,
   fetching: state.transactions.fetching,
   pendingTotal: state.transactions.list.pendingTotal,
-  canceledTotal: state.transactions.list.canceledTotal,
+  cancelledTotal: state.transactions.list.cancelledTotal,
   processedTotal: state.transactions.list.processedTotal,
 })
 
