@@ -47,10 +47,6 @@ class Withdrawal extends Component {
     this.props.updateWithdrawal(slug, { status: 'cancelled' })
   }
 
-  handleUndoClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'pending' })
-  }
-
   displayWithdrawalData(withdrawal) {
     const { id, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
       amount = valueFormat(withdrawal.amount.usd, 2)
