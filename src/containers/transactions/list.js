@@ -7,7 +7,7 @@ export default class TransactionsList extends Component {
 
   handleCancel(id) {
     if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
-      this.props.updateTransaction(id, { status: 'canceled' })
+      this.props.updateTransaction(id, { status: 'cancelled' })
     }
   }
 
