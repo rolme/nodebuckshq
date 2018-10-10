@@ -85,11 +85,11 @@ class Node extends Component {
       if ( +uptime < 60 ) {
         uptime = uptime + ' secs'
       } else if ( +uptime < 3600 ) {
-        uptime = (+uptime/60).toFixed(0) + ' mins'
+        uptime = (+uptime / 60).toFixed(0) + ' mins'
       } else if ( +uptime < 86400 ) {
-        uptime = (+uptime/3600).toFixed(0) + ' hrs'
+        uptime = (+uptime / 3600).toFixed(0) + ' hrs'
       } else {
-        uptime = (+uptime/86400).toFixed(0) + ' days'
+        uptime = (+uptime / 86400).toFixed(0) + ' days'
       }
     }
 
@@ -168,7 +168,7 @@ class Node extends Component {
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'ip')}
                 />
-                { node.duplicatedIp && <p className="text-danger">Duplicated ip!</p> }
+                {node.duplicatedIp && <p className="text-danger">Duplicated ip!</p>}
               </td>
             </tr>
             <tr>
@@ -185,7 +185,7 @@ class Node extends Component {
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'wallet')}
                 />
-                { node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p> }
+                {node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p>}
               </td>
             </tr>
             <tr>
@@ -214,24 +214,29 @@ class Node extends Component {
 
     if ( node.isReady ) {
       if ( node.status === 'online' ) {
-        buttons.push(<Button key="disable" onClick={this.props.offlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-secondary">Disable</Button>)
+        buttons.push(<Button key="disable" onClick={this.props.offlineNode.bind(this, node.slug)}
+                             className="btn btn-sm btn-outline-secondary">Disable</Button>)
       } else {
-        buttons.push(<Button key="enable" onClick={this.props.onlineNode.bind(this, node.slug)} className="btn btn-sm btn-outline-primary">Enable</Button>)
+        buttons.push(<Button key="enable" onClick={this.props.onlineNode.bind(this, node.slug)}
+                             className="btn btn-sm btn-outline-primary">Enable</Button>)
       }
     } else {
       buttons.push(<Button key="enableMissingData" disabled={true}>Enable (missing data)</Button>)
     }
 
     if ( node.status === 'sold' ) {
-      buttons.push(<Button key="disburse" onClick={this.props.disburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Disburse</Button>)
+      buttons.push(<Button key="disburse" onClick={this.props.disburseNode.bind(this, node.slug)}
+                           className="btn btn-sm ml-2 btn-primary">Disburse</Button>)
     } else if ( node.status === 'disbursed' ) {
-      buttons.push(<Button key="unDisburse" onClick={this.props.unDisburseNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-primary">Undisburse</Button>)
+      buttons.push(<Button key="unDisburse" onClick={this.props.unDisburseNode.bind(this, node.slug)}
+                           className="btn btn-sm ml-2 btn-primary">Undisburse</Button>)
     }
 
     if ( node.deletedAt === null ) {
       buttons.push(<Button key="delete" onClick={this.handleDelete.bind(this)} className="btn btn-sm ml-2 btn-danger">Delete</Button>)
     } else {
-      buttons.push(<Button key="restore" onClick={this.props.restoreNode.bind(this, node.slug)} className="btn btn-sm ml-2 btn-danger">Restore</Button>)
+      buttons.push(<Button key="restore" onClick={this.props.restoreNode.bind(this, node.slug)}
+                           className="btn btn-sm ml-2 btn-danger">Restore</Button>)
     }
     return buttons
   }
@@ -240,7 +245,10 @@ class Node extends Component {
     let total = node.events.map(e => e.value).reduce((t, v) => +t + +v)
     return (
       <div className="col-xl-10 offset-xl-1 col-12">
-        <h5>History</h5>
+        <div className="d-flex justify-content-between">
+          <h5>History</h5>
+          <a href={node.walletUrl || node.explorerUrl} target="_blank" rel="noopener noreferrer">Explorer</a>
+        </div>
         <table className="table">
           <thead>
           <tr>
