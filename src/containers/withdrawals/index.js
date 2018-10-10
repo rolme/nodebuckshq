@@ -38,15 +38,13 @@ class Withdrawals extends Component {
   }
 
   handleCancelClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'cancelled' })
+    if ( window.confirm("Are you sure you want to cancel?") ) {
+      this.props.updateWithdrawal(slug, { status: 'cancelled' })
+    }
   }
 
   handleProcessClick(slug) {
     this.props.updateWithdrawal(slug, { status: 'processed' })
-  }
-
-  handleUndoClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'pending' })
   }
 
   render() {
@@ -91,7 +89,6 @@ class Withdrawals extends Component {
                   <th>amount</th>
                   <th>created at</th>
                   <th>processed at</th>
-                  <th>action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -109,7 +106,6 @@ class Withdrawals extends Component {
                   <th>amount</th>
                   <th>created at</th>
                   <th>cancelled at</th>
-                  <th>action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -180,9 +176,6 @@ class Withdrawals extends Component {
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{createdAt}</td>
           <td>{processedAt}</td>
-          <td>
-            <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
-          </td>
         </tr>
       )
     })
@@ -212,9 +205,6 @@ class Withdrawals extends Component {
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{createdAt}</td>
           <td>{cancelledAt}</td>
-          <td>
-            <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
-          </td>
         </tr>
       )
     })
