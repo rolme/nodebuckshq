@@ -130,7 +130,7 @@ class Withdrawal extends Component {
           <td>{userName} {userEmail}</td>
           <td>{notes || '-'}</td>
           <td>{type}</td>
-          <td>$ {valueFormat(amount, 2)}</td>
+          <td>{valueFormat(amount, 2)}</td>
           <td>{status}</td>
           <td>
             {this.renderTransactionActions(transaction)}
