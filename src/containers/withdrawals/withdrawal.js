@@ -47,10 +47,6 @@ class Withdrawal extends Component {
     this.props.updateWithdrawal(slug, { status: 'cancelled' })
   }
 
-  handleUndoClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'pending' })
-  }
-
   displayWithdrawalData(withdrawal) {
     const { id, createdAt, cancelledAt, processedAt, status, balances, affiliateBalance } = withdrawal,
       amount = valueFormat(withdrawal.amount.usd, 2)
@@ -92,11 +88,8 @@ class Withdrawal extends Component {
         </td>
       )
     }
-    return (
-      <td>
-        <button onClick={this.handleUndoClick.bind(this, withdrawal.slug)} className="btn btn-small btn-primary">Undo</button>
-      </td>
-    )
+    return <td> - </td>
+
   }
 
   displayUserData(user) {
@@ -137,20 +130,36 @@ class Withdrawal extends Component {
           <td>{userName} {userEmail}</td>
           <td>{notes || '-'}</td>
           <td>{type}</td>
-          <td>$ {valueFormat(amount, 2)}</td>
+          <td>{valueFormat(amount, 2)}</td>
           <td>{status}</td>
           <td>
-            {status === 'pending' ?
-              <div className="d-flex justify-content-center">
-                <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-                <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
-              </div> :
-              <div onClick={() => this.props.updateTransaction(id, { status: 'pending' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
-            }
+            {this.renderTransactionActions(transaction)}
           </td>
         </tr>
       )
     })
+  }
+
+  renderTransactionActions(transaction) {
+    const { id, type, status } = transaction
+    if ( status === 'pending' ) {
+      return (
+        <div className="d-flex justify-content-center">
+          <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
+          <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
+        </div>
+      )
+    } else if ( type !== 'deposit' && type !== 'withdraw' ) {
+      return (
+        <div onClick={() => this.props.updateTransaction(id, { status: 'pending' })} className="d-flex justify-content-center">
+          <Button>Undo</Button>
+        </div>
+      )
+    } else {
+      return <div className="d-flex justify-content-center">-</div>
+    }
+
+
   }
 
   onTransactionsSortClick(columnName) {
@@ -217,13 +226,22 @@ class Withdrawal extends Component {
           <Table striped responsive>
             <thead>
             <tr>
-              <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('id')} icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+              <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon
+                onClick={() => this.onTransactionsSortClick('id')}
+                icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
+              </p></th>
               <th>Created Date</th>
               <th>User</th>
               <th>Notes</th>
-              <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('type')} icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+              <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
+                onClick={() => this.onTransactionsSortClick('type')}
+                icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                className="ml-2"/></p></th>
               <th>Amount</th>
-              <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon onClick={() => this.onTransactionsSortClick('status')} icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+              <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon
+                onClick={() => this.onTransactionsSortClick('status')}
+                icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                className="ml-2"/></p></th>
               <th>Actions</th>
             </tr>
             </thead>

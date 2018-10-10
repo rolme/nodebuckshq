@@ -9,8 +9,7 @@ import {Table} from 'reactstrap'
 
 import { fetchUsers } from '../../reducers/users'
 import {
-  fetchWithdrawals,
-  updateWithdrawal
+  fetchWithdrawals
 } from '../../reducers/withdrawals'
 
 import moment from 'moment'
@@ -33,20 +32,8 @@ class Withdrawals extends Component {
     this.props.fetchUsers()
   }
 
-  handleTabSelected(label) {
-    this.setState({ tab: label })
-  }
-
-  handleCancelClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'cancelled' })
-  }
-
-  handleProcessClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'processed' })
-  }
-
-  handleUndoClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'pending' })
+  onRowClick(slug){
+    this.props.history.push(`/withdrawals/${slug}`)
   }
 
   render() {
@@ -64,7 +51,7 @@ class Withdrawals extends Component {
           <h2 className="mt-2">Withdrawals</h2>
           <Tabs onSelect={(idx, label) => this.setState({ tab: label })} selected={tab}>
             <Tab label="Pending">
-              <Table striped responsive className="fullWidthTable mt-3">
+              <Table striped responsive hover className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -73,7 +60,6 @@ class Withdrawals extends Component {
                   <th>balance</th>
                   <th>amount</th>
                   <th>status</th>
-                  <th>action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -82,7 +68,7 @@ class Withdrawals extends Component {
               </Table>
             </Tab>
             <Tab label="Processed">
-              <Table striped responsive className="fullWidthTable mt-3">
+              <Table striped responsive hover className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -91,7 +77,6 @@ class Withdrawals extends Component {
                   <th>amount</th>
                   <th>created at</th>
                   <th>processed at</th>
-                  <th>action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,7 +85,7 @@ class Withdrawals extends Component {
               </Table>
             </Tab>
             <Tab label="Cancelled">
-              <Table striped responsive className="fullWidthTable mt-3">
+              <Table striped responsive hover className="fullWidthTable mt-3">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -109,7 +94,6 @@ class Withdrawals extends Component {
                   <th>amount</th>
                   <th>created at</th>
                   <th>cancelled at</th>
-                  <th>action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -127,8 +111,8 @@ class Withdrawals extends Component {
     return list.map(item => {
       const date = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
-        <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
+        <tr onClick={() => this.onRowClick(item.slug)} key={item.slug} className="clickableRow">
+          <td>{item.id}</td>
           <td>{date}</td>
           <td>
             {item.user.fullName}<br/>
@@ -146,11 +130,6 @@ class Withdrawals extends Component {
           </td>
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{item.status}</td>
-          <td>
-            <button onClick={this.handleProcessClick.bind(this, item.slug)} className="btn btn-small btn-primary">Process</button>
-            &nbsp;
-            <button onClick={this.handleCancelClick.bind(this, item.slug)} className="btn btn-small btn-secondary">Cancel</button>
-          </td>
         </tr>
       )
     })
@@ -161,8 +140,8 @@ class Withdrawals extends Component {
       const createdAt = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
       const processedAt = !!item.processedAt ? moment(item.processedAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
-        <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
+        <tr onClick={() => this.onRowClick(item.slug)} key={item.slug} className="clickableRow">
+          <td>{item.id}</td>
           <td>
             {item.user.fullName}<br/>
             ({item.user.email})
@@ -180,9 +159,6 @@ class Withdrawals extends Component {
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{createdAt}</td>
           <td>{processedAt}</td>
-          <td>
-            <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
-          </td>
         </tr>
       )
     })
@@ -193,8 +169,8 @@ class Withdrawals extends Component {
       const createdAt = !!item.createdAt ? moment(item.createdAt).format("MMM D, YYYY  HH:mm") : '-'
       const cancelledAt = !!item.cancelledAt ? moment(item.cancelledAt).format("MMM D, YYYY  HH:mm") : '-'
       return (
-        <tr key={item.slug}>
-          <td><NavLink to={`/withdrawals/${item.slug}`}>{item.id}</NavLink></td>
+        <tr onClick={() => this.onRowClick(item.slug)} key={item.slug} className="clickableRow">
+          <td>{item.id}</td>
           <td>
             {item.user.fullName}<br/>
             ({item.user.email})
@@ -212,9 +188,6 @@ class Withdrawals extends Component {
           <td>$ {(+item.amount.usd).toFixed(2)}</td>
           <td>{createdAt}</td>
           <td>{cancelledAt}</td>
-          <td>
-            <button onClick={this.handleUndoClick.bind(this, item.slug)} className="btn btn-small btn-primary">Undo</button>
-          </td>
         </tr>
       )
     })
@@ -229,8 +202,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchUsers,
-  fetchWithdrawals,
-  updateWithdrawal
+  fetchWithdrawals
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Withdrawals))
