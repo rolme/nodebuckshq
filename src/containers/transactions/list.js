@@ -7,7 +7,7 @@ export default class TransactionsList extends Component {
 
   handleCancel(id, slug) {
     if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
-      this.props.updateTransaction(slug, 'cancel')
+      this.props.updateTransaction(slug, 'cancelled')
     }
   }
 
@@ -34,11 +34,11 @@ export default class TransactionsList extends Component {
     const { selectedTab } = this.props
     return selectedTab === 'pending' ? <td>
       <div className="d-flex justify-content-center">
-        <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'process')}>Process</Button>
+        <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'processed')}>Process</Button>
         <Button onClick={() => this.handleCancel.call(this, id, slug)}>Cancel</Button>
       </div>
     </td> : <td>
-      <div onClick={() => this.props.updateTransaction(slug, 'undo')} className="d-flex justify-content-center"><Button>Undo</Button></div>
+      <div onClick={() => this.props.updateTransaction(slug, 'pending')} className="d-flex justify-content-center"><Button>Undo</Button></div>
     </td>
   }
 }

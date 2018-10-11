@@ -133,12 +133,12 @@ class Withdrawal extends Component {
     if ( status === 'pending' ) {
       return (
         <div className="d-flex justify-content-center">
-          <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'process')}>Process</Button>
+          <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'processed')}>Process</Button>
         </div>
       )
     } else if ( type !== 'deposit' && type !== 'withdraw' ) {
       return (
-        <div onClick={() => this.props.updateTransaction(slug, 'undo')} className="d-flex justify-content-center">
+        <div onClick={() => this.props.updateTransaction(slug, 'pending')} className="d-flex justify-content-center">
           <Button>Undo</Button>
         </div>
       )
