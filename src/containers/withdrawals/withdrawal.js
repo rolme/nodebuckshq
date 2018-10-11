@@ -39,10 +39,6 @@ class Withdrawal extends Component {
     }
   }
 
-  handleProcessClick(slug) {
-    this.props.updateWithdrawal(slug, { status: 'processed' })
-  }
-
   handleCancelClick(slug) {
     this.props.updateWithdrawal(slug, { status: 'cancelled' })
   }
@@ -82,8 +78,6 @@ class Withdrawal extends Component {
     if ( status === 'pending' ) {
       return (
         <td>
-          <button onClick={this.handleProcessClick.bind(this, withdrawal.slug)} className="btn btn-small btn-primary">Process</button>
-          &nbsp;
           <button onClick={this.handleCancelClick.bind(this, withdrawal.slug)} className="btn btn-small btn-secondary">Cancel</button>
         </td>
       )
@@ -114,12 +108,6 @@ class Withdrawal extends Component {
   }
 
 
-  handleCancelTransaction(id) {
-    if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
-      this.props.updateTransaction(id, { status: 'cancelled' })
-    }
-  }
-
   displayTransactionsData(transactions) {
     return transactions.map(transaction => {
       const { id, createdAt, userName, userEmail, notes, type, amount, status } = transaction
@@ -141,17 +129,16 @@ class Withdrawal extends Component {
   }
 
   renderTransactionActions(transaction) {
-    const { id, type, status } = transaction
+    const { slug, type, status } = transaction
     if ( status === 'pending' ) {
       return (
         <div className="d-flex justify-content-center">
-          <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-          <Button onClick={() => this.handleCancelTransaction.call(this, id)}>Cancel</Button>
+          <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'processed')}>Process</Button>
         </div>
       )
     } else if ( type !== 'deposit' && type !== 'withdraw' ) {
       return (
-        <div onClick={() => this.props.updateTransaction(id, { status: 'pending' })} className="d-flex justify-content-center">
+        <div onClick={() => this.props.updateTransaction(slug, 'pending')} className="d-flex justify-content-center">
           <Button>Undo</Button>
         </div>
       )
