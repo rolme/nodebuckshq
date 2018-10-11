@@ -35,11 +35,11 @@ export const fetchTransactions = (page = 1, limit = 25) => {
   }
 }
 
-export const updateTransaction = (id, data) => {
+export const updateTransaction = (slug, status) => {
   return dispatch => {
     dispatch({ type: UPDATE })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-   axios.patch(`/api/transactions/${id}`, { transaction: data }).then(response => {
+   axios.patch(`/api/transactions/${slug}/${status}`).then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: UPDATE_FAILURE, payload: response.data })
       } else {

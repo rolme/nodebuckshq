@@ -16,7 +16,6 @@ import {
   updateNode,
   restoreNode
 } from '../../reducers/nodes'
-import { CREATE, CREATE_ERROR, CREATE_SUCCESS, REFRESH } from "../../reducers/announcements";
 
 class Node extends Component {
   constructor(props) {
