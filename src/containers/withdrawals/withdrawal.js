@@ -138,7 +138,7 @@ class Withdrawal extends Component {
       )
     } else if ( type !== 'deposit' && type !== 'withdraw' ) {
       return (
-        <div onClick={() => this.props.updateTransaction(slug, 'pending')} className="d-flex justify-content-center">
+        <div onClick={() => this.props.updateTransaction(slug, 'undo')} className="d-flex justify-content-center">
           <Button>Undo</Button>
         </div>
       )
