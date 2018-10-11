@@ -4,6 +4,9 @@ import axios from 'axios'
 export const FETCH = "users/FETCH"
 export const FETCH_SUCCESS = "users/FETCH_SUCCESS"
 export const FETCH_FAILURE = "users/FETCH_FAILURE"
+export const FETCH_USER = "users/FETCH_USER"
+export const FETCH_USER_SUCCESS = "users/FETCH_USER_SUCCESS"
+export const FETCH_USER_FAILURE = "users/FETCH_USER_FAILURE"
 export const UPDATE_USER_ID_VERIFICATION_STATUS = 'user/UPDATE_USER_ID_VERIFICATION_STATUS'
 export const UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS = 'user/UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS'
 export const UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE = 'user/UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE'
@@ -22,15 +25,31 @@ const initialState = {
 export const fetchUsers = (verificationPendingUsers = false) => {
   return dispatch => {
     dispatch({ type: FETCH })
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.get(`/api/users?verification_pending_users=${verificationPendingUsers}`).then(response => {
-      if (response.data.status === 'error') {
+      if ( response.data.status === 'error' ) {
         dispatch({ type: FETCH_FAILURE, payload: response.data })
       } else {
         dispatch({ type: FETCH_SUCCESS, payload: { data: response.data, verificationPendingUsers } })
       }
     }).catch(err => {
       dispatch({ type: FETCH_FAILURE, payload: err.data })
+    })
+  }
+}
+
+export const fetchUser = (slug) => {
+  return dispatch => {
+    dispatch({ type: FETCH_USER })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.get(`/api/users/${slug}`).then(response => {
+      if ( response.data.status === 'error' ) {
+        dispatch({ type: FETCH_USER_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: FETCH_USER_SUCCESS, payload: { data: response.data } })
+      }
+    }).catch(err => {
+      dispatch({ type: FETCH_USER_FAILURE, payload: err.data })
     })
   }
 }
@@ -42,24 +61,24 @@ export function updateUserIdVerificationStatus(slug, status, callback) {
       dispatch({ type: UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS, payload: { data: response.data, slug } })
       callback();
     })
-    .catch((error) => {
-      dispatch({ type: UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE, payload: error.message })
-      callback();
-    })
+      .catch((error) => {
+        dispatch({ type: UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE, payload: error.message })
+        callback();
+      })
   }
 }
 
 
 export default createReducer(initialState, ({
-  [FETCH]: (payload, state) => {
+  [ FETCH ]: (payload, state) => {
     return {
       ...state,
       error: false,
       pending: true
     }
   },
-  [FETCH_SUCCESS]: (payload, state) => {
-    if(payload.verificationPendingUsers) {
+  [ FETCH_SUCCESS ]: (payload, state) => {
+    if ( payload.verificationPendingUsers ) {
       return {
         ...state,
         error: false,
@@ -76,7 +95,7 @@ export default createReducer(initialState, ({
       }
     }
   },
-  [FETCH_FAILURE]: (payload, state) => {
+  [ FETCH_FAILURE ]: (payload, state) => {
     return {
       ...state,
       error: true,
@@ -84,15 +103,38 @@ export default createReducer(initialState, ({
       message: payload
     }
   },
-  [UPDATE_USER_ID_VERIFICATION_STATUS]: (payload, state) => {
+  [ FETCH_USER ]: (payload, state) => {
+    return {
+      ...state,
+      error: false,
+      pending: true
+    }
+  },
+  [ FETCH_USER_SUCCESS ]: (payload, state) => {
+      return {
+        ...state,
+        error: false,
+        pending: false,
+        data: payload.data
+      }
+  },
+  [ FETCH_USER_FAILURE ]: (payload, state) => {
+    return {
+      ...state,
+      error: true,
+      pending: false,
+      message: payload
+    }
+  },
+  [ UPDATE_USER_ID_VERIFICATION_STATUS ]: (payload, state) => {
     return {
       ...state,
       verificationError: false,
       verificationMessage: ''
     }
   },
-  [UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS]: (payload, state) => {
-    let verifications = [...state.verifications];
+  [ UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS ]: (payload, state) => {
+    let verifications = [ ...state.verifications ];
     const index = verifications.findIndex(v => v.slug === payload.slug)
     verifications.splice(index, 1);
     return {
@@ -101,7 +143,7 @@ export default createReducer(initialState, ({
       verificationMessage: payload.data.message
     }
   },
-  [UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE]: (payload, state) => {
+  [ UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE ]: (payload, state) => {
     return {
       ...state,
       verificationError: true,
