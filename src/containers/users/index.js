@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 
 import {
   fetchUsers
@@ -51,7 +52,7 @@ class Users extends Component {
         <tr key={item.id}>
           <td style={{verticalAlign: 'middle'}}>{item.id}</td>
           <td>
-            {item.fullName} {(item.admin) ? '(Admin)' : ''}
+            <NavLink to={`/users/${item.slug}`}>{item.fullName} {(item.admin) ? '(Admin)' : ''}</NavLink>
           </td>
           <td>{item.createdAt}</td>
           <td>{(item.confirmedAt) ? item.confirmedAt : 'Unconfirmed'}</td>
