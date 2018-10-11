@@ -155,8 +155,8 @@ class Node extends Component {
   }
 
   renderRewardSettings(data) {
-    const { rewardSettings, wallet } = data
-    switch ( rewardSettings ) {
+    const { rewardSetting, wallet } = data
+    switch ( rewardSetting ) {
       case 10:
         return <p>Auto Purchase</p>
       case 20:
