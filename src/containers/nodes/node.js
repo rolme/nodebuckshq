@@ -16,6 +16,7 @@ import {
   updateNode,
   restoreNode
 } from '../../reducers/nodes'
+import { CREATE, CREATE_ERROR, CREATE_SUCCESS, REFRESH } from "../../reducers/announcements";
 
 class Node extends Component {
   constructor(props) {
@@ -140,11 +141,30 @@ class Node extends Component {
               <th>Reward %</th>
               <td>{(node.rewardTotal / node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
             </tr>
+            <tr>
+              <th>Reward Settings</th>
+              <td>
+                {this.renderRewardSettings(node)}
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
       </div>
     )
+  }
+
+  renderRewardSettings(data) {
+    const { rewardSettings, wallet } = data
+    switch ( rewardSettings ) {
+      case 10:
+        return <p>Auto Purchase</p>
+      case 20:
+        return <p>Auto Withdraw <br/> {wallet}</p>
+      default:
+        return <p>Nodebuck</p>
+    }
+
   }
 
   displayConfiguration(node) {
