@@ -84,10 +84,10 @@ export default createReducer(initialState, ({
       list.processed = [...state.list.processed, payload.data]
       list.processedTotal += 1
       list.pendingTotal -= 1
-    } else if(status === 'canceled') {
+    } else if(status === 'cancelled') {
       list.pending.splice(index, 1)
-      list.canceled = [...state.list.canceled, payload.data]
-      list.canceledTotal += 1
+      list.cancelled = [...state.list.cancelled, payload.data]
+      list.cancelledTotal += 1
       list.pendingTotal -= 1
     } else {
       list.pending[index] = payload.data
