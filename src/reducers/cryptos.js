@@ -22,7 +22,8 @@ const initialState = {
   error: false,
   errorUpdating: false,
   message: '',
-  updateMessage: ''
+  updateMessage: '',
+  isScraping: false
 }
 
 // STATE ///////////////////////////////////////////////////////////////////////
@@ -96,6 +97,7 @@ export default (state = initialState, action) => {
         rewarderError: false,
         rewarderMessage: '',
         successfullyScraped: false,
+        isScraping: true,
       }
 
     case TEST_REWARD_SCRAPER_SUCCESS:
@@ -104,6 +106,7 @@ export default (state = initialState, action) => {
         rewarderError: false,
         rewarderMessage: action.payload.message,
         successfullyScraped: action.payload,
+        isScraping: false,
       }
 
     case TEST_REWARD_SCRAPER_ERROR:
@@ -112,6 +115,7 @@ export default (state = initialState, action) => {
         rewarderError: true,
         rewarderMessage: action.payload.message,
         successfullyScraped: false,
+        isScraping: false,
       }
 
     default:
@@ -167,7 +171,7 @@ export function testRewardScraper(slug, wallet, date) {
   return dispatch => {
     dispatch({ type: TEST_REWARD_SCRAPER })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.get(`/api/cryptos/${slug}/reward_scraper?wallet=${wallet}&date=${date}`)
+    axios.get(`/api/cryptos/${slug}/reward_scraper?wallet=${wallet}&date=${new Date(date)}`)
       .then((response) => {
         if(response.data.status !== 'error') {
           dispatch({ type: TEST_REWARD_SCRAPER_SUCCESS, payload: response.data })

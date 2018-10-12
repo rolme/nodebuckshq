@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Container, Button, Form, FormGroup, Input } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import { ClipLoader } from 'react-spinners';
 import { 
   fetchCrypto,
   testRewardScraper 
@@ -67,7 +68,7 @@ class Crypto extends Component {
 
   renderCheckRewardScrapingForm(crypto) {
     const { wallet, date } = this.state
-    const { rewarderMessage, rewarderError, successfullyScraped } = this.props
+    const { rewarderMessage, rewarderError, successfullyScraped, isScraping } = this.props
     return(
       <Container className="mt-4 pt-4">
         <Form>
@@ -89,8 +90,17 @@ class Crypto extends Component {
           <Button 
             color="primary"
             onClick={() => this.props.testRewardScraper(crypto.slug, wallet, date)}
+            style={{ height: 40, width: 200}}
           >
-            Test Reward Scraping
+            { isScraping ?
+              <div>
+                <ClipLoader
+                  size={30}
+                  loading={true}
+                />
+              </div> :
+              <div>Test Reward Scraping</div>
+            }
           </Button>
           { rewarderError && <p className='mt-2 text-danger'>{rewarderMessage}</p> }
           { successfullyScraped &&
@@ -100,7 +110,7 @@ class Crypto extends Component {
                   {successfullyScraped.url}
                 </a>
               </div>
-              <div className="text-success">Balance: {successfullyScraped.total_balance}</div>
+              <div className="text-success mt-1">Total amount: {successfullyScraped.total_amount_scraped}</div>
             </div>
           }
         </Form>
@@ -346,6 +356,7 @@ const mapStateToProps = state => ({
   rewarderMessage: state.cryptos.rewarderMessage,
   rewarderError: state.cryptos.rewarderError,
   successfullyScraped: state.cryptos.successfullyScraped,
+  isScraping: state.cryptos.isScraping,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
