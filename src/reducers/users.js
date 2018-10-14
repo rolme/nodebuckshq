@@ -4,6 +4,12 @@ import axios from 'axios'
 export const FETCH = "users/FETCH"
 export const FETCH_SUCCESS = "users/FETCH_SUCCESS"
 export const FETCH_FAILURE = "users/FETCH_FAILURE"
+export const DISABLE_USER = "users/DISABLE_USER"
+export const DISABLE_USER_SUCCESS = "users/DISABLE_USER_SUCCESS"
+export const DISABLE_USER_FAILURE = "users/DISABLE_USER_FAILURE"
+export const ENABLE_USER = "users/ENABLE_USER"
+export const ENABLE_USER_SUCCESS = "users/ENABLE_USER_SUCCESS"
+export const ENABLE_USER_FAILURE = "users/ENABLE_USER_FAILURE"
 export const FETCH_USER = "users/FETCH_USER"
 export const FETCH_USER_SUCCESS = "users/FETCH_USER_SUCCESS"
 export const FETCH_USER_FAILURE = "users/FETCH_USER_FAILURE"
@@ -50,6 +56,38 @@ export const fetchUser = (slug) => {
       }
     }).catch(err => {
       dispatch({ type: FETCH_USER_FAILURE, payload: err.data })
+    })
+  }
+}
+
+export const enableUser = (slug) => {
+  return dispatch => {
+    dispatch({ type: ENABLE_USER })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/users/${slug}/enable`).then(response => {
+      if ( response.data.status === 'error' ) {
+        dispatch({ type: ENABLE_USER_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: ENABLE_USER_SUCCESS, payload: response.data })
+      }
+    }).catch(err => {
+      dispatch({ type: ENABLE_USER_FAILURE, payload: err.data })
+    })
+  }
+}
+
+export const disableUser = (slug) => {
+  return dispatch => {
+    dispatch({ type: DISABLE_USER })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/users/${slug}/disable`).then(response => {
+      if ( response.data.status === 'error' ) {
+        dispatch({ type: DISABLE_USER_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: DISABLE_USER_SUCCESS, payload: response.data })
+      }
+    }).catch(err => {
+      dispatch({ type: DISABLE_USER_FAILURE, payload: err.data })
     })
   }
 }
@@ -103,6 +141,20 @@ export default createReducer(initialState, ({
       message: payload
     }
   },
+  [ ENABLE_USER ]: (payload, state) => {
+    return {
+      ...state,
+      error: false,
+      pending: true
+    }
+  },
+  [ DISABLE_USER ]: (payload, state) => {
+    return {
+      ...state,
+      error: false,
+      pending: true
+    }
+  },
   [ FETCH_USER ]: (payload, state) => {
     return {
       ...state,
@@ -118,7 +170,41 @@ export default createReducer(initialState, ({
         data: payload.data
       }
   },
+  [ ENABLE_USER_SUCCESS ]: (payload, state) => {
+    return {
+      ...state,
+      data: payload.data,
+      error: false,
+      list: merge(state.list, payload.data),
+      pending: false
+    }
+  },
+  [ DISABLE_USER_SUCCESS ]: (payload, state) => {
+    return {
+      ...state,
+      data: payload.data,
+      error: false,
+      list: merge(state.list, payload.data),
+      pending: false
+    }
+  },
   [ FETCH_USER_FAILURE ]: (payload, state) => {
+    return {
+      ...state,
+      error: true,
+      pending: false,
+      message: payload
+    }
+  },
+  [ ENABLE_USER_FAILURE ]: (payload, state) => {
+    return {
+      ...state,
+      error: true,
+      pending: false,
+      message: payload
+    }
+  },
+  [ DISABLE_USER_FAILURE ]: (payload, state) => {
     return {
       ...state,
       error: true,
@@ -151,3 +237,17 @@ export default createReducer(initialState, ({
     }
   },
 }))
+
+// TODO: Move into a helper with an optional key
+function merge(originalList, newItem) {
+  let found = false
+  let list = originalList.map(item => {
+    if (item.slug === newItem.slug) {
+      found = true
+      return newItem
+    } else {
+      return item
+    }
+  })
+  return (found) ? list : list.push(newItem) && list
+}
