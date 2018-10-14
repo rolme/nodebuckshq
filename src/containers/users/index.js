@@ -8,8 +8,8 @@ import "react-toggle/style.css"
 
 import {
   disableUser,
-  fetchUsers,
-  enableUser
+  enableUser,
+  fetchUsers
 } from '../../reducers/users'
 
 class Users extends Component {
@@ -98,8 +98,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   disableUser,
-  fetchUsers,
-  enableUser
+  enableUser,
+  fetchUsers
 }, dispatch)
 
 export default connect(
