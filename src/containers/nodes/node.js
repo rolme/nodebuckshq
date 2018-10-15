@@ -208,6 +208,38 @@ class Node extends Component {
               </td>
             </tr>
             <tr>
+              <th>VPS URL:</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="vpsUrl"
+                  showButtons={false}
+                  value={node.vpsUrl}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'vps_url')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>VPS Monthly:</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="vpsMonthlyCost"
+                  showButtons={false}
+                  value={node.vpsMonthlyCost}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {value} USD</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'vps_monthly_cost')}
+                />
+              </td>
+            </tr>
+            <tr>
               <th>Status</th>
               <td>
                 {!node.deletedAt && <span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span>}
