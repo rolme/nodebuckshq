@@ -42,6 +42,7 @@
     "react-router-hash-link": "^1.2.0",
     "react-scripts": "1.1.5",
     "react-spinners": "^0.4.5",
+    "react-toggle": "^4.0.2",
     "react-x-editable": "^0.0.10-beta",
     "reactstrap": "^6.4.0",
     "redux": "^4.0.0",

@@ -3,7 +3,12 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
+import Toggle from 'react-toggle'
+import "react-toggle/style.css"
+
 import {
+  disableUser,
+  enableUser,
   fetchUsers
 } from '../../reducers/users'
 
@@ -13,6 +18,14 @@ class Users extends Component {
 
     if (list.length <= 1 && user !== '') {
       this.props.fetchUsers()
+    }
+  }
+
+  handleEnabledToggle(user) {
+    if (user.enabled) {
+      this.props.disableUser(user.slug)
+    } else {
+      this.props.enableUser(user.slug)
     }
   }
 
@@ -35,6 +48,7 @@ class Users extends Component {
                 <th>created</th>
                 <th>confirmed?</th>
                 <th>deleted?</th>
+                <th>Enabled?</th>
               </tr>
             </thead>
             <tbody>
@@ -47,7 +61,7 @@ class Users extends Component {
   }
 
   displayUsers(list) {
-    return list.map(item => {
+    return list.sort((a, b) => a.first > b.first).map(item => {
       return(
         <tr key={item.id}>
           <td style={{verticalAlign: 'middle'}}>{item.id}</td>
@@ -57,6 +71,12 @@ class Users extends Component {
           <td>{item.createdAt}</td>
           <td>{(item.confirmedAt) ? item.confirmedAt : 'Unconfirmed'}</td>
           <td>{(item.deletedAt) ? item.deletedAt : 'Active'}</td>
+          <td>
+            <Toggle
+              defaultChecked={item.enabled}
+              onChange={(event) => this.handleEnabledToggle(item)}
+            />
+          </td>
         </tr>
       )
     })
@@ -77,6 +97,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  disableUser,
+  enableUser,
   fetchUsers
 }, dispatch)
 
