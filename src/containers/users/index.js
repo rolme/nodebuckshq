@@ -61,7 +61,13 @@ class Users extends Component {
   }
 
   displayUsers(list) {
-    return list.sort((a, b) => a.first > b.first).map(item => {
+    return list.sort(
+      (a, b) => {
+        if (a.fullName < b.fullName) return -1
+        if (a.fullName > b.fullName) return 1
+        return 0
+      }
+    ).map(item => {
       return(
         <tr key={item.id}>
           <td style={{verticalAlign: 'middle'}}>{item.id}</td>
