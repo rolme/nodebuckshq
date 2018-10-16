@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Container, Row, Col, Button, Form, FormGroup, FormFeedback, Label, Input } from 'reactstrap';
 import { withRouter } from 'react-router-dom'
 import Editor from '../../components/editor'
 
@@ -22,7 +22,9 @@ class CryptoEdit extends Component {
     this.state = {
       description: '',
       profile: '',
-      purchasableStatus: ''
+      purchasableStatus: '',
+      firstRewardDays: '',
+      firstRewardDaysMessage: ''
     }
   }
 
@@ -33,13 +35,15 @@ class CryptoEdit extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { crypto: { description, profile, purchasableStatus }, pending } = nextProps
-    !pending && this.setState({ description, profile, purchasableStatus })
+    const { crypto: { description, profile, purchasableStatus, firstRewardDays }, pending } = nextProps
+    !pending && this.setState({ description, profile, purchasableStatus, firstRewardDays })
   }
 
   purchasableOptions() {
     const { purchasableStatuses } = this.props
-    if (purchasableStatuses.count === 0) { return [{}] }
+    if ( purchasableStatuses.count === 0 ) {
+      return [ {} ]
+    }
 
     return purchasableStatuses.map(status => {
       return { value: status, label: status }
@@ -60,13 +64,26 @@ class CryptoEdit extends Component {
 
   handleSubmit = () => {
     const { crypto } = this.props
-    const { description, profile, purchasableStatus } = this.state
-    this.props.updateCrypto(crypto.slug, { description, profile, purchasable_status: purchasableStatus })
+    const { description, profile, purchasableStatus, firstRewardDays } = this.state
+    const isValid = this.validation()
+    isValid && this.props.updateCrypto(crypto.slug, { description, first_reward_days: +firstRewardDays, profile, purchasable_status: purchasableStatus })
   }
+
+  validation() {
+    let isValid = true, firstRewardDaysMessage = ""
+    const { firstRewardDays } = this.state
+    if ( !Number.isInteger(+firstRewardDays) || firstRewardDays <= 0 ) {
+      firstRewardDaysMessage = "Please type a positive integer"
+      isValid = false
+    }
+    this.setState({ firstRewardDaysMessage })
+    return isValid
+  }
+
 
   render() {
     const { match: { params }, crypto, message, error, pending } = this.props
-    const { description, profile, purchasableStatus } = this.state
+    const { description, profile, purchasableStatus, firstRewardDays, firstRewardDaysMessage } = this.state
 
     if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
@@ -80,7 +97,22 @@ class CryptoEdit extends Component {
             <Form>
               <FormGroup>
                 <Label for="purchasableStatus">Purchasable Status:</Label>
-                <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')} />
+                <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')}/>
+              </FormGroup>
+              <FormGroup row className="mx-0 align-items-center">
+                <Label for="firstRewardDays" className="mb-0">Days before 1st reward:</Label>
+                <Col xl={2} lg={3} md={3} sm={5} xs={10}>
+                  <Input
+                    type="text"
+                    id="firstRewardDays"
+                    name="firstRewardDays"
+                    onChange={this.handleInputChange('firstRewardDays')}
+                    value={firstRewardDays}
+                    invalid={!!firstRewardDaysMessage}
+                  />
+                </Col>
+                <Label for="firstRewardDays" className="mb-0">days</Label>
+                <FormFeedback>{firstRewardDaysMessage}</FormFeedback>
               </FormGroup>
               <FormGroup>
                 <Label for="description">Description:</Label>

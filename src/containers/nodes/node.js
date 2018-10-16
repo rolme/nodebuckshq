@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
+import { valueFormat } from "../../lib/helpers"
 
 import {
   clearMessages,
@@ -66,6 +67,7 @@ class Node extends Component {
           <div className="col-12 px-5 d-flex flex-xl-row flex-lg-row flex-column">
             <div className="col-xl-4 col-lg-4 col-12 px-0">
               {this.displaySummary(node)}
+              {this.displayFinancialSection(node)}
               {this.displayConfiguration(node)}
             </div>
             <div className="col-xl-8 col-lg-8 col-12">
@@ -166,6 +168,96 @@ class Node extends Component {
 
   }
 
+  displayFinancialSection(node) {
+    return (
+      <div className="row">
+        <div className="col-md-12">
+          <h5>Financial Section</h5>
+          <table className="table">
+            <tbody>
+            <tr>
+              <th>Buy Price</th>
+              <td className="text-right">
+                {valueFormat(node.buyPrice, 2)}
+              </td>
+            </tr>
+            <tr>
+              <th>Nodebucks Buy Price</th>
+              <td className="text-right">
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="nodebucksBuyAmount"
+                  showButtons={false}
+                  value={node.nodebucksBuyAmount}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'nb_buy_amount')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Buy Profit</th>
+              <td className="text-right">
+                {valueFormat(node.buyProfit, 2)}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table className="table">
+            <tbody>
+            <tr>
+              <th>Sell Price</th>
+              <td className="text-right">
+                {valueFormat(node.sellPrice, 2)}
+              </td>
+            </tr>
+            <tr>
+              <th>Nodebucks Sell Price</th>
+              <td className="text-right">
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="nodebucksSellAmount"
+                  showButtons={false}
+                  value={node.nodebucksSellAmount}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value,2)}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'nb_sell_amount')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>Sell Profit</th>
+              <td className="text-right">
+                {valueFormat(node.sellProfit, 2)}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <table className="table">
+            <tbody>
+            <tr>
+              <th>Total Fees</th>
+              <td className="text-right">
+                {valueFormat(node.totalFees, 2)}
+              </td>
+            </tr>
+            <tr>
+              <th>Collected</th>
+              <td className="text-right">
+                {valueFormat(node.totalFeesCollected, 2)}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+
   displayConfiguration(node) {
     return (
       <div className="row">
@@ -205,6 +297,38 @@ class Node extends Component {
                   handleSubmit={this.handleSubmit.bind(this, 'wallet')}
                 />
                 {node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p>}
+              </td>
+            </tr>
+            <tr>
+              <th>VPS URL:</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="vpsUrl"
+                  showButtons={false}
+                  value={node.vpsUrl}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'vps_url')}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>VPS Monthly:</th>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="vpsMonthlyCost"
+                  showButtons={false}
+                  value={node.vpsMonthlyCost}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value,2)} USD</span>)
+                  }}
+                  handleSubmit={this.handleSubmit.bind(this, 'vps_monthly_cost')}
+                />
               </td>
             </tr>
             <tr>
