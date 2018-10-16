@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Container, Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { withRouter } from 'react-router-dom'
 import Editor from '../../components/editor'
+import Editable from 'react-x-editable'
 
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
@@ -22,7 +23,8 @@ class CryptoEdit extends Component {
     this.state = {
       description: '',
       profile: '',
-      purchasableStatus: ''
+      purchasableStatus: '',
+      firstRewardDays: ''
     }
   }
 
@@ -33,8 +35,8 @@ class CryptoEdit extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { crypto: { description, profile, purchasableStatus }, pending } = nextProps
-    !pending && this.setState({ description, profile, purchasableStatus })
+    const { crypto: { description, profile, purchasableStatus, firstRewardDays }, pending } = nextProps
+    !pending && this.setState({ description, profile, purchasableStatus, firstRewardDays })
   }
 
   purchasableOptions() {
@@ -60,13 +62,13 @@ class CryptoEdit extends Component {
 
   handleSubmit = () => {
     const { crypto } = this.props
-    const { description, profile, purchasableStatus } = this.state
-    this.props.updateCrypto(crypto.slug, { description, profile, purchasable_status: purchasableStatus })
+    const { description, profile, purchasableStatus, firstRewardDays } = this.state
+    this.props.updateCrypto(crypto.slug, { description, first_reward_days: +firstRewardDays, profile, purchasable_status: purchasableStatus })
   }
 
   render() {
     const { match: { params }, crypto, message, error, pending } = this.props
-    const { description, profile, purchasableStatus } = this.state
+    const { description, profile, purchasableStatus, firstRewardDays } = this.state
 
     if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
@@ -81,6 +83,25 @@ class CryptoEdit extends Component {
               <FormGroup>
                 <Label for="purchasableStatus">Purchasable Status:</Label>
                 <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')} />
+              </FormGroup>
+              <FormGroup row className="mx-0">
+                <Label for="firstRewardDays" className="mr-2">Days before 1st reward:</Label>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="firstRewardDays"
+                  showButtons={false}
+                  value={firstRewardDays}
+                  display={value => {
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value} days</span>)
+                  }}
+                  validate={(value) => {
+                    if(!Number.isInteger(+value) || value <= 0){
+                      return <span className="text-danger ">Please type a positive integer</span>
+                    }
+                  }}
+                  handleSubmit={this.handleSelectChange('firstRewardDays')}
+                />
               </FormGroup>
               <FormGroup>
                 <Label for="description">Description:</Label>
