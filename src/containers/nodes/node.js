@@ -191,7 +191,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.nodebucksBuyAmount}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${value}</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'nb_buy_amount')}
                 />
@@ -223,7 +223,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.nodebucksSellAmount}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${value}</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value,2)}</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'nb_sell_amount')}
                 />
@@ -325,7 +325,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.vpsMonthlyCost}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {value} USD</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value,2)} USD</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'vps_monthly_cost')}
                 />
