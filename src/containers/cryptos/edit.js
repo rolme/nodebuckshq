@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Container, Row, Col, Button, Form, FormGroup, FormFeedback, Label, Input } from 'reactstrap';
 import { withRouter } from 'react-router-dom'
 import Editor from '../../components/editor'
-import Editable from 'react-x-editable'
 
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
@@ -24,7 +23,8 @@ class CryptoEdit extends Component {
       description: '',
       profile: '',
       purchasableStatus: '',
-      firstRewardDays: ''
+      firstRewardDays: '',
+      firstRewardDaysMessage: ''
     }
   }
 
@@ -41,7 +41,9 @@ class CryptoEdit extends Component {
 
   purchasableOptions() {
     const { purchasableStatuses } = this.props
-    if (purchasableStatuses.count === 0) { return [{}] }
+    if ( purchasableStatuses.count === 0 ) {
+      return [ {} ]
+    }
 
     return purchasableStatuses.map(status => {
       return { value: status, label: status }
@@ -63,12 +65,25 @@ class CryptoEdit extends Component {
   handleSubmit = () => {
     const { crypto } = this.props
     const { description, profile, purchasableStatus, firstRewardDays } = this.state
-    this.props.updateCrypto(crypto.slug, { description, first_reward_days: +firstRewardDays, profile, purchasable_status: purchasableStatus })
+    const isValid = this.validation()
+    isValid && this.props.updateCrypto(crypto.slug, { description, first_reward_days: +firstRewardDays, profile, purchasable_status: purchasableStatus })
   }
+
+  validation() {
+    let isValid = true, firstRewardDaysMessage = ""
+    const { firstRewardDays } = this.state
+    if ( !Number.isInteger(+firstRewardDays) || firstRewardDays <= 0 ) {
+      firstRewardDaysMessage = "Please type a positive integer"
+      isValid = false
+    }
+    this.setState({ firstRewardDaysMessage })
+    return isValid
+  }
+
 
   render() {
     const { match: { params }, crypto, message, error, pending } = this.props
-    const { description, profile, purchasableStatus, firstRewardDays } = this.state
+    const { description, profile, purchasableStatus, firstRewardDays, firstRewardDaysMessage } = this.state
 
     if ( Object.keys(crypto).length === 0 ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
@@ -82,26 +97,22 @@ class CryptoEdit extends Component {
             <Form>
               <FormGroup>
                 <Label for="purchasableStatus">Purchasable Status:</Label>
-                <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')} />
+                <Dropdown name="purchasableStatus" className="ml-2" options={this.purchasableOptions()} value={purchasableStatus} onChange={this.handleSelectChange('purchasableStatus')}/>
               </FormGroup>
-              <FormGroup row className="mx-0">
-                <Label for="firstRewardDays" className="mr-2">Days before 1st reward:</Label>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="firstRewardDays"
-                  showButtons={false}
-                  value={firstRewardDays}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value} days</span>)
-                  }}
-                  validate={(value) => {
-                    if(!Number.isInteger(+value) || value <= 0){
-                      return <span className="text-danger ">Please type a positive integer</span>
-                    }
-                  }}
-                  handleSubmit={this.handleSelectChange('firstRewardDays')}
-                />
+              <FormGroup row className="mx-0 align-items-center">
+                <Label for="firstRewardDays" className="mb-0">Days before 1st reward:</Label>
+                <Col xl={2} lg={3} md={3} sm={5} xs={10}>
+                  <Input
+                    type="text"
+                    id="firstRewardDays"
+                    name="firstRewardDays"
+                    onChange={this.handleInputChange('firstRewardDays')}
+                    value={firstRewardDays}
+                    invalid={!!firstRewardDaysMessage}
+                  />
+                </Col>
+                <Label for="firstRewardDays" className="mb-0">days</Label>
+                <FormFeedback>{firstRewardDaysMessage}</FormFeedback>
               </FormGroup>
               <FormGroup>
                 <Label for="description">Description:</Label>
