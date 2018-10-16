@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import { valueFormat } from '../../lib/helpers'
+import { Tabs, Tab } from 'react-bootstrap-tabs'
 import { Table, Button } from 'reactstrap'
 
 import {
@@ -21,6 +22,7 @@ class Withdrawal extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      tab: 'Actions',
       transactionsSortedColumnName: 'id',
       isTransactionDescending: false
     }
@@ -109,7 +111,15 @@ class Withdrawal extends Component {
 
 
   displayTransactionsData(transactions) {
-    return transactions.map(transaction => {
+    const { tab } = this.state
+
+    return transactions.filter(t => {
+      if (tab === 'Actions') {
+        return t.type === 'transfer'
+      } else {
+        return t.type !== 'transfer'
+      }
+    }).map(transaction => {
       const { id, createdAt, userName, userEmail, notes, type, amount, status } = transaction
       return (
         <tr key={id}>
@@ -120,9 +130,11 @@ class Withdrawal extends Component {
           <td>{type}</td>
           <td>{valueFormat(amount, 2)}</td>
           <td>{status}</td>
+          { (type === 'transfer') &&
           <td>
             {this.renderTransactionActions(transaction)}
           </td>
+          }
         </tr>
       )
     })
@@ -173,7 +185,7 @@ class Withdrawal extends Component {
   }
 
   render() {
-    const { transactionsSortedColumnName, isTransactionDescending } = this.state
+    const { tab, transactionsSortedColumnName, isTransactionDescending } = this.state
     const { match: { params }, withdrawal, pending } = this.props
 
     if ( pending || withdrawal.slug === undefined ) {
@@ -210,32 +222,63 @@ class Withdrawal extends Component {
         </div>
         <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">Transactions</h2>
-          <Table striped responsive>
-            <thead>
-            <tr>
-              <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon
-                onClick={() => this.onTransactionsSortClick('id')}
-                icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
-              </p></th>
-              <th>Created Date</th>
-              <th>User</th>
-              <th>Notes</th>
-              <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
-                onClick={() => this.onTransactionsSortClick('type')}
-                icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
-                className="ml-2"/></p></th>
-              <th>Amount</th>
-              <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon
-                onClick={() => this.onTransactionsSortClick('status')}
-                icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
-                className="ml-2"/></p></th>
-              <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {this.displayTransactionsData(transactions)}
-            </tbody>
-          </Table>
+          <Tabs onSelect={(idx, label) => this.setState({ tab: label })} selected={tab}>
+            <Tab label="Actions">
+              <Table striped responsive className="mt-3">
+                <thead>
+                <tr>
+                  <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('id')}
+                    icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
+                  </p></th>
+                  <th>Created Date</th>
+                  <th>User</th>
+                  <th>Notes</th>
+                  <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('type')}
+                    icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                    className="ml-2"/></p></th>
+                  <th>Amount</th>
+                  <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('status')}
+                    icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                    className="ml-2"/></p></th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {this.displayTransactionsData(transactions)}
+                </tbody>
+              </Table>
+            </Tab>
+            <Tab label="Log">
+              <Table striped responsive className="mt-3">
+                <thead>
+                <tr>
+                  <th><p onClick={() => this.onTransactionsSortClick('id')} className="clickableCell mb-0">Id <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('id')}
+                    icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
+                  </p></th>
+                  <th>Created Date</th>
+                  <th>User</th>
+                  <th>Notes</th>
+                  <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('type')}
+                    icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                    className="ml-2"/></p></th>
+                  <th>Amount</th>
+                  <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon
+                    onClick={() => this.onTransactionsSortClick('status')}
+                    icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
+                    className="ml-2"/></p></th>
+                </tr>
+                </thead>
+                <tbody>
+                  {this.displayTransactionsData(transactions)}
+                </tbody>
+              </Table>
+            </Tab>
+          </Tabs>
         </div>
         <div className="col-12 px-5 mt-4">
           <h2 className="mt-2">User</h2>

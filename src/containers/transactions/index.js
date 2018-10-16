@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Table, Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination"
 import qs from 'query-string'
 import './index.css'
 
