@@ -3,13 +3,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Table, Row, Col, Input } from 'reactstrap'
 import TransactionsList from './list'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination"
 import qs from 'query-string'
 import './index.css'
 
 import {
   fetchTransactions,
-  updateTransaction,
+  updateTransactionStatus,
 } from '../../reducers/transactions'
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -184,7 +184,7 @@ class Transactions extends Component {
       <TransactionsList
         data={data}
         selectedTab={selectedTab}
-        updateTransaction={this.props.updateTransaction}
+        updateTransactionStatus={this.props.updateTransactionStatus}
       />
     )
   }
@@ -200,7 +200,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchTransactions,
-  updateTransaction,
+  updateTransactionStatus,
 }, dispatch)
 
 export default connect(

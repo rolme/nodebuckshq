@@ -7,6 +7,10 @@ export const FETCH = "transactions/FETCH"
 export const FETCH_SUCCESS = "transactions/FETCH_SUCCESS"
 export const FETCH_FAILURE = "transactions/FETCH_FAILURE"
 
+export const UPDATE_STATUS = "transactions/UPDATE_STATUS"
+export const UPDATE_STATUS_SUCCESS = "transactions/UPDATE_STATUS_SUCCESS"
+export const UPDATE_STATUS_FAILURE = "transactions/UPDATE_STATUS_FAILURE"
+
 export const UPDATE = "transactions/UPDATE"
 export const UPDATE_SUCCESS = "transactions/UPDATE_SUCCESS"
 export const UPDATE_FAILURE = "transactions/UPDATE_FAILURE"
@@ -35,11 +39,27 @@ export const fetchTransactions = (page = 1, limit = 25) => {
   }
 }
 
-export const updateTransaction = (slug, status) => {
+export const updateTransactionStatus = (slug, status) => {
+  return dispatch => {
+    dispatch({ type: UPDATE_STATUS })
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+   axios.patch(`/api/transactions/${slug}/${status}`).then(response => {
+      if (response.data.status === 'error') {
+        dispatch({ type: UPDATE_STATUS_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: UPDATE_STATUS_SUCCESS, payload: { data: response.data }})
+      }
+    }).catch(err => {
+      dispatch({ type: UPDATE_STATUS_FAILURE, payload: err.data })
+    })
+  }
+}
+
+export const updateTransaction = (slug, data) => {
   return dispatch => {
     dispatch({ type: UPDATE })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-   axios.patch(`/api/transactions/${slug}/${status}`).then(response => {
+   axios.patch(`/api/transactions/${slug}`, { transaction: data }).then(response => {
       if (response.data.status === 'error') {
         dispatch({ type: UPDATE_FAILURE, payload: response.data })
       } else {
@@ -59,7 +79,7 @@ export default createReducer(initialState, ({
       fetching: true
     }
   },
-  [UPDATE]: (payload, state) => {
+  [UPDATE_STATUS]: (payload, state) => {
     return {
       ...state,
       error: false,
@@ -99,6 +119,31 @@ export default createReducer(initialState, ({
       fetching: false
     }
   },
+  [UPDATE_STATUS_SUCCESS]: (payload, state) => {
+    const status = payload.data.status
+    let list = state.list
+    const index = list.pending.findIndex(tx => tx.id === payload.data.id)
+
+    if(status === 'processed') {
+      list.pending.splice(index, 1)
+      list.processed = [...state.list.processed, payload.data]
+      list.processedTotal += 1
+      list.pendingTotal -= 1
+    } else if(status === 'cancelled') {
+      list.pending.splice(index, 1)
+      list.cancelled = [...state.list.cancelled, payload.data]
+      list.cancelledTotal += 1
+      list.pendingTotal -= 1
+    } else {
+      list.pending[index] = payload.data
+    }
+
+    return {
+      ...state,
+      error: false,
+      fetching: false
+    }
+  },
   [FETCH_FAILURE]: (payload, state) => {
     return {
       ...state,
@@ -107,7 +152,7 @@ export default createReducer(initialState, ({
       message: payload
     }
   },
-  [UPDATE_FAILURE]: (payload, state) => {
+  [UPDATE_STATUS_FAILURE]: (payload, state) => {
     return {
       ...state,
       error: true,
