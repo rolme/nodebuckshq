@@ -120,15 +120,15 @@ class Withdrawal extends Component {
         return t.type !== 'transfer'
       }
     }).map(transaction => {
-      const { id, createdAt, userName, userEmail, notes, type, amount, status } = transaction
+      const { id, createdAt, userName, userEmail, notes, type, amount, status, symbol } = transaction
+      let value = (notes.includes('USD transfer to')) ? `$${valueFormat(amount, 2)}` : `${amount} ${symbol}`
       return (
         <tr key={id}>
           <td>{id}</td>
-          <td>{createdAt}</td>
-          <td>{userName} {userEmail}</td>
+          { (tab !== 'Actions') && <td>{userName} {userEmail}</td> }
           <td>{notes || '-'}</td>
           <td>{type}</td>
-          <td>{valueFormat(amount, 2)}</td>
+          <td>{value}</td>
           <td>{status}</td>
           { (type === 'transfer') &&
           <td>
@@ -231,8 +231,6 @@ class Withdrawal extends Component {
                     onClick={() => this.onTransactionsSortClick('id')}
                     icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
                   </p></th>
-                  <th>Created Date</th>
-                  <th>User</th>
                   <th>Notes</th>
                   <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
                     onClick={() => this.onTransactionsSortClick('type')}
@@ -259,7 +257,6 @@ class Withdrawal extends Component {
                     onClick={() => this.onTransactionsSortClick('id')}
                     icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
                   </p></th>
-                  <th>Created Date</th>
                   <th>User</th>
                   <th>Notes</th>
                   <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
