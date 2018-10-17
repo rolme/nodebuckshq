@@ -120,7 +120,7 @@ class Withdrawal extends Component {
         return t.type !== 'transfer'
       }
     }).map(transaction => {
-      const { id, createdAt, userName, userEmail, notes, type, amount, status, symbol } = transaction
+      const { id, userName, userEmail, notes, type, amount, status, symbol } = transaction
       let value = (notes.includes('USD transfer to')) ? `$${valueFormat(amount, 2)}` : `${amount} ${symbol}`
       return (
         <tr key={id}>
