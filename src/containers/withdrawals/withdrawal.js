@@ -6,6 +6,8 @@ import { valueFormat } from '../../lib/helpers'
 import { Tabs, Tab } from 'react-bootstrap-tabs'
 import { Table, Button } from 'reactstrap'
 
+import Editable from 'react-x-editable'
+
 import {
   fetchWithdrawal,
   updateWithdrawal
@@ -13,6 +15,7 @@ import {
 
 import {
   updateTransaction,
+  updateTransactionStatus,
 } from '../../reducers/transactions'
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -109,6 +112,9 @@ class Withdrawal extends Component {
     )
   }
 
+  handleTransactionAmountSubmit(slug, el) {
+    this.props.updateTransaction(slug, { amount: el.value })
+  }
 
   displayTransactionsData(transactions) {
     const { tab } = this.state
@@ -120,8 +126,31 @@ class Withdrawal extends Component {
         return t.type !== 'transfer'
       }
     }).map(transaction => {
-      const { id, userName, userEmail, notes, type, amount, status, symbol } = transaction
+      const { id, userName, userEmail, notes, type, amount, slug, status, symbol } = transaction
       let value = (notes.includes('USD transfer to')) ? `$${valueFormat(amount, 2)}` : `${amount} ${symbol}`
+      if (notes.includes('convert to')) {
+        value = (
+          <span>
+            <Editable
+              dataType="text"
+              mode="inline"
+              name="amount"
+              showButtons={false}
+              value={amount}
+              validate={(value) => {
+                if(!value.match(/^-?\d*(\.\d+)?$/)) {
+                  return 'number required'
+                }
+              }}
+              display={value => {
+                return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+              }}
+              handleSubmit={this.handleTransactionAmountSubmit.bind(this, slug)}
+            />
+            {symbol}
+          </span>
+        )
+      }
       return (
         <tr key={id}>
           <td>{id}</td>
@@ -145,12 +174,12 @@ class Withdrawal extends Component {
     if ( status === 'pending' ) {
       return (
         <div className="d-flex justify-content-center">
-          <Button className="mr-2" onClick={() => this.props.updateTransaction(slug, 'processed')}>Process</Button>
+          <Button className="mr-2" onClick={() => this.props.updateTransactionStatus(slug, 'processed')}>Process</Button>
         </div>
       )
     } else if ( type !== 'deposit' && type !== 'withdraw' ) {
       return (
-        <div onClick={() => this.props.updateTransaction(slug, 'undo')} className="d-flex justify-content-center">
+        <div onClick={() => this.props.updateTransactionStatus(slug, 'undo')} className="d-flex justify-content-center">
           <Button>Undo</Button>
         </div>
       )
@@ -310,7 +339,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchWithdrawal,
   updateWithdrawal,
-  updateTransaction
+  updateTransaction,
+  updateTransactionStatus
 }, dispatch)
 
 export default connect(
