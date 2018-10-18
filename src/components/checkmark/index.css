@@ -1,3 +1,7 @@
+.checkmark {
+  margin: 0 5px;
+}
+
 .checkmark > .path {
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;

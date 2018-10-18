@@ -158,7 +158,6 @@ export default (state = initialState, action) => {
 
     case OFFLINE_SUCCESS:
     case ONLINE_SUCCESS:
-    case UPDATE_SUCCESS:
       return {
         ...state,
         list: merge(state.list, action.payload),
@@ -166,6 +165,16 @@ export default (state = initialState, action) => {
         pending: false,
         error: false,
         message: 'Update node successful.'
+      }
+
+    case UPDATE_SUCCESS:
+      return {
+        ...state,
+        list: merge(state.list, action.payload.data),
+        data: action.payload.data,
+        pending: false,
+        error: false,
+        message: action.payload.updatedItem + ' updated successful.'
       }
 
     case CLEAR_MESSAGES:
@@ -228,14 +237,15 @@ export function fetchNodes() {
   }
 }
 
-export function updateNode(slug, data) {
+export function updateNode(slug, data, name) {
   return dispatch => {
     dispatch({ type: UPDATE })
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/nodes/${slug}`, { node: data })
       .then((response) => {
         if(response.data.status !== 'error') {
-          dispatch({ type: UPDATE_SUCCESS, payload: response.data })
+          const updatedItem = name
+          dispatch({ type: UPDATE_SUCCESS, payload: {data: response.data, updatedItem} })
         } else {
           dispatch({ type: UPDATE_ERROR, payload: { message: response.data.message } })
         }
