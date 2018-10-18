@@ -6,6 +6,8 @@ import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
 import { valueFormat } from "../../lib/helpers"
 
+import "./index.css"
+
 import {
   clearMessages,
   deleteNode,
@@ -22,6 +24,7 @@ class Node extends Component {
   constructor(props) {
     super(props)
     this.toggleAlert = this.toggleAlert.bind(this)
+    this.selectEditableField = this.selectEditableField.bind(this)
   }
 
   componentWillMount() {
@@ -168,6 +171,14 @@ class Node extends Component {
 
   }
 
+  selectEditableField() {
+    setTimeout(() => {
+      const element = document.getElementById('formBasicText')
+      !!element && element.select()
+    }, 5)
+
+  }
+
   displayFinancialSection(node) {
     return (
       <div className="row">
@@ -183,7 +194,7 @@ class Node extends Component {
             </tr>
             <tr>
               <th>Nodebucks Buy Price</th>
-              <td className="text-right">
+              <td className="text-right nodeEditableData">
                 <Editable
                   dataType="text"
                   mode="inline"
@@ -191,7 +202,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.nodebucksBuyAmount}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
+                    return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'nb_buy_amount')}
                 />
@@ -223,7 +234,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.nodebucksSellAmount}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value,2)}</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'nb_sell_amount')}
                 />
@@ -309,7 +320,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.vpsUrl}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{valueFormat(value, 2)}</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'vps_url')}
                 />
@@ -325,7 +336,7 @@ class Node extends Component {
                   showButtons={false}
                   value={node.vpsMonthlyCost}
                   display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value,2)} USD</span>)
+                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value, 2)} USD</span>)
                   }}
                   handleSubmit={this.handleSubmit.bind(this, 'vps_monthly_cost')}
                 />
