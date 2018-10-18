@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom'
 import Editor from '../../components/editor'
 
 import Dropdown from 'react-dropdown'
+import Checkmark from "../../components/checkmark"
 import 'react-dropdown/style.css'
 
 import {
@@ -55,7 +56,7 @@ class CryptoEdit extends Component {
   }
 
   handleSelectChange = (type) => (e) => {
-    this.setState({ [type]: e.value })
+    this.setState({ [ type ]: e.value })
   }
 
   handleProfileChange = (profile) => {
@@ -134,14 +135,17 @@ class CryptoEdit extends Component {
                   style={{ height: 200 }}
                 />
               </FormGroup>
-              <Button
-                color="primary"
-                onClick={this.handleSubmit}
-                style={{ marginTop: 50 }}
-              >
-                Save
-              </Button>
-              <p className={`mt-3 ${error ? 'text-warning' : 'text-success'}`}>{message}</p>
+              <Col className="d-flex align-items-center" style={{ marginTop: 70 }}>
+                <Button
+                  color="primary"
+                  onClick={this.handleSubmit}
+                >
+                  Save
+                </Button>
+                {!!message &&
+                <p className={`ml-2 mb-0 ${error ? 'text-danger' : 'text-success'}`}><Checkmark success={!error}/> {message}</p>
+                }
+              </Col>
             </Form>
           </Col>
         </Row>
