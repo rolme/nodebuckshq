@@ -129,6 +129,8 @@ class Withdrawal extends Component {
       const { id, userName, userEmail, notes, type, amount, slug, status, symbol } = transaction
       let value = (notes.includes('USD transfer to')) ? `$${valueFormat(amount, 2)}` : `${amount} ${symbol}`
       if (notes.includes('convert to')) {
+        let symbol = (notes.includes('convert to USD')) ? 'usd' : 'btc'
+        let formattedValue = (notes.includes('convert to USD')) ? valueFormat(amount, 2) : amount
         value = (
           <span>
             <Editable
@@ -136,14 +138,14 @@ class Withdrawal extends Component {
               mode="inline"
               name="amount"
               showButtons={false}
-              value={amount}
+              value={formattedValue}
               validate={(value) => {
                 if(!value.match(/^-?\d*(\.\d+)?$/)) {
                   return 'number required'
                 }
               }}
               display={value => {
-                return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{(symbol === 'usd') ? `$${value}` : value  }</span>)
               }}
               handleSubmit={this.handleTransactionAmountSubmit.bind(this, slug)}
             />
@@ -156,9 +158,9 @@ class Withdrawal extends Component {
           <td>{id}</td>
           { (tab !== 'Actions') && <td>{userName} {userEmail}</td> }
           <td>{notes || '-'}</td>
-          <td>{type}</td>
+          { (tab !== 'Actions') && <td>{type}</td> }
           <td>{value}</td>
-          <td>{status}</td>
+          { (tab !== 'Actions') && <td>{status}</td> }
           { (type === 'transfer') &&
           <td>
             {this.renderTransactionActions(transaction)}
@@ -261,15 +263,7 @@ class Withdrawal extends Component {
                     icon={transactionsSortedColumnName === 'id' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/>
                   </p></th>
                   <th>Notes</th>
-                  <th><p onClick={() => this.onTransactionsSortClick('type')} className="clickableCell mb-0">Type <FontAwesomeIcon
-                    onClick={() => this.onTransactionsSortClick('type')}
-                    icon={transactionsSortedColumnName === 'type' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
-                    className="ml-2"/></p></th>
                   <th>Amount</th>
-                  <th><p onClick={() => this.onTransactionsSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon
-                    onClick={() => this.onTransactionsSortClick('status')}
-                    icon={transactionsSortedColumnName === 'status' && !isTransactionDescending ? faAngleUp : faAngleDown} color="#9E9E9E"
-                    className="ml-2"/></p></th>
                   <th>Actions</th>
                 </tr>
                 </thead>
