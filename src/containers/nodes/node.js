@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
 import { valueFormat } from "../../lib/helpers"
+import Checkmark from '../../components/checkmark'
 
 import "./index.css"
 
@@ -23,13 +24,29 @@ import {
 class Node extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showCheckmark: false
+    }
     this.toggleAlert = this.toggleAlert.bind(this)
     this.selectEditableField = this.selectEditableField.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchNode(params.slug)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let { message } = nextProps
+    if ( message.includes("updated successful") ) {
+      const name = message.split(' updated successful.')[ 0 ]
+      this.setState({ showCheckmark: name }, () => {
+        setTimeout(() => {
+          this.setState({ showCheckmark: false })
+        }, 3000)
+      })
+    }
   }
 
   handleDelete() {
@@ -39,12 +56,12 @@ class Node extends Component {
     }
   }
 
-  handleSubmit(name, el) {
+  handleSubmit(name, label, el) {
     const { node } = this.props
     let data = {}
     data[ name ] = el.value
 
-    this.props.updateNode(node.slug, data)
+    this.props.updateNode(node.slug, data, label)
   }
 
   toggleAlert() {
@@ -180,6 +197,7 @@ class Node extends Component {
   }
 
   displayFinancialSection(node) {
+    const { showCheckmark } = this.state
     return (
       <div className="row">
         <div className="col-md-12">
@@ -194,18 +212,21 @@ class Node extends Component {
             </tr>
             <tr>
               <th>Nodebucks Buy Price</th>
-              <td className="text-right nodeEditableData">
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="nodebucksBuyAmount"
-                  showButtons={false}
-                  value={node.nodebucksBuyAmount}
-                  display={value => {
-                    return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'nb_buy_amount')}
-                />
+              <td className="text-right">
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'Nodebucks Buy Price' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="nodebucksBuyAmount"
+                    showButtons={false}
+                    value={node.nodebucksBuyAmount}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('nb_buy_amount', 'Nodebucks Buy Price', el)}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
@@ -227,17 +248,20 @@ class Node extends Component {
             <tr>
               <th>Nodebucks Sell Price</th>
               <td className="text-right">
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="nodebucksSellAmount"
-                  showButtons={false}
-                  value={node.nodebucksSellAmount}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'nb_sell_amount')}
-                />
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'Nodebucks Sell Price' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="nodebucksSellAmount"
+                    showButtons={false}
+                    value={node.nodebucksSellAmount}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('nb_sell_amount', 'Nodebucks Sell Price', el)}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
@@ -270,6 +294,7 @@ class Node extends Component {
   }
 
   displayConfiguration(node) {
+    const { showCheckmark } = this.state
     return (
       <div className="row">
         <div className="col-md-12">
@@ -279,67 +304,79 @@ class Node extends Component {
             <tr>
               <th>IP</th>
               <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="ip"
-                  showButtons={false}
-                  value={node.ip}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'ip')}
-                />
-                {node.duplicatedIp && <p className="text-danger">Duplicated ip!</p>}
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'IP' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="ip"
+                    showButtons={false}
+                    value={node.ip}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('ip', 'IP', el)}
+                  />
+                  {node.duplicatedIp && <p className="text-danger">Duplicated ip!</p>}
+                </div>
               </td>
             </tr>
             <tr>
               <th>Wallet</th>
               <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="wallet"
-                  showButtons={false}
-                  value={node.wallet}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'wallet')}
-                />
-                {node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p>}
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'Wallet' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="wallet"
+                    showButtons={false}
+                    value={node.wallet}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('wallet', 'Wallet', el)}
+                  />
+                  {node.duplicatedWallet && <p className="text-danger">Duplicated wallet!</p>}
+                </div>
               </td>
             </tr>
             <tr>
               <th>VPS URL:</th>
               <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="vpsUrl"
-                  showButtons={false}
-                  value={node.vpsUrl}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{valueFormat(value, 2)}</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'vps_url')}
-                />
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'VPS URL' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="vpsUrl"
+                    showButtons={false}
+                    value={node.vpsUrl}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{valueFormat(value, 2)}</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('vps_url', 'VPS URL', el)}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
               <th>VPS Monthly:</th>
               <td>
-                <Editable
-                  dataType="text"
-                  mode="inline"
-                  name="vpsMonthlyCost"
-                  showButtons={false}
-                  value={node.vpsMonthlyCost}
-                  display={value => {
-                    return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value, 2)} USD</span>)
-                  }}
-                  handleSubmit={this.handleSubmit.bind(this, 'vps_monthly_cost')}
-                />
+                <div className="d-flex nodeEditableData align-items-center justify-content-end">
+                  {showCheckmark === 'VPS Monthly' && <Checkmark success={true}/>}
+                  <Editable
+                    dataType="text"
+                    mode="inline"
+                    name="vpsMonthlyCost"
+                    showButtons={false}
+                    value={node.vpsMonthlyCost}
+                    display={value => {
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>$ {valueFormat(value, 2)} USD</span>)
+                    }}
+                    handleSubmit={(el) => this.handleSubmit('vps_monthly_cost', 'VPS Monthly', el)}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
