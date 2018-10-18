@@ -55,7 +55,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         errorUpdating: true,
-        updateMessage: action.payload.message
+        updateMessage: action.payload.message || 'Something went wrong, please try again.'
       }
 
     case FETCH_SUCCESS:
