@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Tabs, Tab } from 'react-bootstrap-tabs'
 
 import Editable from 'react-x-editable'
 import { Button, Alert } from 'reactstrap'
@@ -25,7 +26,8 @@ class Node extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showCheckmark: false
+      showCheckmark: false,
+      tab: 'Summary'
     }
     this.toggleAlert = this.toggleAlert.bind(this)
     this.selectEditableField = this.selectEditableField.bind(this)
@@ -70,6 +72,7 @@ class Node extends Component {
 
   render() {
     const { match: { params }, node, pending, error, message } = this.props
+    const { tab } = this.state
 
     if ( pending || node.slug === undefined ) {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
@@ -84,16 +87,22 @@ class Node extends Component {
         </div>
         {this.displayHeader(node)}
         <div className="pt-3">
-          <div className="col-12 px-5 d-flex flex-xl-row flex-lg-row flex-column">
-            <div className="col-xl-4 col-lg-4 col-12 px-0">
-              {this.displaySummary(node)}
-              {this.displayFinancialSection(node)}
-              {this.displayConfiguration(node)}
-            </div>
-            <div className="col-xl-8 col-lg-8 col-12">
-              {this.displayHistory(node)}
-            </div>
-          </div>
+          <Tabs onSelect={(idx, label) => this.setState({ tab: label })} selected={tab}>
+            <Tab label="Summary">
+              <div className="col-12 mt-3">
+                <div className="d-flex">
+                  {this.displaySummary(node)}
+                  {this.displayFinancialSection(node)}
+                </div>
+                {this.displayConfiguration(node)}
+              </div>
+            </Tab>
+            <Tab label="History">
+              <div className="col-12 mt-3">
+                {this.displayHistory(node)}
+              </div>
+            </Tab>
+          </Tabs>
         </div>
       </div>
     )
@@ -133,38 +142,38 @@ class Node extends Component {
 
   displaySummary(node) {
     return (
-      <div className="row">
+      <div className="row col-6">
         <div className="col-md-12">
           <h5>Summary</h5>
           <table className="table">
             <tbody>
             <tr>
               <th>Owner</th>
-              <td>{node.owner.fullName}</td>
+              <td className="text-right">{node.owner.fullName}</td>
             </tr>
             <tr>
               <th>Node ID</th>
-              <td>{node.id}</td>
+              <td className="text-right">{node.id}</td>
             </tr>
             <tr>
               <th>Value</th>
-              <td>$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
+              <td className="text-right">$ {(+node.value).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} USD</td>
             </tr>
             <tr>
               <th>Cost</th>
-              <td>$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+              <td className="text-right">$ {(+node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
             </tr>
             <tr>
               <th>Total Rewards</th>
-              <td>$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
+              <td className="text-right">$ {(+node.rewardTotal).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}</td>
             </tr>
             <tr>
               <th>Reward %</th>
-              <td>{(node.rewardTotal / node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
+              <td className="text-right">{(node.rewardTotal / node.cost).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} %</td>
             </tr>
             <tr>
               <th>Reward Settings</th>
-              <td>
+              <td className="text-right">
                 {this.renderRewardSettings(node)}
               </td>
             </tr>
@@ -199,7 +208,7 @@ class Node extends Component {
   displayFinancialSection(node) {
     const { showCheckmark } = this.state
     return (
-      <div className="row">
+      <div className="row col-6">
         <div className="col-md-12">
           <h5>Financial Section</h5>
           <table className="table">
@@ -381,7 +390,7 @@ class Node extends Component {
             </tr>
             <tr>
               <th>Status</th>
-              <td>
+              <td className="text-right">
                 {!node.deletedAt && <span className={`badge badge-${(node.status === 'online') ? 'success' : 'danger'}`}>{node.status}</span>}
                 {!!node.deletedAt && <span className="badge badge-danger ml-1">Deleted</span>}
               </td>
@@ -435,7 +444,7 @@ class Node extends Component {
   displayHistory(node) {
     let total = node.events.map(e => e.value).reduce((t, v) => +t + +v)
     return (
-      <div className="col-xl-10 offset-xl-1 col-12">
+      <div className="col-12">
         <div className="d-flex justify-content-between">
           <h5>History</h5>
           <a href={node.walletUrl || node.explorerUrl} target="_blank" rel="noopener noreferrer">Explorer</a>
