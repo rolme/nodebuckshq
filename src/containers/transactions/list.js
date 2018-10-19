@@ -5,9 +5,9 @@ import moment from 'moment'
 
 export default class TransactionsList extends Component {
 
-  handleCancel(id) {
+  handleCancel(id, slug) {
     if ( window.confirm("You are about to cancel transaction ID #" + id + ". Are you sure?") ) {
-      this.props.updateTransaction(id, { status: 'cancelled' })
+      this.props.updateTransactionStatus(slug, 'cancelled')
     }
   }
 
@@ -23,21 +23,22 @@ export default class TransactionsList extends Component {
           <td className="text-center">{item.userName}</td>
           <td className="text-center">{date}</td>
           <td className="text-center">{item.notes}</td>
-          {selectedTab !== 'processed' && this.renderActionCell(item.id)}
+          {selectedTab !== 'processed' && this.renderActionCell(item)}
         </tr>
       )
     })
   }
 
-  renderActionCell(id) {
+  renderActionCell(item) {
+    const { slug, id } = item
     const { selectedTab } = this.props
     return selectedTab === 'pending' ? <td>
       <div className="d-flex justify-content-center">
-        <Button className="mr-2" onClick={() => this.props.updateTransaction(id, { status: 'processed' })}>Process</Button>
-        <Button onClick={() => this.handleCancel.call(this, id)}>Cancel</Button>
+        <Button className="mr-2" onClick={() => this.props.updateTransactionStatus(slug, 'processed')}>Process</Button>
+        <Button onClick={() => this.handleCancel.call(this, id, slug)}>Cancel</Button>
       </div>
     </td> : <td>
-      <div onClick={() => this.props.updateTransaction(id, { status: 'pending' })} className="d-flex justify-content-center"><Button>Undo</Button></div>
+      <div onClick={() => this.props.updateTransactionStatus(slug, 'undo')} className="d-flex justify-content-center"><Button>Undo</Button></div>
     </td>
   }
 }

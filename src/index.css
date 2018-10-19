@@ -64,6 +64,7 @@ main {
   text-decoration: none;
 }
 
+.clickableRow,
 .clickableCell {
   cursor: pointer;
 }

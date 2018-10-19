@@ -22,6 +22,7 @@ const Nodes = Loadable({ loader: () => import('../nodes'), loading: Loading })
 const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
 const Order = Loadable({ loader: () => import('../orders/order'), loading: Loading })
 const Users = Loadable({ loader: () => import('../users'), loading: Loading })
+const User = Loadable({ loader: () => import('../users/user'), loading: Loading })
 const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
 const Withdrawal = Loadable({ loader: () => import('../withdrawals/withdrawal'), loading: Loading })
 const Transactions = Loadable({ loader: () => import('../transactions'), loading: Loading })
@@ -51,6 +52,7 @@ class App extends Component {
             <Route exact path="/nodes/:slug" component={Node}/>
             <Route exact path="/nodes" component={Nodes}/>
             <Route exact path="/users" component={Users}/>
+            <Route exact path="/users/:slug" component={User}/>
             <Route exact path="/withdrawals" component={Withdrawals}/>
             <Route exact path="/withdrawals/:slug" component={Withdrawal}/>
             <Route exact path="/transactions" component={Transactions}/>
