@@ -10,6 +10,9 @@ export const FETCH_LIST_SUCCESS = 'cryptos/FETCH_LIST_SUCCESS'
 export const UPDATE = 'cryptos/UPDATE'
 export const UPDATE_ERROR = 'cryptos/UPDATE_ERROR'
 export const UPDATE_SUCCESS = 'cryptos/UPDATE_SUCCESS'
+export const TEST_REWARD_SCRAPER='cryptos/TEST_REWARD_SCRAPER'
+export const TEST_REWARD_SCRAPER_SUCCESS = 'cryptos/TEST_REWARD_SCRAPER_SUCCESS'
+export const TEST_REWARD_SCRAPER_ERROR = 'cryptos/TEST_REWARD_SCRAPER_ERROR'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -19,7 +22,11 @@ const initialState = {
   error: false,
   errorUpdating: false,
   message: '',
-  updateMessage: ''
+  updateMessage: '',
+  isScraping: false,
+  rewarderError: false,
+  rewarderMessage: '',
+  successfullyScraped: false,
 }
 
 // STATE ///////////////////////////////////////////////////////////////////////
@@ -31,7 +38,10 @@ export default (state = initialState, action) => {
         ...state,
         pending: true,
         error: false,
-        message: ''
+        message: '',
+        rewarderError: false,
+        rewarderMessage: '',
+        successfullyScraped: false,
       }
 
     case UPDATE: {
@@ -87,6 +97,33 @@ export default (state = initialState, action) => {
         updateMessage: 'Update cryptocurrency successful.'
       }
 
+    case TEST_REWARD_SCRAPER:
+      return {
+        ...state,
+        rewarderError: false,
+        rewarderMessage: '',
+        successfullyScraped: false,
+        isScraping: true,
+      }
+
+    case TEST_REWARD_SCRAPER_SUCCESS:
+      return {
+        ...state,
+        rewarderError: false,
+        rewarderMessage: action.payload.message,
+        successfullyScraped: action.payload,
+        isScraping: false,
+      }
+
+    case TEST_REWARD_SCRAPER_ERROR:
+      return {
+        ...state,
+        rewarderError: true,
+        rewarderMessage: action.payload.message,
+        successfullyScraped: false,
+        isScraping: false,
+      }
+
     default:
       return state
   }
@@ -131,6 +168,24 @@ export function updateCrypto(slug, data) {
         dispatch({ type: UPDATE_SUCCESS, payload: response.data })
       }).catch((error) => {
         dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
+        console.log(error)
+      })
+  }
+}
+
+export function testRewardScraper(slug, wallet, date) {
+  return dispatch => {
+    dispatch({ type: TEST_REWARD_SCRAPER })
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.get(`/api/cryptos/${slug}/test_reward_scraper?wallet=${wallet}&date=${new Date(date)}`)
+      .then((response) => {
+        if(response.data.status !== 'error') {
+          dispatch({ type: TEST_REWARD_SCRAPER_SUCCESS, payload: response.data })
+        } else {
+          dispatch({ type: TEST_REWARD_SCRAPER_ERROR, payload: response.data })
+        }
+      }).catch((error) => {
+        dispatch({ type: TEST_REWARD_SCRAPER_ERROR, payload: {message: error.data} })
         console.log(error)
       })
   }

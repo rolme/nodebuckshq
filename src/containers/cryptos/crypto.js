@@ -1,15 +1,38 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
-import {
-  fetchCrypto
+import { Container, Button, Form, FormGroup, Input } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import { ClipLoader } from 'react-spinners';
+import { 
+  fetchCrypto,
+  testRewardScraper 
 } from '../../reducers/cryptos'
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 class Crypto extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      date: moment(),
+      wallet: ''
+    }
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchCrypto(params.slug)
+  }
+
+  handleDateChange = (date) => {
+    this.setState({ date });
+  }
+
+  handleWalletChange = (e) => {
+    this.setState({ wallet: e.target.value });
   }
 
   render() {
@@ -35,10 +58,63 @@ class Crypto extends Component {
             { this.renderOrderBookTable(crypto) }
             <br/>
             { this.renderScrapedTable(crypto) }
+            { this.renderCheckRewardScrapingForm(crypto) }
           </div>
         </div>
         { this.renderOrderBookPrices(crypto) }
       </div>
+    )
+  }
+
+  renderCheckRewardScrapingForm(crypto) {
+    const { wallet, date } = this.state
+    const { rewarderMessage, rewarderError, successfullyScraped, isScraping } = this.props
+    return(
+      <Container className="mt-4 pt-4">
+        <Form>
+          <FormGroup>
+            <div>Wallet:</div>
+            <Input 
+              placeholder="Enter wallet here"
+              value={wallet}
+              onChange={this.handleWalletChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <div>Date:</div>
+            <DatePicker
+              selected={date}
+              onChange={this.handleDateChange}
+            />
+          </FormGroup>
+          <Button 
+            color="primary"
+            onClick={() => this.props.testRewardScraper(crypto.slug, wallet, date)}
+            style={{ height: 40, width: 200}}
+          >
+            { isScraping ?
+              <div>
+                <ClipLoader
+                  size={30}
+                  loading={true}
+                />
+              </div> :
+              <div>Test Reward Scraping</div>
+            }
+          </Button>
+          { rewarderError && <p className='mt-2 text-danger'>{rewarderMessage}</p> }
+          { successfullyScraped &&
+            <div>
+              <div className="text-success mt-2">Url: {' '} 
+                <a onClick={()=> window.open(successfullyScraped.url, "_blank")} style={{cursor: 'pointer'}}>
+                  {successfullyScraped.url}
+                </a>
+              </div>
+              <div className="text-success mt-1">Total amount: {successfullyScraped.total_amount_scraped}</div>
+            </div>
+          }
+        </Form>
+      </Container>
     )
   }
 
@@ -276,11 +352,16 @@ const mapStateToProps = state => ({
   crypto: state.cryptos.data,
   error: state.cryptos.error,
   message: state.cryptos.message,
-  pending: state.cryptos.pending
+  pending: state.cryptos.pending,
+  rewarderMessage: state.cryptos.rewarderMessage,
+  rewarderError: state.cryptos.rewarderError,
+  successfullyScraped: state.cryptos.successfullyScraped,
+  isScraping: state.cryptos.isScraping,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchCrypto
+  fetchCrypto,
+  testRewardScraper,
 }, dispatch)
 
 export default connect(
