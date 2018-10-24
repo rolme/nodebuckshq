@@ -251,7 +251,7 @@ class Node extends Component {
             <tr>
               <th>Sell Price</th>
               <td className="text-right">
-                {valueFormat(node.sellPrice, 2)}
+                {valueFormat(+node.crypto.nodeSellPrice, 2)}
               </td>
             </tr>
             <tr>
