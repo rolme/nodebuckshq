@@ -87,7 +87,7 @@ class Nodes extends Component {
   }
 
   displayNodes(list) {
-    return list.map(item => {
+    return list.sort((a,b) => b.id - a.id).map(item => {
       return (
         <tr key={item.slug}>
           <td><NavLink to={`/nodes/${item.slug}`}>{item.id}</NavLink></td>
