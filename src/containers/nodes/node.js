@@ -362,7 +362,7 @@ class Node extends Component {
                     showButtons={false}
                     value={node.vpsUrl}
                     display={value => {
-                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{valueFormat(value, 2)}</span>)
+                      return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{value}</span>)
                     }}
                     handleSubmit={(el) => this.handleSubmit('vps_url', 'VPS URL', el)}
                   />
