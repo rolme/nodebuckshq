@@ -2,13 +2,13 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Table } from 'reactstrap'
+import { Table, Alert } from 'reactstrap'
 import { valueFormat } from '../../lib/helpers'
 import { filter } from 'lodash'
 import Pagination from "react-js-pagination";
 import qs from 'query-string'
 import Dropdown from 'react-dropdown'
-import { fetchOrders } from '../../reducers/orders'
+import { fetchOrders, clearMessages } from '../../reducers/orders'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/fontawesome-free-solid'
 
@@ -81,8 +81,12 @@ class Orders extends Component {
     this.setState({ [type]: e.value })
   }
 
+  onAlertDismiss = () => {
+    this.props.clearMessages()
+  }
+
   render() {
-    let { list, counts } = this.props
+    let { list, counts, orderCanceled } = this.props
     const { sortedColumnName, isDescending, filterType, filterStatus } = this.state
 
     if ( list === null ) {
@@ -95,41 +99,48 @@ class Orders extends Component {
     if(filterStatus !== 'none') list = filter(list, (o) => { return o.status.toLowerCase() === filterStatus.toLowerCase() });
 
     return (
-      <div className="row">
-        <div className="col-12 px-5">
-          <h2 className="mt-2">Orders ({list.length})</h2>
-          <div>
-            <div className="d-flex justify-content-around align-items-center">
-              <Pagination
-                activePage={this.state.page}
-                itemsCountPerPage={this.state.limit}
-                totalItemsCount={counts.ordersAll}
-                pageRangeDisplayed={10}
-                onChange={this.handlePageChange}
-              />
-              <div className="d-flex align-items-center">
-                <div className="mr-1">Type:</div>
-                <Dropdown options={TYPE_OPTIONS} value={filterType} onChange={this.onFilterSelect('filterType')} />
-                <div className="ml-3 mr-1">Status:</div>
-                <Dropdown options={STATUS_OPTIONS} value={filterStatus} onChange={this.onFilterSelect('filterStatus')} />
+      <div>
+        { orderCanceled &&
+          <Alert color="success" isOpen={true} fade={false} toggle={this.onAlertDismiss}>
+            <div className="text-center">Successfully canceled order</div>
+          </Alert>
+        }
+        <div className="row">
+          <div className="col-12 px-5">
+            <h2 className="mt-2">Orders ({list.length})</h2>
+            <div>
+              <div className="d-flex justify-content-around align-items-center">
+                <Pagination
+                  activePage={this.state.page}
+                  itemsCountPerPage={this.state.limit}
+                  totalItemsCount={counts.ordersAll}
+                  pageRangeDisplayed={10}
+                  onChange={this.handlePageChange}
+                />
+                <div className="d-flex align-items-center">
+                  <div className="mr-1">Type:</div>
+                  <Dropdown options={TYPE_OPTIONS} value={filterType} onChange={this.onFilterSelect('filterType')} />
+                  <div className="ml-3 mr-1">Status:</div>
+                  <Dropdown options={STATUS_OPTIONS} value={filterStatus} onChange={this.onFilterSelect('filterStatus')} />
+                </div>
               </div>
             </div>
+            <Table striped hover responsive>
+              <thead>
+              <tr>
+                <th><p onClick={() => this.onSortClick('node.createdAt')} className="clickableCell mb-0">Date <FontAwesomeIcon onClick={() => this.onSortClick('node.createdAt')} icon={sortedColumnName === 'node.createdAt' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+                <th><p onClick={() => this.onSortClick('user.first')} className="clickableCell mb-0">Username <FontAwesomeIcon onClick={() => this.onSortClick('user.first')} icon={sortedColumnName === 'user.first' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+                <th><p onClick={() => this.onSortClick('node.crypto.name')} className="clickableCell mb-0">Masternode <FontAwesomeIcon onClick={() => this.onSortClick('node.crypto.name')} icon={sortedColumnName === 'node.crypto.name' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+                <th><p onClick={() => this.onSortClick('orderType')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onSortClick('orderType')} icon={sortedColumnName === 'orderType' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+                <th>Amount</th>
+                <th><p onClick={() => this.onSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon onClick={() => this.onSortClick('status')} icon={sortedColumnName === 'status' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
+              </tr>
+              </thead>
+              <tbody>
+              {this.displayOrders(list)}
+              </tbody>
+            </Table>
           </div>
-          <Table striped hover responsive>
-            <thead>
-            <tr>
-              <th><p onClick={() => this.onSortClick('node.createdAt')} className="clickableCell mb-0">Date <FontAwesomeIcon onClick={() => this.onSortClick('node.createdAt')} icon={sortedColumnName === 'node.createdAt' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th><p onClick={() => this.onSortClick('user.first')} className="clickableCell mb-0">Username <FontAwesomeIcon onClick={() => this.onSortClick('user.first')} icon={sortedColumnName === 'user.first' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th><p onClick={() => this.onSortClick('node.crypto.name')} className="clickableCell mb-0">Masternode <FontAwesomeIcon onClick={() => this.onSortClick('node.crypto.name')} icon={sortedColumnName === 'node.crypto.name' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th><p onClick={() => this.onSortClick('orderType')} className="clickableCell mb-0">Type <FontAwesomeIcon onClick={() => this.onSortClick('orderType')} icon={sortedColumnName === 'orderType' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-              <th>Amount</th>
-              <th><p onClick={() => this.onSortClick('status')} className="clickableCell mb-0">Status <FontAwesomeIcon onClick={() => this.onSortClick('status')} icon={sortedColumnName === 'status' && !isDescending ? faAngleUp : faAngleDown} color="#9E9E9E" className="ml-2"/></p></th>
-            </tr>
-            </thead>
-            <tbody>
-            {this.displayOrders(list)}
-            </tbody>
-          </Table>
         </div>
       </div>
     )
@@ -159,10 +170,12 @@ class Orders extends Component {
 const mapStateToProps = state => ({
   list: state.orders.list,
   counts: state.counts.data,
+  orderCanceled: state.orders.canceledOrder,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchOrders
+  fetchOrders,
+  clearMessages,
 }, dispatch)
 
 export default connect(

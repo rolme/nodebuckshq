@@ -15,6 +15,10 @@ export const REQUEST_PAID_SUCCESS = 'orders/REQUEST_PAID_SUCCESS'
 export const REQUEST_UNPAID = 'orders/REQUEST_UNPAID'
 export const REQUEST_UNPAID_ERROR = 'orders/REQUEST_UNPAID_ERROR'
 export const REQUEST_UNPAID_SUCCESS = 'orders/REQUEST_UNPAID_SUCCESS'
+export const REQUEST_OREDER_CANCELED = 'orders/REQUEST_OREDER_CANCELED'
+export const REQUEST_OREDER_CANCELED_SUCCESS = 'orders/REQUEST_OREDER_CANCELED_SUCCESS'
+export const REQUEST_OREDER_CANCELED_ERROR = 'orders/REQUEST_OREDER_CANCELED_ERROR'
+export const CLEAR_MESSAGES = 'orders/CLEAR_MESSAGES'
 
 // INITIAL STATE ///////////////////////////////////////////////////////////////
 const initialState = {
@@ -22,7 +26,8 @@ const initialState = {
   list: [],
   pending: false,
   error: false,
-  message: ''
+  message: '',
+  canceledOrder: false,
 }
 
 // STATE ///////////////////////////////////////////////////////////////////////
@@ -50,7 +55,7 @@ export default (state = initialState, action) => {
     case FETCH_LIST_SUCCESS:
       return {
         ...state,
-        list: action.payload,
+        list: action.payload.filter(order => order.status !== 'canceled'),
         pending: false,
         error: false,
         message: 'Fetch orders list successful.'
@@ -89,6 +94,28 @@ export default (state = initialState, action) => {
       return {
         ...state,
         message: action.payload.message
+      }
+
+    case REQUEST_OREDER_CANCELED:
+      return {
+        ...state,
+        canceledOrder: false,
+      }
+
+    case REQUEST_OREDER_CANCELED_SUCCESS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          status: 'canceled',
+        },
+        canceledOrder: true,
+      }
+
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        canceledOrder: false,
       }
 
     default:
@@ -154,5 +181,26 @@ export function orderUnpaid(slug) {
         dispatch({ type: REQUEST_UNPAID_ERROR, payload: {message: error.data} })
         console.log(error)
       })
+  }
+}
+
+export function orderCanceled(slug, callback) {
+  return dispatch => {
+    dispatch({ type: REQUEST_OREDER_CANCELED })
+    axios.patch(`/api/orders/${slug}/canceled`)
+      .then((response) => {
+        dispatch({ type: REQUEST_OREDER_CANCELED_SUCCESS, payload: response.data })
+        callback()
+      })
+      .catch((error) => {
+        dispatch({ type: REQUEST_OREDER_CANCELED_ERROR, payload: {message: error.data} })
+        console.log(error)
+      })
+  }
+}
+
+export function clearMessages() {
+  return dispatch => {
+    dispatch({ type: CLEAR_MESSAGES })
   }
 }
