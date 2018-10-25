@@ -157,7 +157,7 @@ class Withdrawal extends Component {
         <tr key={id}>
           <td>{id}</td>
           { (tab !== 'Actions') && <td>{userName} {userEmail}</td> }
-          <td>{notes || '-'}</td>
+          <td dangerouslySetInnerHTML={{__html: notes}}/>
           { (tab !== 'Actions') && <td>{type}</td> }
           <td>{value}</td>
           { (tab !== 'Actions') && <td>{status}</td> }
