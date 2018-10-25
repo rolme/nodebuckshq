@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { valueFormat } from '../../lib/helpers'
 import { Table, Button } from 'reactstrap'
 
@@ -8,9 +9,14 @@ import {
   fetchOrder,
   orderPaid,
   orderUnpaid,
+  orderCanceled,
 } from '../../reducers/orders'
 
 class Order extends Component {
+  state = {
+    redirect: false
+  }
+
   componentWillMount() {
     let { match: { params } } = this.props
     this.props.fetchOrder(params.slug)
@@ -18,6 +24,14 @@ class Order extends Component {
 
   togglePaid = (status, slug) => {
     status === 'unpaid' ? this.props.orderPaid(slug) : this.props.orderUnpaid(slug)
+  }
+
+  handleCancelClick = (slug) => {
+    if(window.confirm("Are you sure you want to cancel this order?")) {
+      this.props.orderCanceled(slug, () => {
+        this.setState({ redirect: true })
+      })
+    }
   }
 
   displayOrderData(order) {
@@ -34,9 +48,11 @@ class Order extends Component {
         <td>{paymentMethod}</td>
         <td>{status}</td>
         <td>
-          <Button onClick={() => this.togglePaid(status, slug)}>
-            {status === 'unpaid' ? 'Paid' : 'Unpaid'}
-          </Button>
+          { status !== 'canceled' &&
+            <Button onClick={() => this.togglePaid(status, slug)}>
+              {status === 'unpaid' ? 'Paid' : 'Unpaid'}
+            </Button>
+          }
         </td>
       </tr>
     )
@@ -76,10 +92,17 @@ class Order extends Component {
       return <h4 className="pt-3">Loading {params.slug}... </h4>
     }
 
+    if(this.state.redirect) return <Redirect to="/orders?limit=25&page=1" />
+
     return (
       <div className="row">
         <div className="col-12 px-5">
-          <h2 className="mt-2">Order ({order.slug})</h2>
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="mt-2">Order ({order.slug})</h2>
+            { order.status !== 'canceled' &&
+              <Button className="btn-danger" onClick={() => this.handleCancelClick(order.slug)}>Cancel</Button>
+            }
+          </div>
           <Table striped>
             <thead>
             <tr>
@@ -146,6 +169,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchOrder,
   orderPaid,
   orderUnpaid,
+  orderCanceled,
 }, dispatch)
 
 export default connect(
