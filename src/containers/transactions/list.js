@@ -22,7 +22,7 @@ export default class TransactionsList extends Component {
           <td className="text-center">{valueFormat(item.amount, 2)}</td>
           <td className="text-center">{item.userName}</td>
           <td className="text-center">{date}</td>
-          <td className="text-center">{item.notes}</td>
+          <td className="text-center" dangerouslySetInnerHTML={{__html: item.notes}}/>
           {selectedTab !== 'processed' && this.renderActionCell(item)}
         </tr>
       )
