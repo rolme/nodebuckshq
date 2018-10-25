@@ -101,3 +101,33 @@ main {
   border: 1px solid #ced4da;
   border-radius: .25rem;
 }
+
+.react-autosuggest__container {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.react-autosuggest__input {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.react-autosuggest__suggestions-list {
+  margin-top: 4px;
+  padding-left: 10px;
+  padding-top: 2px;
+}
+
+.react-autosuggest__suggestion {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.react-autosuggest__input {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid black;
+}
+
