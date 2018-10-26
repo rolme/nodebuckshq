@@ -103,8 +103,8 @@ main {
 }
 
 .react-autosuggest__container {
-  padding-right: 10px;
-  padding-left: 10px;
+  padding-right: 40px;
+  padding-left: 40px;
 }
 
 .react-autosuggest__input {
@@ -129,5 +129,7 @@ main {
   border: none;
   outline: none;
   border-bottom: 1px solid black;
+  width: 100%;
+  padding-left: 10px;
 }
 

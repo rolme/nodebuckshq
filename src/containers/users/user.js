@@ -7,6 +7,7 @@ import Autosuggest from 'react-autosuggest';
 import {
   fetchUser,
   fetchUsers,
+  updateAffiliates
 } from '../../reducers/users'
 
 import {
@@ -33,8 +34,6 @@ class User extends Component {
     this.state = {
       suggestions: [],
       value: '',
-      value2: '',
-      value3: '',
     }
   }
 
@@ -77,24 +76,12 @@ class User extends Component {
   getSuggestionValue = suggestion => suggestion.name;
 
   renderSuggestion = suggestion => (
-    <div key={suggestion.slug}>{suggestion.email}</div>
+    <div key={suggestion.slug} onClick={() => this.props.updateAffiliates(this.props.user.slug, suggestion.slug)}>{suggestion.email}</div>
   );
 
   onChangeTier1 = (event, { newValue }) => {
     this.setState({
       value: newValue
-    });
-  };
-
-   onChangeTier2 = (event, { newValue }) => {
-    this.setState({
-      value2: newValue
-    });
-  };
-
-   onChangeTier3 = (event, { newValue }) => {
-    this.setState({
-      value3: newValue
     });
   };
 
@@ -150,34 +137,10 @@ class User extends Component {
                 <DropdownItem header style={{ fontSize: 18 }}>
                   <b>Tier2:</b> {user.affiliates.tier2 ? `${user.affiliates.tier2.first} ${user.affiliates.tier2.last} (${user.affiliates.tier2.email})` : ''}
                 </DropdownItem>
-                <Autosuggest
-                  suggestions={this.state.suggestions}
-                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                  getSuggestionValue={this.getSuggestionValue}
-                  renderSuggestion={this.renderSuggestion}
-                  inputProps={{
-                    placeholder: 'Type user email here',
-                    value: this.state.value2 || '',
-                    onChange: this.onChangeTier2
-                  }}
-                />
                 <DropdownItem divider/>
                 <DropdownItem header style={{ fontSize: 18 }}>
                   <b>Tier3:</b> {user.affiliates.tier3 ? `${user.affiliates.tier3.first} ${user.affiliates.tier3.last} (${user.affiliates.tier3.email})` : ''}
                 </DropdownItem>
-                <Autosuggest
-                  suggestions={this.state.suggestions}
-                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                  getSuggestionValue={this.getSuggestionValue}
-                  renderSuggestion={this.renderSuggestion}
-                  inputProps={{
-                    placeholder: 'Type user email here',
-                    value: this.state.value3 || '',
-                    onChange: this.onChangeTier3
-                  }}
-                />
               </DropdownMenu>
             </UncontrolledDropdown>
           </div>
@@ -348,6 +311,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchOrders,
   fetchWithdrawals,
   fetchUsers,
+  updateAffiliates,
 }, dispatch)
 
 export default connect(

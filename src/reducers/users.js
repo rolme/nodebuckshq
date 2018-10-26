@@ -16,6 +16,9 @@ export const FETCH_USER_FAILURE = "users/FETCH_USER_FAILURE"
 export const UPDATE_USER_ID_VERIFICATION_STATUS = 'user/UPDATE_USER_ID_VERIFICATION_STATUS'
 export const UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS = 'user/UPDATE_USER_ID_VERIFICATION_STATUS_SUCCESS'
 export const UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE = 'user/UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE'
+export const UPDATE_AFFILIATES = 'user/UPDATE_AFFILIATES'
+export const UPDATE_AFFILIATES_SUCCESS = 'user/UPDATE_AFFILIATES_SUCCESS'
+export const UPDATE_AFFILIATES_FAILURE = 'user/UPDATE_AFFILIATES_FAILURE'
 
 const initialState = {
   data: {},
@@ -106,7 +109,18 @@ export function updateUserIdVerificationStatus(slug, status, callback) {
   }
 }
 
-
+export function updateAffiliates(slug, tier1Slug) {
+  return dispatch => {
+    dispatch({ type: UPDATE_AFFILIATES })
+    axios.patch(`/api/users/${slug}/update_affiliates`, { tier1_slug: tier1Slug })
+    .then(response => {
+      dispatch({ type: UPDATE_AFFILIATES_SUCCESS, payload: response.data })
+    })
+    .catch((error) => {
+      dispatch({ type: UPDATE_AFFILIATES_FAILURE, payload: error.message })
+    })
+  }
+}
 export default createReducer(initialState, ({
   [ FETCH ]: (payload, state) => {
     return {
@@ -234,6 +248,15 @@ export default createReducer(initialState, ({
       ...state,
       verificationError: true,
       verificationMessage: payload
+    }
+  },
+  [ UPDATE_AFFILIATES_SUCCESS ]: (payload, state) => {
+    return {
+      ...state,
+      data: {
+        ...state.data,
+        affiliates: payload.affiliates,
+      }
     }
   },
 }))
