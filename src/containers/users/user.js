@@ -194,7 +194,7 @@ class User extends Component {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
               {!!withdrawal.affiliateBalance &&
-              <li key = 'affiliateBalance'>Affiliate btc ($ {(+withdrawal.affiliateBalance).toFixed(2)})</li>
+              <li key = 'affiliateBalance'>Affiliate BTC ($ {(+withdrawal.affiliateBalance).toFixed(2)})</li>
               }
             </ul>
           </td>

@@ -67,7 +67,7 @@ class Withdrawal extends Component {
               return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
             })}
             {!!affiliateBalance &&
-            <li key='affiliateBalance'>Affiliate btc ($ {(+affiliateBalance).toFixed(2)})</li>
+            <li key='affiliateBalance'>Affiliate BTC ($ {(+affiliateBalance).toFixed(2)})</li>
             }
           </ul>
         </td>

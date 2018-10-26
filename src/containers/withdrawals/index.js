@@ -124,7 +124,7 @@ class Withdrawals extends Component {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
               {!!item.affiliateBalance &&
-              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              <li key = 'affiliateBalance'>Affiliate BTC ($ {(+item.affiliateBalance).toFixed(2)})</li>
               }
             </ul>
           </td>
@@ -152,7 +152,7 @@ class Withdrawals extends Component {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
               {!!item.affiliateBalance &&
-              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              <li key = 'affiliateBalance'>Affiliate BTC ($ {(+item.affiliateBalance).toFixed(2)})</li>
               }
             </ul>
           </td>
@@ -181,7 +181,7 @@ class Withdrawals extends Component {
                 return <li key={balance.symbol}>{(+balance.value).toFixed(3)} {balance.symbol} ($ {(+balance.usd).toFixed(2)} )</li>
               })}
               {!!item.affiliateBalance &&
-              <li key = 'affiliateBalance'>Affiliate btc ($ {(+item.affiliateBalance).toFixed(2)})</li>
+              <li key = 'affiliateBalance'>Affiliate BTC ($ {(+item.affiliateBalance).toFixed(2)})</li>
               }
             </ul>
           </td>
