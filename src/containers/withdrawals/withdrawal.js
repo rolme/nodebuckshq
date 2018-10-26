@@ -129,7 +129,7 @@ class Withdrawal extends Component {
       const { id, userName, userEmail, notes, type, amount, slug, status, symbol } = transaction
       let value = (notes.includes('USD transfer to')) ? `$${valueFormat(amount, 2)}` : `${amount} ${symbol}`
       if (notes.includes('convert to')) {
-        let symbol = (notes.includes('convert to USD')) ? 'usd' : 'btc'
+        let symbol = (notes.includes('convert to USD')) ? 'USD' : 'BTC'
         let formattedValue = (notes.includes('convert to USD')) ? valueFormat(amount, 2) : amount
         value = (
           <span>
@@ -145,7 +145,7 @@ class Withdrawal extends Component {
                 }
               }}
               display={value => {
-                return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{(symbol === 'usd') ? `$${value}` : value  }</span>)
+                return (<span style={{ borderBottom: "1px dashed", textDecoration: "none" }}>{(symbol === 'USD') ? `$${value}` : value  }</span>)
               }}
               handleSubmit={this.handleTransactionAmountSubmit.bind(this, slug)}
             />
