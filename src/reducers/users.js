@@ -19,6 +19,9 @@ export const UPDATE_USER_ID_VERIFICATION_STATUS_FAILURE = 'user/UPDATE_USER_ID_V
 export const UPDATE_AFFILIATES = 'user/UPDATE_AFFILIATES'
 export const UPDATE_AFFILIATES_SUCCESS = 'user/UPDATE_AFFILIATES_SUCCESS'
 export const UPDATE_AFFILIATES_FAILURE = 'user/UPDATE_AFFILIATES_FAILURE'
+export const REMOVE_AFFILIATES = 'user/REMOVE_AFFILIATES'
+export const REMOVE_AFFILIATES_SUCCESS = 'user/REMOVE_AFFILIATES_SUCCESS'
+export const REMOVE_AFFILIATES_FAILURE = 'user/REMOVE_AFFILIATES_FAILURE'
 
 const initialState = {
   data: {},
@@ -112,6 +115,7 @@ export function updateUserIdVerificationStatus(slug, status, callback) {
 export function updateAffiliates(slug, tier1Slug) {
   return dispatch => {
     dispatch({ type: UPDATE_AFFILIATES })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/users/${slug}/update_affiliates`, { tier1_slug: tier1Slug })
     .then(response => {
       dispatch({ type: UPDATE_AFFILIATES_SUCCESS, payload: response.data })
@@ -121,6 +125,21 @@ export function updateAffiliates(slug, tier1Slug) {
     })
   }
 }
+
+export function removeAffiliates(slug) {
+  return dispatch => {
+    dispatch({ type: REMOVE_AFFILIATES })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/users/${slug}/remove_affiliates`)
+    .then(response => {
+      dispatch({ type: REMOVE_AFFILIATES_SUCCESS, payload: response.data })
+    })
+    .catch((error) => {
+      dispatch({ type: REMOVE_AFFILIATES_FAILURE, payload: error.message })
+    })
+  }
+}
+
 export default createReducer(initialState, ({
   [ FETCH ]: (payload, state) => {
     return {
@@ -251,6 +270,15 @@ export default createReducer(initialState, ({
     }
   },
   [ UPDATE_AFFILIATES_SUCCESS ]: (payload, state) => {
+    return {
+      ...state,
+      data: {
+        ...state.data,
+        affiliates: payload.affiliates,
+      }
+    }
+  },
+  [ REMOVE_AFFILIATES_SUCCESS ]: (payload, state) => {
     return {
       ...state,
       data: {
