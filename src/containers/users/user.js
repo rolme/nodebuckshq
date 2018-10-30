@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 import Autosuggest from 'react-autosuggest';
 
 import {
   fetchUser,
   fetchUsers,
-  updateAffiliates
+  updateAffiliates,
+  removeAffiliates,
 } from '../../reducers/users'
 
 import {
@@ -119,7 +120,12 @@ class User extends Component {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header style={{ fontSize: 18 }}>
-                  <b>Tier1:</b> {user.affiliates.tier1 ? `${user.affiliates.tier1.first} ${user.affiliates.tier1.last} (${user.affiliates.tier1.email})` : ''}
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <b>Tier1:</b> {user.affiliates.tier1 ? `${user.affiliates.tier1.first} ${user.affiliates.tier1.last} (${user.affiliates.tier1.email})` : ''}
+                    </div>
+                    <Button className="ml-2" size="sm" onClick={() => this.props.removeAffiliates(user.slug)}>Remove</Button>
+                  </div>
                 </DropdownItem>
                 <Autosuggest
                   suggestions={this.state.suggestions}
@@ -312,6 +318,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchWithdrawals,
   fetchUsers,
   updateAffiliates,
+  removeAffiliates,
 }, dispatch)
 
 export default connect(
