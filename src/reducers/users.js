@@ -115,6 +115,7 @@ export function updateUserIdVerificationStatus(slug, status, callback) {
 export function updateAffiliates(slug, tier1Slug) {
   return dispatch => {
     dispatch({ type: UPDATE_AFFILIATES })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/users/${slug}/update_affiliates`, { tier1_slug: tier1Slug })
     .then(response => {
       dispatch({ type: UPDATE_AFFILIATES_SUCCESS, payload: response.data })
@@ -128,6 +129,7 @@ export function updateAffiliates(slug, tier1Slug) {
 export function removeAffiliates(slug) {
   return dispatch => {
     dispatch({ type: REMOVE_AFFILIATES })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/users/${slug}/remove_affiliates`)
     .then(response => {
       dispatch({ type: REMOVE_AFFILIATES_SUCCESS, payload: response.data })
