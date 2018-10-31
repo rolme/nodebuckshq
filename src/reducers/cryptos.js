@@ -199,7 +199,7 @@ export const delistCrypto = (slug) => {
   return dispatch => {
     dispatch({ type: DELIST })
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.patch(`/api/users/${slug}/delist`).then(response => {
+    axios.patch(`/api/cryptos/${slug}/delist`).then(response => {
       if ( response.data.status === 'error' ) {
         dispatch({ type: DELIST_ERROR, payload: response.data })
       } else {
