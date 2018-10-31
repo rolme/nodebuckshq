@@ -1,12 +1,18 @@
 import axios from 'axios'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
+export const DELIST = 'cryptos/DELIST'
+export const DELIST_ERROR = 'cryptos/DELIST_ERROR'
+export const DELIST_SUCCESS = 'cryptos/DELIST_SUCCESS'
 export const FETCH = 'cryptos/FETCH'
 export const FETCH_ERROR = 'cryptos/FETCH_ERROR'
 export const FETCH_SUCCESS = 'cryptos/FETCH_SUCCESS'
 export const FETCH_LIST = 'cryptos/FETCH_LIST'
 export const FETCH_LIST_ERROR = 'cryptos/FETCH_LIST_ERROR'
 export const FETCH_LIST_SUCCESS = 'cryptos/FETCH_LIST_SUCCESS'
+export const RELIST = 'cryptos/RELIST'
+export const RELIST_ERROR = 'cryptos/RELIST_ERROR'
+export const RELIST_SUCCESS = 'cryptos/RELIST_SUCCESS'
 export const UPDATE = 'cryptos/UPDATE'
 export const UPDATE_ERROR = 'cryptos/UPDATE_ERROR'
 export const UPDATE_SUCCESS = 'cryptos/UPDATE_SUCCESS'
@@ -170,6 +176,38 @@ export function updateCrypto(slug, data) {
         dispatch({ type: UPDATE_ERROR, payload: {message: error.data} })
         console.log(error)
       })
+  }
+}
+
+export const relistCrypto = (slug) => {
+  return dispatch => {
+    dispatch({ type: RELIST })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/cryptos/${slug}/relist`).then(response => {
+      if ( response.data.status === 'error' ) {
+        dispatch({ type: RELIST_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: RELIST_SUCCESS, payload: response.data })
+      }
+    }).catch(err => {
+      dispatch({ type: RELIST_FAILURE, payload: err.data })
+    })
+  }
+}
+
+export const delistCrypto = (slug) => {
+  return dispatch => {
+    dispatch({ type: DELIST })
+    axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
+    axios.patch(`/api/users/${slug}/delist`).then(response => {
+      if ( response.data.status === 'error' ) {
+        dispatch({ type: DELIST_FAILURE, payload: response.data })
+      } else {
+        dispatch({ type: DELIST_SUCCESS, payload: response.data })
+      }
+    }).catch(err => {
+      dispatch({ type: DELIST_FAILURE, payload: err.data })
+    })
   }
 }
 

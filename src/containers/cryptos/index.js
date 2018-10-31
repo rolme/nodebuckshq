@@ -7,8 +7,9 @@ import Toggle from 'react-toggle'
 import "react-toggle/style.css"
 
 import {
+  delistCrypto,
   fetchCryptos,
-  updateCrypto
+  relistCrypto
 } from '../../reducers/cryptos'
 
 class Cryptos extends Component {
@@ -21,9 +22,11 @@ class Cryptos extends Component {
   }
 
   handleListedToggle(crypto) {
-    this.props.updateCrypto(crypto.slug, {
-      is_listed: !crypto.isListed
-    })
+    if (crypto.isListed) {
+      this.props.delistCrypto(crypto.slug)
+    } else {
+      this.props.relistCrypto(crypto.slug)
+    }
   }
 
   render() {
@@ -98,8 +101,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  delistCrypto,
   fetchCryptos,
-  updateCrypto
+  relistCrypto
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Cryptos))
