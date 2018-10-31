@@ -185,12 +185,12 @@ export const relistCrypto = (slug) => {
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/cryptos/${slug}/relist`).then(response => {
       if ( response.data.status === 'error' ) {
-        dispatch({ type: RELIST_FAILURE, payload: response.data })
+        dispatch({ type: RELIST_ERROR, payload: response.data })
       } else {
         dispatch({ type: RELIST_SUCCESS, payload: response.data })
       }
     }).catch(err => {
-      dispatch({ type: RELIST_FAILURE, payload: err.data })
+      dispatch({ type: RELIST_ERROR, payload: err.data })
     })
   }
 }
@@ -201,12 +201,12 @@ export const delistCrypto = (slug) => {
     axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
     axios.patch(`/api/users/${slug}/delist`).then(response => {
       if ( response.data.status === 'error' ) {
-        dispatch({ type: DELIST_FAILURE, payload: response.data })
+        dispatch({ type: DELIST_ERROR, payload: response.data })
       } else {
         dispatch({ type: DELIST_SUCCESS, payload: response.data })
       }
     }).catch(err => {
-      dispatch({ type: DELIST_FAILURE, payload: err.data })
+      dispatch({ type: DELIST_ERROR, payload: err.data })
     })
   }
 }
