@@ -3,8 +3,12 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter, NavLink } from 'react-router-dom'
 
+import Toggle from 'react-toggle'
+import "react-toggle/style.css"
+
 import {
-  fetchCryptos
+  fetchCryptos,
+  updateCrypto
 } from '../../reducers/cryptos'
 
 class Cryptos extends Component {
@@ -14,6 +18,12 @@ class Cryptos extends Component {
     if ( list.length <= 1 && user !== '' ) {
       this.props.fetchCryptos()
     }
+  }
+
+  handleListedToggle(crypto) {
+    this.props.updateCrypto(crypto.slug, {
+      is_listed: !crypto.isListed
+    })
   }
 
   render() {
@@ -37,6 +47,7 @@ class Cryptos extends Component {
                 <th className="text-center">Symbol</th>
                 <th className="text-center">Purchasable?</th>
                 <th className="text-center">Action</th>
+                <th className="text-center">Listed</th>
               </tr>
             </thead>
             <tbody>
@@ -69,6 +80,12 @@ class Cryptos extends Component {
           <td className="text-center">{item.symbol}</td>
           <td className="text-center">{(item.purchasableStatus === 'Buy Node') ? 'Available' : item.purchasableStatus}</td>
           <td className="text-center"><NavLink to={`/cryptos/${item.slug}/edit`}>Edit</NavLink></td>
+          <td className="text-center">
+            <Toggle
+              defaultChecked={item.isListed}
+              onChange={(event) => this.handleListedToggle(item)}
+            />
+          </td>
         </tr>
       )
     })
@@ -81,7 +98,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchCryptos
+  fetchCryptos,
+  updateCrypto
 }, dispatch)
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Cryptos))
