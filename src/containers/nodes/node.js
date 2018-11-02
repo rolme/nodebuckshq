@@ -149,7 +149,7 @@ class Node extends Component {
             <tbody>
             <tr>
               <th>Owner</th>
-              <td className="text-right">{node.owner.fullName}</td>
+              <td className="text-right">{node.owner.fullName} ({node.owner.email})</td>
             </tr>
             <tr>
               <th>Node ID</th>
