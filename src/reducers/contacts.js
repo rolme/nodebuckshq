@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { findIndex } from 'lodash'
 
 // ACTION_TYPES ////////////////////////////////////////////////////////////////
 export const FETCH_LIST = 'contacts/FETCH_LIST'
@@ -49,7 +50,9 @@ export default (state = initialState, action) => {
 
     case REVIEWED_SUCCESS:
       let list = [...state.list];
-      let index = list.findIndex(c => c.id === action.payload.id);
+      console.log(list)
+      let index = findIndex(list, c => c.id === action.payload);
+      console.log(index)
       list.splice(index, 1);
       return {
         ...state,
@@ -79,13 +82,13 @@ export function fetchContacts() {
   }
 }
 
-export function reviewed(id) {
+export function reviewed(id, userSlug) {
   return dispatch => {
     dispatch({ type: REVIEWED })
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt-nodebuckshq')
-    axios.patch(`/api/contacts/${id}/reviewed`)
+    axios.patch(`/api/contacts/${id}/reviewed`, { user_slug: userSlug})
       .then((response) => {
-      dispatch({ type: REVIEWED_SUCCESS, payload: response.data })
+      dispatch({ type: REVIEWED_SUCCESS, payload: id })
       }).catch((error) => {
         dispatch({ type: REVIEWED_ERROR, payload: {message: error.data} })
         console.log(error)
