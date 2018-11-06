@@ -61,7 +61,7 @@ class Contacts extends Component {
           <td align="center">
             <button
               className="btn btn-info"
-              onClick={() => this.props.reviewed(item.id)}
+              onClick={() => this.props.reviewed(item.id, this.props.user.slug)}
             >
               Reviewed
             </button>
@@ -74,7 +74,7 @@ class Contacts extends Component {
 
 const mapStateToProps = state => ({
   list: state.contacts.list,
-  user: state.user.user
+  user: state.user.data
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
