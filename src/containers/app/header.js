@@ -97,6 +97,7 @@ class Header extends Component {
       navigation.push(<li key="contacts"><NavLink onClick={() => this.toggleNavbar(true)} to="/contacts" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('contacts') ? 'active' : ''}`}>Contacts ({counts.contacts})</NavLink></li>)
       navigation.push(<li key="orders"><NavLink onClick={() => this.toggleNavbar(true)} to="/orders" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('orders') ? 'active' : ''}`}>Orders ({counts.unpaidOrders} unpaid)</NavLink></li>)
       navigation.push(<li key="announcements"><NavLink onClick={() => this.toggleNavbar(true)} to="/announcements" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('announcements') ? 'active' : ''}`}>Announcements</NavLink></li>)
+      navigation.push(<li key="system"><NavLink onClick={() => this.toggleNavbar(true)} to="/system" exact={true} className={`sideBarItem nav-item nav-link ${pathname.includes('system') ? 'active' : ''}`}>System Account</NavLink></li>)
       navigation.push(<li key="logout"><NavLink onClick={() => this.toggleNavbar(true)} to="/logout" className={`sideBarItem nav-item nav-link ${pathname.includes('logout') ? 'active' : ''}`} activeClassName="active">Logout</NavLink></li>)
       return (navigation)
     }
