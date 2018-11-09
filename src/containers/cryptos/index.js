@@ -81,7 +81,7 @@ class Cryptos extends Component {
           <td className="text-center">{item.slug}</td>
           <td className="text-center"><NavLink to={`/cryptos/${item.slug}`}>{item.name}</NavLink></td>
           <td className="text-center">{item.symbol}</td>
-          <td className="text-center">{(item.purchasableStatus === 'Buy Node') ? 'Available' : item.purchasableStatus}</td>
+          <td className="text-center">{this.purchaseStatus(item)}</td>
           <td className="text-center"><NavLink to={`/cryptos/${item.slug}/edit`}>Edit</NavLink></td>
           <td className="text-center">
             <Toggle
@@ -92,6 +92,16 @@ class Cryptos extends Component {
         </tr>
       )
     })
+  }
+
+  purchaseStatus(crypto) {
+    const { purchasable, purchasableStatus} = crypto
+
+    if (purchasableStatus === 'Buy Node') {
+      return (purchasable) ? 'Available' : 'Out of Stock'
+    } else {
+      return crypto.purchasableStatus
+    }
   }
 }
 
