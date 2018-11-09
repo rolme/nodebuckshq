@@ -23,7 +23,7 @@ class System extends Component {
   render() {
     const { system } = this.props
 
-    if (system.length === 0) { return <span></span> }
+    if (Object.keys(system).length === 0) { return <span></span> }
     return (
       <div className="row">
         <div className="col-12 px-5">
@@ -56,18 +56,24 @@ class System extends Component {
   }
 
   displaySettings(settings) {
+    const { unpaidAmount } = this.props.system
+    const maxFloat = settings.find(s => s.key === 'max float')
+    const currentFloat = +maxFloat.value - +unpaidAmount
     return(
       <div className="col-12 pt-2 pl-5">
         <h5>Float</h5>
         <table className="table table-striped">
           <tbody>
-            { !!settings && settings.map(setting =>
-              <tr key={setting.key}>
-                <td>{setting.key}</td>
-                <td>${valueFormat(setting.value,2)}</td>
-                <td>{setting.description}</td>
-              </tr>
-            )}
+            <tr>
+              <td>Max</td>
+              <td>${valueFormat(maxFloat.value,2)}</td>
+              <td>{maxFloat.description}</td>
+            </tr>
+            <tr>
+              <td>Current</td>
+              <td>${valueFormat(currentFloat,2)}</td>
+              <td>Amount remaining for new orders</td>
+            </tr>
           </tbody>
         </table>
       </div>
