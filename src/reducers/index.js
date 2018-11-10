@@ -6,6 +6,7 @@ import cryptos from './cryptos'
 import nodes from './nodes'
 import orders from './orders'
 import purchasableStatuses from './purchasable_statuses'
+import system from './system'
 import transactions from './transactions'
 import user from './user'
 import users from './users'
@@ -20,6 +21,7 @@ export default combineReducers({
   nodes,
   orders,
   purchasableStatuses,
+  system,
   transactions,
   user,
   users,

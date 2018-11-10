@@ -10,6 +10,7 @@ import { Container } from 'reactstrap'
 import { setReferer } from '../../lib/helpers'
 
 const Announcements = Loadable({ loader: () => import('../announcements'), loading: Loading })
+const Contacts = Loadable({ loader: () => import('../contacts'), loading: Loading })
 const Crypto = Loadable({ loader: () => import('../cryptos/crypto'), loading: Loading })
 const Cryptos = Loadable({ loader: () => import('../cryptos'), loading: Loading })
 const CryptoEdit = Loadable({ loader: () => import('../cryptos/edit'), loading: Loading })
@@ -19,14 +20,14 @@ const Logout = Loadable({ loader: () => import('../authenticate/logout'), loadin
 const NewNode = Loadable({ loader: () => import('../nodes/new'), loading: Loading })
 const Node = Loadable({ loader: () => import('../nodes/node'), loading: Loading })
 const Nodes = Loadable({ loader: () => import('../nodes'), loading: Loading })
-const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
 const Order = Loadable({ loader: () => import('../orders/order'), loading: Loading })
-const Users = Loadable({ loader: () => import('../users'), loading: Loading })
-const User = Loadable({ loader: () => import('../users/user'), loading: Loading })
-const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
-const Withdrawal = Loadable({ loader: () => import('../withdrawals/withdrawal'), loading: Loading })
+const Orders = Loadable({ loader: () => import('../orders'), loading: Loading })
+const System = Loadable({ loader: () => import('../system'), loading: Loading })
 const Transactions = Loadable({ loader: () => import('../transactions'), loading: Loading })
-const Contacts = Loadable({ loader: () => import('../contacts'), loading: Loading })
+const User = Loadable({ loader: () => import('../users/user'), loading: Loading })
+const Users = Loadable({ loader: () => import('../users'), loading: Loading })
+const Withdrawal = Loadable({ loader: () => import('../withdrawals/withdrawal'), loading: Loading })
+const Withdrawals = Loadable({ loader: () => import('../withdrawals'), loading: Loading })
 const Verifications = Loadable({ loader: () => import('../verifications'), loading: Loading })
 
 class App extends Component {
@@ -55,6 +56,7 @@ class App extends Component {
             <Route exact path="/users/:slug" component={User}/>
             <Route exact path="/withdrawals" component={Withdrawals}/>
             <Route exact path="/withdrawals/:slug" component={Withdrawal}/>
+            <Route exact path="/system" component={System}/>
             <Route exact path="/transactions" component={Transactions}/>
             <Route exact path="/contacts" component={Contacts}/>
             <Route exact path="/orders" component={Orders}/>
