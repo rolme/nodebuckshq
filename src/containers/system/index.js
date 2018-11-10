@@ -5,12 +5,19 @@ import { withRouter } from 'react-router-dom'
 
 import { valueFormat } from '../../lib/helpers'
 
+import Editable from 'react-x-editable'
+
 import {
   fetchSystem,
   updateSystemSetting
 } from '../../reducers/system'
 
 class System extends Component {
+  constructor(props) {
+    super(props)
+    this.selectEditableField = this.selectEditableField.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
 
   componentWillMount() {
     const { system } = this.props
@@ -18,6 +25,10 @@ class System extends Component {
     if ( Object.keys(system).length === 0 ) {
       this.props.fetchSystem()
     }
+  }
+
+  handleSubmit(el) {
+    this.props.updateSystemSetting('max float', el.value)
   }
 
   render() {
@@ -66,7 +77,19 @@ class System extends Component {
           <tbody>
             <tr>
               <td>Max</td>
-              <td>${valueFormat(maxFloat.value,2)}</td>
+              <td>
+                <Editable
+                  dataType="text"
+                  mode="inline"
+                  name="maxFloat"
+                  showButtons={false}
+                  value={maxFloat.value}
+                  display={value => {
+                    return (<span onClick={this.selectEditableField} style={{ borderBottom: "1px dashed", textDecoration: "none" }}>${valueFormat(value, 2)}</span>)
+                  }}
+                  handleSubmit={(el) => this.handleSubmit(el)}
+                />
+              </td>
               <td>{maxFloat.description}</td>
             </tr>
             <tr>
@@ -78,6 +101,13 @@ class System extends Component {
         </table>
       </div>
     )
+  }
+
+  selectEditableField() {
+    setTimeout(() => {
+      const element = document.getElementById('formBasicText')
+      !!element && element.select()
+    }, 5)
   }
 }
 
