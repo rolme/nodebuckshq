@@ -47,6 +47,7 @@ class Users extends Component {
                 <th>user</th>
                 <th>created</th>
                 <th>confirmed?</th>
+                <th>verification</th>
                 <th>deleted?</th>
                 <th>Enabled?</th>
               </tr>
@@ -76,6 +77,7 @@ class Users extends Component {
           </td>
           <td>{item.createdAt}</td>
           <td>{(item.confirmedAt) ? item.confirmedAt : 'Unconfirmed'}</td>
+          <td>{item.verificationStatus}</td>
           <td>{(item.deletedAt) ? item.deletedAt : 'Active'}</td>
           <td>
             <Toggle
